@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import SearchBar from '@/components/atoms/SearchBar/SearchBar';
 import User from '@/components/molecules/User/User';
+import ListItem from '@/components/molecules/ListItem/ListItem';
 import styles from './page.module.scss';
 
 export default function ShowcasePage() {
@@ -164,6 +165,101 @@ export default function ShowcasePage() {
   name="Jane Smith" 
   email="jane@example.com"
   initial="JS"
+/>`}
+              </pre>
+            </div>
+          </div>
+
+          {/* ListItem Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>ListItem</h3>
+            <p className={styles.showcase__componentDescription}>
+              A clickable list item with icon, text, hover and selected states
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default ListItem</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <ListItem 
+                    text="Claude.md"
+                    onClick={() => console.log('Clicked Claude.md')}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Selected State</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <ListItem 
+                    text="README.md"
+                    selected={true}
+                    onClick={() => console.log('Clicked README.md')}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Icons</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <ListItem 
+                      text="Settings"
+                      icon="/settings.svg"
+                      onClick={() => console.log('Settings clicked')}
+                    />
+                    <ListItem 
+                      text="Add User"
+                      icon="/plus.svg"
+                      onClick={() => console.log('Add user clicked')}
+                    />
+                    <ListItem 
+                      text="Tools"
+                      icon="/wrench.svg"
+                      onClick={() => console.log('Tools clicked')}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Interactive File List</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    {[
+                      { name: 'package.json', selected: false },
+                      { name: 'tsconfig.json', selected: true },
+                      { name: 'README.md', selected: false },
+                      { name: '.gitignore', selected: false }
+                    ].map((file) => (
+                      <ListItem 
+                        key={file.name}
+                        text={file.name}
+                        selected={file.selected}
+                        onClick={() => alert(`Opening ${file.name}`)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import ListItem from '@/components/molecules/ListItem/ListItem';
+
+<ListItem 
+  text="Claude.md"
+  onClick={() => console.log('Clicked')}
+/>
+
+// With custom icon and selected state
+<ListItem 
+  text="Settings"
+  icon="/settings.svg"
+  selected={true}
+  onClick={handleClick}
 />`}
               </pre>
             </div>

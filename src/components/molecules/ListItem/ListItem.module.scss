@@ -1,0 +1,78 @@
+// Variable declarations to match Figma design
+$white-secondary: #9B9B9B;
+$white-primary: #D5D5D5;
+$black-light-hover: #383838;
+$black-light: #353535;
+
+.list-item {
+  background-color: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none;
+  
+  &__content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+  }
+  
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    
+    &-image {
+      filter: brightness(0) saturate(100%) invert(62%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(97%) contrast(89%); // Makes icon #9B9B9B
+    }
+  }
+  
+  &__text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: normal;
+    letter-spacing: 0.2px;
+    color: $white-secondary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  // Hover state
+  &:hover {
+    background-color: $black-light-hover;
+  }
+  
+  // Selected state
+  &--selected {
+    background-color: $black-light;
+    
+    .list-item__icon-image {
+      filter: brightness(0) saturate(100%) invert(92%) sepia(0%) saturate(7483%) hue-rotate(201deg) brightness(108%) contrast(75%); // Makes icon #D5D5D5
+    }
+    
+    .list-item__text {
+      color: $white-primary;
+    }
+    
+    &:hover {
+      background-color: $black-light-hover;
+    }
+  }
+  
+  // Keyboard focus styles
+  &:focus {
+    outline: 2px solid $white-primary;
+    outline-offset: -2px;
+  }
+  
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
