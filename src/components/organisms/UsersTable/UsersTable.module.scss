@@ -1,0 +1,78 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.users-table {
+  width: 100%;
+  background-color: $background-dark;
+  border-radius: 8px;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba($white-primary, 0.1);
+  }
+
+  &__header-text {
+    @include label;
+    color: $white-primary;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__row {
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba($white-primary, 0.05);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__column {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    
+    // First column (Name) - slightly wider
+    &:first-child {
+      flex: 1.2;
+      padding-left: 4px; // Align with User component padding
+    }
+    
+    // Middle column (User Type)
+    &:nth-child(2) {
+      flex: 0.8;
+      justify-content: flex-start;
+    }
+    
+    // Last column (Workspaces)
+    &:last-child {
+      flex: 1.5;
+      padding-left: 28px; // Match Figma design spacing
+    }
+  }
+
+  &__user {
+    width: 100%;
+  }
+
+  &__seat-type {
+    // SeatType has its own fixed width, so we just ensure it's aligned
+  }
+
+  &__workspaces {
+    @include body-medium;
+    @include font-bold;
+    color: $white-primary;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+}
