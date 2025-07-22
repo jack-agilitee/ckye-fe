@@ -1,0 +1,120 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.workspace-selector {
+  position: relative;
+  width: 100%;
+
+  &__label {
+    @include body-medium;
+    @include font-semibold;
+    color: $text-secondary;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  &__field {
+    position: relative;
+    width: 100%;
+    min-height: 40px;
+    background-color: transparent;
+    border: 1px solid $black-light;
+    border-radius: 8px;
+    cursor: text;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba($white-secondary, 0.3);
+    }
+
+    &--focused {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+    padding: 8px 12px;
+    min-height: 38px;
+  }
+
+  &__chip {
+    flex-shrink: 0;
+  }
+
+  &__input {
+    @include body-medium;
+    color: $text-primary;
+    background: transparent;
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 120px;
+    padding: 0;
+    margin: 0;
+
+    &::placeholder {
+      color: $text-secondary;
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    max-height: 240px;
+    overflow-y: auto;
+    background-color: $background-dark;
+    border: 1px solid $black-light;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+  }
+
+  &__option {
+    @include body-medium;
+    color: $text-secondary;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background-color: $background-hover;
+      color: $text-primary;
+    }
+
+    &--focused {
+      background-color: $background-selected;
+      color: $text-primary;
+    }
+
+    &:first-child {
+      border-top-left-radius: 7px;
+      border-top-right-radius: 7px;
+    }
+
+    &:last-child {
+      border-bottom-left-radius: 7px;
+      border-bottom-right-radius: 7px;
+    }
+  }
+
+  &__option-name {
+    @include truncate;
+  }
+
+  &__option-check {
+    flex-shrink: 0;
+    margin-left: 8px;
+    font-size: 16px;
+    line-height: 1;
+  }
+}
