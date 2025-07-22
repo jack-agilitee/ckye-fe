@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import Chip from '@/components/atoms/Chip/Chip';
 import styles from './WorkspaceSelector.module.scss';
 
@@ -172,12 +173,14 @@ const WorkspaceSelector = ({
               <span className={styles['workspace-selector__option-name']}>
                 {option.name}
               </span>
-              <span 
+              <Image 
+                src="/check.svg"
+                alt=""
+                width={16}
+                height={16}
                 className={styles['workspace-selector__option-check']}
                 aria-hidden="true"
-              >
-                ○
-              </span>
+              />
             </div>
           ))}
         </div>
