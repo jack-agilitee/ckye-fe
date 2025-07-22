@@ -31,7 +31,7 @@ The AccountModal component consists of:
 
 ```jsx
 import { useState } from 'react';
-import AccountModal from './components/AccountModal';
+import AccountModal from './components/AccountModal/AccountModal';
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,8 +60,8 @@ function App() {
 'use client';
 
 import { useState } from 'react';
-import LeftNav from './components/LeftNav';
-import AccountModal from './components/AccountModal';
+import LeftNav from './components/LeftNav/LeftNav';
+import AccountModal from './components/AccountModal/AccountModal';
 
 function Layout() {
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
@@ -183,10 +183,9 @@ The component uses BEM methodology with CSS modules:
 
 ```
 src/app/components/AccountModal/
-├── AccountModal.jsx          # Main component
+├── AccountModal.jsx          # Main component with export
 ├── AccountModal.module.css   # BEM styles
-├── AccountModal.test.jsx     # Test suite
-└── index.js                  # Export file
+└── AccountModal.test.jsx     # Test suite
 ```
 
 ## Testing

@@ -29,7 +29,7 @@ The LeftNav component consists of:
 ### Basic Usage
 
 ```jsx
-import LeftNav from './components/LeftNav';
+import LeftNav from './components/LeftNav/LeftNav';
 
 function App() {
   const handleAccountModalToggle = () => {
@@ -50,8 +50,8 @@ function App() {
 'use client';
 
 import { useState } from 'react';
-import LeftNav from './components/LeftNav';
-import AccountModal from './components/AccountModal';
+import LeftNav from './components/LeftNav/LeftNav';
+import AccountModal from './components/AccountModal/AccountModal';
 
 function App() {
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
@@ -137,10 +137,9 @@ The component uses BEM methodology with CSS modules:
 
 ```
 src/app/components/LeftNav/
-├── LeftNav.jsx          # Main component
+├── LeftNav.jsx          # Main component with export
 ├── LeftNav.module.css   # BEM styles
-├── LeftNav.test.jsx     # Test suite
-└── index.js             # Export file
+└── LeftNav.test.jsx     # Test suite
 ```
 
 ## Testing
