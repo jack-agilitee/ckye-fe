@@ -1,18 +1,19 @@
 # AccountChanger Component
 
 ## Overview
-The AccountChanger component is an organism-level component that displays the current account information with an avatar and provides quick actions for account switching and creating notes.
+The AccountChanger component is an organism-level component that displays the current account information with an avatar and provides quick actions for account switching and creating notes. It supports two variants: a default account view and an admin view.
 
 ## Figma Reference
-- URL: https://www.figma.com/design/1wJBV3eb9vlRvuxQICmBwY/Cyke-Web-App?node-id=5-115&m=dev
-- Node ID: 5:115
+- Default variant URL: https://www.figma.com/design/1wJBV3eb9vlRvuxQICmBwY/Cyke-Web-App?node-id=5-115&m=dev
+- Admin variant URL: https://www.figma.com/design/1wJBV3eb9vlRvuxQICmBwY/Cyke-Web-App?node-id=7-941&m=dev
+- Node IDs: 5:115 (default), 7:941 (admin)
 
 ## Usage
 
 ```jsx
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 
-// Basic usage
+// Basic usage - Default variant
 <AccountChanger />
 
 // With custom props
@@ -22,22 +23,35 @@ import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger
   onAccountClick={() => console.log('Account clicked')}
   onNotesClick={() => console.log('Notes clicked')}
 />
+
+// Admin variant
+<AccountChanger 
+  isAdmin={true}
+  onAdminBack={() => console.log('Exiting admin mode')}
+/>
 ```
 
 ## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `accountName` | string | 'Agilitee' | The name of the current account |
-| `accountInitial` | string | 'A' | The initial letter to display in the avatar |
-| `onAccountClick` | function | undefined | Callback function when account dropdown is clicked |
-| `onNotesClick` | function | undefined | Callback function when notes button is clicked |
+| `accountName` | string | 'Agilitee' | The name of the current account (default variant only) |
+| `accountInitial` | string | 'A' | The initial letter to display in the avatar (default variant only) |
+| `onAccountClick` | function | undefined | Callback function when account dropdown is clicked (default variant only) |
+| `onNotesClick` | function | undefined | Callback function when notes button is clicked (default variant only) |
+| `isAdmin` | boolean | false | When true, renders the admin variant |
+| `onAdminBack` | function | undefined | Callback function when admin back button is clicked (admin variant only) |
 
 ## Features
 
 ### Interactive Elements
+
+#### Default Variant
 1. **Account Dropdown Button**: Clicking on the account section (avatar + name + chevron) triggers a console log and calls the `onAccountClick` callback if provided. This is intended to open a modal in the future.
 2. **Notes Button**: Clicking the notes icon triggers a console log and calls the `onNotesClick` callback if provided. This is intended to create a new document in the future.
+
+#### Admin Variant
+1. **Back Button**: Clicking the chevron-left icon triggers a console log and calls the `onAdminBack` callback if provided. This is intended to exit admin mode and revert to the default account view.
 
 ### Accessibility
 - Proper ARIA labels for both buttons
@@ -65,6 +79,8 @@ The component includes comprehensive tests covering:
 - Console log verification
 - Accessibility attributes
 - Icon rendering
+- Admin variant rendering and interactions
+- Switching between variants
 
 To run tests:
 ```bash
@@ -80,18 +96,29 @@ npm run test AccountChanger
 
 ## Example with Context
 ```jsx
-// In a layout or header component
+// In a layout or header component with variant switching
+import { useState } from 'react';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 
 const Header = () => {
+  const [isAdminMode, setIsAdminMode] = useState(false);
+
   const handleAccountSwitch = () => {
-    // TODO: Open account switcher modal
+    // For demo: switch to admin mode
+    // In real app: open account switcher modal
     console.log('Opening account switcher...');
+    setIsAdminMode(true);
   };
 
   const handleCreateNote = () => {
     // TODO: Navigate to new note creation
     console.log('Creating new note...');
+  };
+
+  const handleAdminBack = () => {
+    // Exit admin mode
+    console.log('Exiting admin mode...');
+    setIsAdminMode(false);
   };
 
   return (
@@ -103,8 +130,10 @@ const Header = () => {
         <AccountChanger
           accountName="Agilitee"
           accountInitial="A"
+          isAdmin={isAdminMode}
           onAccountClick={handleAccountSwitch}
           onNotesClick={handleCreateNote}
+          onAdminBack={handleAdminBack}
         />
       </div>
     </header>

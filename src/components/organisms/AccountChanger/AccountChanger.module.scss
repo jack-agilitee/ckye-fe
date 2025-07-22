@@ -89,4 +89,41 @@
   &__notes-icon {
     display: block;
   }
+
+  // Admin variant styles
+  &__admin {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__admin-back {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+    border-radius: 4px;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+    }
+  }
+
+  &__admin-chevron {
+    display: block;
+  }
+
+  &__admin-text {
+    @include button-text;
+    color: $white-primary;
+  }
 }

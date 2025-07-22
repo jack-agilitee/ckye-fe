@@ -7,7 +7,9 @@ const AccountChanger = ({
   accountName = 'Agilitee',
   accountInitial = 'A',
   onAccountClick,
-  onNotesClick
+  onNotesClick,
+  isAdmin = false,
+  onAdminBack
 }) => {
   const handleAccountClick = () => {
     console.log('Account dropdown clicked - TODO: Open modal');
@@ -23,6 +25,40 @@ const AccountChanger = ({
     }
   };
 
+  const handleAdminBack = () => {
+    console.log('Admin back clicked - reverting to default view');
+    if (onAdminBack) {
+      onAdminBack();
+    }
+  };
+
+  // Admin variant
+  if (isAdmin) {
+    return (
+      <div className={styles['account-changer']}>
+        <div className={styles['account-changer__admin']}>
+          <button 
+            className={styles['account-changer__admin-back']}
+            onClick={handleAdminBack}
+            aria-label="Exit admin mode"
+          >
+            <Image 
+              src="/chevron-left.svg"
+              alt=""
+              width={16}
+              height={16}
+              className={styles['account-changer__admin-chevron']}
+            />
+          </button>
+          <span className={styles['account-changer__admin-text']}>
+            Ckye Admin
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // Default variant
   return (
     <div className={styles['account-changer']}>
       <button 

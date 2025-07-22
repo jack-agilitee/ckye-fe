@@ -275,7 +275,7 @@ export default function ShowcasePage() {
           <div className={styles.showcase__component}>
             <h3 className={styles.showcase__componentTitle}>AccountChanger</h3>
             <p className={styles.showcase__componentDescription}>
-              An account switcher component with avatar, name, and quick actions
+              An account switcher component with avatar, name, and quick actions. Supports both default and admin variants.
             </p>
             
             <div className={styles.showcase__demo}>
@@ -319,6 +319,47 @@ export default function ShowcasePage() {
                   </div>
                 </div>
               </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Admin Variant</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <AccountChanger 
+                    isAdmin={true}
+                    onAdminBack={() => alert('Exiting admin mode!')}
+                  />
+                  <p className={styles.showcase__hint}>Click the chevron to exit admin mode</p>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Interactive Variant Switching</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  {(() => {
+                    const [isAdmin, setIsAdmin] = useState(false);
+                    return (
+                      <>
+                        <AccountChanger 
+                          accountName="Demo Account"
+                          accountInitial="D"
+                          isAdmin={isAdmin}
+                          onAccountClick={() => {
+                            alert('Switching to admin mode!');
+                            setIsAdmin(true);
+                          }}
+                          onAdminBack={() => {
+                            alert('Back to normal mode!');
+                            setIsAdmin(false);
+                          }}
+                          onNotesClick={() => alert('Notes clicked!')}
+                        />
+                        <p className={styles.showcase__hint}>
+                          Current mode: {isAdmin ? 'Admin' : 'Default'} - Click account to switch
+                        </p>
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
             </div>
 
             <div className={styles.showcase__code}>
@@ -326,6 +367,7 @@ export default function ShowcasePage() {
               <pre className={styles.showcase__codeBlock}>
 {`import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 
+// Default variant
 <AccountChanger />
 
 // With custom props
@@ -334,6 +376,12 @@ export default function ShowcasePage() {
   accountInitial="M"
   onAccountClick={() => console.log('Account clicked')}
   onNotesClick={() => console.log('Notes clicked')}
+/>
+
+// Admin variant
+<AccountChanger 
+  isAdmin={true}
+  onAdminBack={() => console.log('Exiting admin mode')}
 />`}
               </pre>
             </div>

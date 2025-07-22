@@ -103,4 +103,54 @@ describe('AccountChanger', () => {
     const notesButton = screen.getByLabelText('Create new note');
     expect(notesButton).toHaveAttribute('aria-label', 'Create new note');
   });
+
+  // Admin variant tests
+  describe('Admin variant', () => {
+    it('renders admin variant when isAdmin is true', () => {
+      render(<AccountChanger isAdmin={true} />);
+      
+      expect(screen.getByText('Ckye Admin')).toBeInTheDocument();
+      expect(screen.getByLabelText('Exit admin mode')).toBeInTheDocument();
+      
+      // Should not render default variant elements
+      expect(screen.queryByText('Agilitee')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('Create new note')).not.toBeInTheDocument();
+    });
+
+    it('renders chevron-left icon in admin mode', () => {
+      render(<AccountChanger isAdmin={true} />);
+      
+      const chevronIcon = screen.getByAltText('');
+      expect(chevronIcon).toHaveAttribute('src', '/chevron-left.svg');
+      expect(chevronIcon).toHaveAttribute('width', '16');
+      expect(chevronIcon).toHaveAttribute('height', '16');
+    });
+
+    it('handles admin back click', () => {
+      const handleAdminBack = jest.fn();
+      render(<AccountChanger isAdmin={true} onAdminBack={handleAdminBack} />);
+      
+      const backButton = screen.getByLabelText('Exit admin mode');
+      fireEvent.click(backButton);
+      
+      expect(mockConsoleLog).toHaveBeenCalledWith('Admin back clicked - reverting to default view');
+      expect(handleAdminBack).toHaveBeenCalledTimes(1);
+    });
+
+    it('logs console message without admin back callback', () => {
+      render(<AccountChanger isAdmin={true} />);
+      
+      const backButton = screen.getByLabelText('Exit admin mode');
+      fireEvent.click(backButton);
+      
+      expect(mockConsoleLog).toHaveBeenCalledWith('Admin back clicked - reverting to default view');
+    });
+
+    it('has proper accessibility attributes in admin mode', () => {
+      render(<AccountChanger isAdmin={true} />);
+      
+      const backButton = screen.getByLabelText('Exit admin mode');
+      expect(backButton).toHaveAttribute('aria-label', 'Exit admin mode');
+    });
+  });
 });
