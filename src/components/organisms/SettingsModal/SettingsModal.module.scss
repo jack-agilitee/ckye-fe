@@ -13,29 +13,8 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 
   &__workspace {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-
-  &__workspace-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 40px;
-    flex: 1;
-  }
-
-  &__workspace-name {
-    @include heading-3;
-    color: $white-primary;
-    margin: 0;
-  }
-
-  &__workspace-members {
-    @include body-small;
-    @include font-semibold;
-    color: $white-secondary;
+    // Custom styling for the User component when used as workspace header
+    margin-bottom: 0;
   }
 
   &__actions {

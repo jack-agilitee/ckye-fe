@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import User from '@/components/molecules/User/User';
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import Button from '@/components/atoms/Button/Button';
 import styles from './SettingsModal.module.scss';
@@ -64,20 +65,12 @@ const SettingsModal = ({
   return (
     <div className={styles['settings-modal']} ref={modalRef}>
       {/* Current Workspace Header */}
-      <div className={styles['settings-modal__workspace']}>
-        <Avatar 
-          initial={currentWorkspace?.name?.charAt(0) || 'A'} 
-          size="medium" 
-        />
-        <div className={styles['settings-modal__workspace-info']}>
-          <h2 className={styles['settings-modal__workspace-name']}>
-            {currentWorkspace?.name || 'Workspace'}
-          </h2>
-          <span className={styles['settings-modal__workspace-members']}>
-            {currentWorkspace?.memberCount || 0} Members
-          </span>
-        </div>
-      </div>
+      <User 
+        name={currentWorkspace?.name || 'Workspace'}
+        email={`${currentWorkspace?.memberCount || 0} Members`}
+        initial={currentWorkspace?.name?.charAt(0) || 'A'}
+        className={styles['settings-modal__workspace']}
+      />
 
       {/* Action Buttons */}
       <div className={styles['settings-modal__actions']}>

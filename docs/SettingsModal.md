@@ -86,8 +86,9 @@ function App() {
 - Dark theme optimized
 
 ## Dependencies
-- Avatar component (atom)
-- Button component (atom)
+- User component (molecule) - for workspace header display
+- Avatar component (atom) - for workspace list items
+- Button component (atom) - for action buttons
 - Next.js Image component for icons
 
 ## Testing
