@@ -52,19 +52,6 @@ describe('Chip', () => {
     expect(() => fireEvent.click(chip)).not.toThrow();
   });
 
-  it('applies hover state on mouse enter', () => {
-    render(<Chip />);
-    
-    const chip = screen.getByRole('button');
-    
-    expect(chip).not.toHaveClass('chip--hovered');
-    
-    fireEvent.mouseEnter(chip);
-    expect(chip).toHaveClass('chip--hovered');
-    
-    fireEvent.mouseLeave(chip);
-    expect(chip).not.toHaveClass('chip--hovered');
-  });
 
   it('applies custom className', () => {
     render(<Chip className="custom-class" />);
@@ -95,24 +82,6 @@ describe('Chip', () => {
     expect(handleDismiss).toHaveBeenCalled();
   });
 
-  it('handles hover state transitions correctly', () => {
-    render(<Chip />);
-    
-    const chip = screen.getByRole('button');
-    
-    // Initial state
-    expect(chip).toHaveClass('chip');
-    expect(chip).not.toHaveClass('chip--hovered');
-    
-    // Hover
-    fireEvent.mouseEnter(chip);
-    expect(chip).toHaveClass('chip', 'chip--hovered');
-    
-    // Leave
-    fireEvent.mouseLeave(chip);
-    expect(chip).toHaveClass('chip');
-    expect(chip).not.toHaveClass('chip--hovered');
-  });
 
   it('renders with long text properly', () => {
     const longText = 'This is a very long name that should still display properly';

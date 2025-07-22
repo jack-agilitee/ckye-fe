@@ -12,8 +12,7 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   
-  &:hover,
-  &--hovered {
+  &:hover {
     background-color: $black-light-hover;
     
     .chip__text {
