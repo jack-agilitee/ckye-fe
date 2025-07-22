@@ -1,0 +1,81 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.text-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  
+  &__label {
+    @include body-medium;
+    @include font-semibold;
+    color: $white-secondary;
+    display: block;
+  }
+  
+  &__required {
+    color: $admin-red;
+    margin-left: 4px;
+  }
+  
+  &__wrapper {
+    position: relative;
+    width: 100%;
+  }
+  
+  &__input {
+    @include body-medium;
+    @include font-medium;
+    width: 100%;
+    padding: 8px 12px;
+    background-color: transparent;
+    border: 1px solid $black-light;
+    border-radius: 8px;
+    color: $white-secondary;
+    outline: none;
+    transition: all 0.2s ease;
+    
+    &::placeholder {
+      color: $white-secondary;
+      opacity: 1;
+    }
+    
+    &:hover:not(:disabled) {
+      border-color: $black-light-hover;
+    }
+    
+    &:focus {
+      border-color: $primary-color;
+      color: $white-primary;
+      
+      &::placeholder {
+        color: $white-primary;
+      }
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    &--error {
+      border-color: $admin-red;
+      
+      &:hover:not(:disabled) {
+        border-color: $admin-red;
+      }
+      
+      &:focus {
+        border-color: $admin-red;
+      }
+    }
+  }
+  
+  &__error {
+    @include body-small;
+    color: $admin-red;
+    margin-top: 4px;
+    display: block;
+  }
+}

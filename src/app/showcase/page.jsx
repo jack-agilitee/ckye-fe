@@ -4,6 +4,7 @@ import { useState } from 'react';
 import SearchBar from '@/components/atoms/SearchBar/SearchBar';
 import Button from '@/components/atoms/Button/Button';
 import Chip from '@/components/atoms/Chip/Chip';
+import TextField from '@/components/atoms/TextField/TextField';
 import User from '@/components/molecules/User/User';
 import ListItem from '@/components/molecules/ListItem/ListItem';
 import SeatType, { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
@@ -366,6 +367,194 @@ const [chips, setChips] = useState(['Active', 'Pending', 'Completed']);
     }}
   />
 ))}`}
+              </pre>
+            </div>
+          </div>
+
+          {/* TextField Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>TextField</h3>
+            <p className={styles.showcase__componentDescription}>
+              A labeled text input field with error states and full accessibility support
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default TextField</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <TextField 
+                    label="Name"
+                    placeholder="Enter your name"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Controlled TextField</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const [textValue, setTextValue] = useState('');
+                    return (
+                      <>
+                        <TextField 
+                          label="Username"
+                          placeholder="Choose a username"
+                          value={textValue}
+                          onChange={(e) => setTextValue(e.target.value)}
+                        />
+                        <p className={styles.showcase__hint}>Current value: {textValue || '(empty)'}</p>
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Required Field</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <TextField 
+                    label="Email"
+                    type="email"
+                    placeholder="your@email.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Error State</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <TextField 
+                    label="Password"
+                    type="password"
+                    placeholder="Enter password"
+                    error
+                    errorMessage="Password must be at least 8 characters"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Disabled State</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <TextField 
+                    label="Disabled Field"
+                    placeholder="Cannot edit this"
+                    value="Read-only value"
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Form Validation Example</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const [email, setEmail] = useState('');
+                    const [emailError, setEmailError] = useState('');
+                    
+                    const validateEmail = (value) => {
+                      if (!value) {
+                        setEmailError('Email is required');
+                      } else if (!/\S+@\S+\.\S+/.test(value)) {
+                        setEmailError('Please enter a valid email address');
+                      } else {
+                        setEmailError('');
+                      }
+                    };
+                    
+                    return (
+                      <form onSubmit={(e) => { 
+                        e.preventDefault(); 
+                        validateEmail(email);
+                        if (!emailError && email) {
+                          alert(`Form submitted with email: ${email}`);
+                        }
+                      }}>
+                        <TextField 
+                          label="Email Address"
+                          type="email"
+                          placeholder="user@example.com"
+                          value={email}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (emailError) validateEmail(e.target.value);
+                          }}
+                          onBlur={() => validateEmail(email)}
+                          error={!!emailError}
+                          errorMessage={emailError}
+                          required
+                        />
+                        <div style={{ marginTop: '16px' }}>
+                          <Button type="submit" icon="/check.svg">
+                            Submit
+                          </Button>
+                        </div>
+                      </form>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Different Input Types</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <TextField 
+                      label="Text"
+                      type="text"
+                      placeholder="Regular text input"
+                    />
+                    <TextField 
+                      label="Number"
+                      type="number"
+                      placeholder="123"
+                    />
+                    <TextField 
+                      label="Date"
+                      type="date"
+                    />
+                    <TextField 
+                      label="Time"
+                      type="time"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import TextField from '@/components/atoms/TextField/TextField';
+
+// Basic usage
+<TextField 
+  label="Name"
+  placeholder="Enter your name"
+  value={name}
+  onChange={(e) => setName(e.target.value)}
+/>
+
+// With validation
+<TextField 
+  label="Email"
+  type="email"
+  value={email}
+  onChange={handleChange}
+  onBlur={validateEmail}
+  error={!!emailError}
+  errorMessage={emailError}
+  required
+/>
+
+// Uncontrolled with ref
+const inputRef = useRef();
+<TextField 
+  ref={inputRef}
+  label="Username"
+  name="username"
+/>`}
               </pre>
             </div>
           </div>
