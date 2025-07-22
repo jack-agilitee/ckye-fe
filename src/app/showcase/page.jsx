@@ -4,6 +4,7 @@ import { useState } from 'react';
 import SearchBar from '@/components/atoms/SearchBar/SearchBar';
 import User from '@/components/molecules/User/User';
 import ListItem from '@/components/molecules/ListItem/ListItem';
+import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import styles from './page.module.scss';
 
 export default function ShowcasePage() {
@@ -266,12 +267,77 @@ export default function ShowcasePage() {
           </div>
         </section>
 
-        {/* Organisms Section (placeholder for future) */}
+        {/* Organisms Section */}
         <section className={styles.showcase__section}>
           <h2 className={styles.showcase__sectionTitle}>Organisms</h2>
-          <p className={styles.showcase__placeholder}>
-            Organism components will be displayed here
-          </p>
+          
+          {/* AccountChanger Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>AccountChanger</h3>
+            <p className={styles.showcase__componentDescription}>
+              An account switcher component with avatar, name, and quick actions
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default AccountChanger</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <AccountChanger />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Account</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <AccountChanger 
+                    accountName="MyCompany" 
+                    accountInitial="M"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>With Event Handlers</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <AccountChanger 
+                    accountName="Acme Corp"
+                    accountInitial="A"
+                    onAccountClick={() => alert('Account dropdown clicked!')}
+                    onNotesClick={() => alert('Notes button clicked!')}
+                  />
+                  <p className={styles.showcase__hint}>Try clicking the account name or notes icon</p>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Multiple Accounts</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <AccountChanger accountName="Personal" accountInitial="P" />
+                    <AccountChanger accountName="Work Team" accountInitial="W" />
+                    <AccountChanger accountName="Client Project" accountInitial="C" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
+
+<AccountChanger />
+
+// With custom props
+<AccountChanger 
+  accountName="MyCompany" 
+  accountInitial="M"
+  onAccountClick={() => console.log('Account clicked')}
+  onNotesClick={() => console.log('Notes clicked')}
+/>`}
+              </pre>
+            </div>
+          </div>
         </section>
       </main>
     </div>

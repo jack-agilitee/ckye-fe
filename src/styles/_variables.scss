@@ -19,6 +19,10 @@ $background-dark: $black-bg-light;
 $background-selected: $black-light;
 $background-hover: $black-light-hover;
 
+// UI Colors
+$primary-color: #0066CC;  // Primary action color for focus states and interactive elements
+$border-color: rgba($white-primary, 0.1);  // Border color for subtle dividers
+
 // Typography Variables from Figma Design System
 // Source: https://www.figma.com/design/1wJBV3eb9vlRvuxQICmBwY/Cyke-Web-App?node-id=7-889&m=dev
 
