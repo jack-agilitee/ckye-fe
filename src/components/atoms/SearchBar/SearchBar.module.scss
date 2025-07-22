@@ -1,4 +1,5 @@
 @import '../../../styles/variables';
+@import '../../../styles/mixins';
 
 .search-bar {
   position: relative;
@@ -43,12 +44,8 @@
     padding: 0;
     background-color: transparent;
     border: none;
-    color: #ffffff;
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.2px;
-    line-height: 1;
+    color: $text-primary;
+    @include body-medium;
     outline: none;
 
     &::placeholder {

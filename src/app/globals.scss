@@ -1,0 +1,108 @@
+// Font Imports
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600&family=Overpass:wght@700&display=swap');
+
+// Import variables
+@import '../styles/variables';
+
+// CSS Reset and Base Styles
+:root {
+  // Using our design system colors
+  --background: #{$black-bg-light};
+  --foreground: #{$white-primary};
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: $text-primary;
+  background: $background-dark;
+  font-family: $font-family-secondary;
+  font-size: $font-size-medium;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-normal;
+  letter-spacing: $letter-spacing-normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+// Typography Classes (for cases where mixins can't be used)
+.heading-1 {
+  font-family: $font-family-primary;
+  font-size: 24px;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  letter-spacing: $letter-spacing-normal;
+}
+
+.heading-2 {
+  font-family: $font-family-primary;
+  font-size: 20px;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  letter-spacing: $letter-spacing-normal;
+}
+
+.heading-3 {
+  font-family: $font-family-primary;
+  font-size: 18px;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  letter-spacing: $letter-spacing-normal;
+}
+
+.body-large {
+  font-family: $font-family-secondary;
+  font-size: $font-size-large;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-normal;
+  letter-spacing: $letter-spacing-normal;
+}
+
+.body-medium {
+  font-family: $font-family-secondary;
+  font-size: $font-size-medium;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-normal;
+  letter-spacing: $letter-spacing-normal;
+}
+
+.body-small {
+  font-family: $font-family-secondary;
+  font-size: $font-size-small;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-normal;
+  letter-spacing: $letter-spacing-normal;
+}
+
+.label {
+  font-family: $font-family-secondary;
+  font-size: $font-size-small;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  letter-spacing: $letter-spacing-normal;
+  text-transform: uppercase;
+}
+
+// Text color utility classes
+.text-primary {
+  color: $text-primary;
+}
+
+.text-secondary {
+  color: $text-secondary;
+}

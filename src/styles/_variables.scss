@@ -18,3 +18,104 @@ $text-secondary: $white-secondary;
 $background-dark: $black-bg-light;
 $background-selected: $black-light;
 $background-hover: $black-light-hover;
+
+// Typography Variables from Figma Design System
+// Source: https://www.figma.com/design/1wJBV3eb9vlRvuxQICmBwY/Cyke-Web-App?node-id=7-889&m=dev
+
+// Font Families
+$font-family-primary: 'Overpass', sans-serif;   // Used for headings and bold text
+$font-family-secondary: 'Inter', sans-serif;     // Used for body text and UI elements
+
+// Font Sizes
+$font-size-small: 10px;      // Section headers (CONTEXT, WORKSPACE, ADMIN)
+$font-size-medium: 12px;     // Navigation items, list items
+$font-size-large: 14px;      // Account names, avatar text, buttons
+
+// Font Weights
+$font-weight-medium: 500;    // Inter Medium - normal text
+$font-weight-semibold: 600; // Inter Semi Bold - section headers
+$font-weight-bold: 700;      // Overpass Bold - headings
+
+// Line Heights
+$line-height-tight: 1;       // Used for single-line text elements
+$line-height-normal: 1.5;    // Default line height
+$line-height-relaxed: 1.75;  // For better readability in longer text
+
+// Letter Spacing
+$letter-spacing-normal: 0.2px;  // Default tracking for all text elements
+$letter-spacing-tight: 0;       // For tighter text
+$letter-spacing-wide: 0.5px;    // For wider text spacing
+
+// Typography Scale - Semantic Naming
+$typography-heading-1: (
+  font-family: $font-family-primary,
+  font-size: 24px,
+  font-weight: $font-weight-bold,
+  line-height: $line-height-tight,
+  letter-spacing: $letter-spacing-normal
+);
+
+$typography-heading-2: (
+  font-family: $font-family-primary,
+  font-size: 20px,
+  font-weight: $font-weight-bold,
+  line-height: $line-height-tight,
+  letter-spacing: $letter-spacing-normal
+);
+
+$typography-heading-3: (
+  font-family: $font-family-primary,
+  font-size: 18px,
+  font-weight: $font-weight-bold,
+  line-height: $line-height-tight,
+  letter-spacing: $letter-spacing-normal
+);
+
+$typography-body-large: (
+  font-family: $font-family-secondary,
+  font-size: $font-size-large,
+  font-weight: $font-weight-medium,
+  line-height: $line-height-normal,
+  letter-spacing: $letter-spacing-normal
+);
+
+$typography-body-medium: (
+  font-family: $font-family-secondary,
+  font-size: $font-size-medium,
+  font-weight: $font-weight-medium,
+  line-height: $line-height-normal,
+  letter-spacing: $letter-spacing-normal
+);
+
+$typography-body-small: (
+  font-family: $font-family-secondary,
+  font-size: $font-size-small,
+  font-weight: $font-weight-medium,
+  line-height: $line-height-normal,
+  letter-spacing: $letter-spacing-normal
+);
+
+$typography-label: (
+  font-family: $font-family-secondary,
+  font-size: $font-size-small,
+  font-weight: $font-weight-semibold,
+  line-height: $line-height-tight,
+  letter-spacing: $letter-spacing-normal,
+  text-transform: uppercase
+);
+
+$typography-button: (
+  font-family: $font-family-primary,
+  font-size: $font-size-large,
+  font-weight: $font-weight-bold,
+  line-height: $line-height-tight,
+  letter-spacing: $letter-spacing-normal
+);
+
+$typography-nav-item: (
+  font-family: $font-family-secondary,
+  font-size: $font-size-medium,
+  font-weight: $font-weight-medium,
+  line-height: $line-height-tight,
+  letter-spacing: $letter-spacing-normal
+);

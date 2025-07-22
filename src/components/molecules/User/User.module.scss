@@ -1,4 +1,5 @@
 @import '../../../styles/variables';
+@import '../../../styles/mixins';
 
 .user {
   display: flex;
@@ -18,12 +19,8 @@
     flex-shrink: 0;
 
     &-initial {
-      font-family: 'Overpass', sans-serif;
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 1;
-      letter-spacing: 0.2px;
-      color: $text-primary;
+      @include button-text;
+      font-size: 16px; // Override the default button size
       text-transform: uppercase;
     }
   }
@@ -39,24 +36,16 @@
   }
 
   &__name {
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 1.3;
-    color: $text-primary;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    @include body-large;
+    @include truncate;
+    line-height: 1.3; // Keep the specific line-height for this component
   }
 
   &__email {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 12px;
-    line-height: 1.3;
-    color: $text-secondary;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    @include body-medium;
+    @include font-semibold;
+    @include text-secondary;
+    @include truncate;
+    line-height: 1.3; // Keep the specific line-height for this component
   }
 }
