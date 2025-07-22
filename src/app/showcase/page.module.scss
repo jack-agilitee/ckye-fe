@@ -1,0 +1,188 @@
+// Color variables matching the design system
+$background-primary: #0a0a0a;
+$background-secondary: #1a1a1a;
+$background-tertiary: #2a2a2a;
+$text-primary: #ffffff;
+$text-secondary: #9b9b9b;
+$border-color: #353535;
+$accent-color: #4a9eff;
+
+.showcase {
+  min-height: 100vh;
+  background-color: $background-primary;
+  color: $text-primary;
+
+  &__header {
+    padding: 48px 24px;
+    text-align: center;
+    border-bottom: 1px solid $border-color;
+    background-color: $background-secondary;
+  }
+
+  &__title {
+    font-size: 48px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    background: linear-gradient(135deg, $text-primary 0%, $accent-color 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  &__description {
+    font-size: 18px;
+    color: $text-secondary;
+    margin: 0;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  &__content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+
+  &__section {
+    margin-bottom: 64px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__sectionTitle {
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 32px 0;
+    color: $text-primary;
+    padding-bottom: 16px;
+    border-bottom: 2px solid $border-color;
+  }
+
+  &__component {
+    background-color: $background-secondary;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+
+  &__componentTitle {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: $text-primary;
+  }
+
+  &__componentDescription {
+    font-size: 16px;
+    color: $text-secondary;
+    margin: 0 0 24px 0;
+  }
+
+  &__demo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  &__example {
+    background-color: $background-tertiary;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  &__exampleTitle {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: $text-secondary;
+    margin: 0 0 16px 0;
+  }
+
+  &__exampleContent {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__hint {
+    font-size: 12px;
+    color: $text-secondary;
+    margin: 0;
+  }
+
+  &__code {
+    background-color: $background-tertiary;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  &__codeTitle {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: $text-secondary;
+    margin: 0 0 12px 0;
+  }
+
+  &__codeBlock {
+    background-color: $background-primary;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    color: $text-primary;
+    margin: 0;
+  }
+
+  &__placeholder {
+    color: $text-secondary;
+    font-style: italic;
+    text-align: center;
+    padding: 40px;
+    background-color: $background-secondary;
+    border: 1px dashed $border-color;
+    border-radius: 8px;
+  }
+
+  // Responsive design
+  @media (max-width: 768px) {
+    &__header {
+      padding: 32px 16px;
+    }
+
+    &__title {
+      font-size: 32px;
+    }
+
+    &__description {
+      font-size: 16px;
+    }
+
+    &__content {
+      padding: 32px 16px;
+    }
+
+    &__sectionTitle {
+      font-size: 24px;
+    }
+
+    &__component {
+      padding: 24px;
+    }
+
+    &__demo {
+      grid-template-columns: 1fr;
+    }
+  }
+}
