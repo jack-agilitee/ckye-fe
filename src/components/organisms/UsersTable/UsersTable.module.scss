@@ -62,9 +62,7 @@
     width: 100%;
   }
 
-  &__seat-type {
-    // SeatType has its own fixed width, so we just ensure it's aligned
-  }
+  // SeatType has its own fixed width from the component
 
   &__workspaces {
     @include body-medium;
