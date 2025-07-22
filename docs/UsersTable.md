@@ -1,7 +1,7 @@
 # UsersTable Component
 
 ## Overview
-The UsersTable component displays a table of users with their information including name, email, user type, and workspaces. It's designed as an organism that composes existing User and SeatType molecules.
+The UsersTable component displays a table of users with their information including name, email, user type, and workspaces. It's designed as a template that composes existing User and SeatType molecules.
 
 ## Figma Reference
 - **URL**: https://www.figma.com/design/1wJBV3eb9vlRvuxQICmBwY/Cyke-Web-App?node-id=19-2213
@@ -10,7 +10,7 @@ The UsersTable component displays a table of users with their information includ
 ## Usage
 
 ```jsx
-import UsersTable from '@/components/organisms/UsersTable/UsersTable';
+import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
 
 const users = [
@@ -52,7 +52,7 @@ Each user object should have the following properties:
 
 - **Responsive Layout**: Three-column layout with proper spacing
 - **Component Composition**: Uses existing User and SeatType molecules
-- **Workspace Truncation**: Long workspace lists are truncated with ellipsis after 50 characters
+- **Workspace Truncation**: Long workspace lists are truncated with CSS ellipsis
 - **Clean Design**: Follows the design system with proper colors and typography
 - **No Interactions**: Static display table without click handlers or hover states
 

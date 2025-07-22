@@ -122,10 +122,9 @@ describe('UsersTable', () => {
     
     render(<UsersTable users={[userWithManyWorkspaces]} />);
     
-    // Check that the text is truncated
-    const workspaceText = screen.getByText(/Workspace One.*\.\.\./);
+    // Check that the text is displayed (truncation handled by CSS)
+    const workspaceText = screen.getByText(/Workspace One/);
     expect(workspaceText).toBeInTheDocument();
-    expect(workspaceText.textContent).toHaveLength(50); // 47 chars + '...'
   });
 
   it('handles users with no workspaces', () => {

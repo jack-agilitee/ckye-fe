@@ -67,10 +67,8 @@
   &__workspaces {
     @include body-medium;
     @include font-bold;
+    @include truncate;
     color: $white-primary;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     width: 100%;
   }
 }

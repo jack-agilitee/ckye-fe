@@ -13,7 +13,7 @@ import WorkspaceSelector from '@/components/molecules/WorkspaceSelector/Workspac
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
-import UsersTable from '@/components/organisms/UsersTable/UsersTable';
+import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import styles from './page.module.scss';
 
 export default function ShowcasePage() {
@@ -1687,11 +1687,17 @@ function App() {
             </div>
           </div>
 
+        </section>
+
+        {/* Templates Section */}
+        <section className={styles.showcase__section}>
+          <h2 className={styles.showcase__sectionTitle}>Templates</h2>
+          
           {/* UsersTable Component */}
           <div className={styles.showcase__component}>
             <h3 className={styles.showcase__componentTitle}>UsersTable</h3>
             <p className={styles.showcase__componentDescription}>
-              A table component displaying user information with name, email, user type, and workspaces
+              A table template displaying user information with name, email, user type, and workspaces
             </p>
             
             <div className={styles.showcase__demo}>
@@ -1882,7 +1888,7 @@ function App() {
             <div className={styles.showcase__code}>
               <h4 className={styles.showcase__codeTitle}>Usage</h4>
               <pre className={styles.showcase__codeBlock}>
-{`import UsersTable from '@/components/organisms/UsersTable/UsersTable';
+{`import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
 
 const users = [

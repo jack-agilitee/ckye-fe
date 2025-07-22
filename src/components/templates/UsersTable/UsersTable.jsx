@@ -8,13 +8,7 @@ const UsersTable = ({ users = [] }) => {
   // Format workspaces for display
   const formatWorkspaces = (workspaces) => {
     if (!workspaces || workspaces.length === 0) return '';
-    
-    const displayText = workspaces.join(', ');
-    // Truncate if too long, similar to Figma design
-    if (displayText.length > 50) {
-      return displayText.substring(0, 47) + '...';
-    }
-    return displayText;
+    return workspaces.join(', ');
   };
 
   return (
