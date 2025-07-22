@@ -22,8 +22,15 @@
   cursor: pointer;
 }
 
-.left-nav__account-changer:hover {
+.left-nav__account-changer:hover,
+.left-nav__account-changer:focus {
   opacity: 0.8;
+  outline: none;
+}
+
+.left-nav__account-changer:focus-visible {
+  outline: 2px solid #74a0c8;
+  outline-offset: 2px;
 }
 
 .left-nav__account {
@@ -154,8 +161,16 @@
   cursor: pointer;
 }
 
-.left-nav__note:hover {
+.left-nav__note:hover,
+.left-nav__note:focus {
   opacity: 0.7;
+  outline: none;
+}
+
+.left-nav__note:focus-visible {
+  outline: 2px solid #74a0c8;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .left-nav__note-icon {
@@ -270,8 +285,15 @@
   background-color: #353535;
 }
 
-.left-nav__list-item--hovered:not(.left-nav__list-item--selected) {
+.left-nav__list-item:hover:not(.left-nav__list-item--selected),
+.left-nav__list-item:focus:not(.left-nav__list-item--selected) {
   background-color: rgba(53, 53, 53, 0.5);
+  outline: none;
+}
+
+.left-nav__list-item:focus-visible {
+  outline: 2px solid #74a0c8;
+  outline-offset: 2px;
 }
 
 .left-nav__list-item-content {
@@ -385,9 +407,16 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.left-nav__add-new:hover {
+.left-nav__add-new:hover,
+.left-nav__add-new:focus {
   background-color: rgba(53, 53, 53, 0.5);
   color: #d5d5d5;
+  outline: none;
+}
+
+.left-nav__add-new:focus-visible {
+  outline: 2px solid #74a0c8;
+  outline-offset: 2px;
 }
 
 .left-nav__add-new-icon {

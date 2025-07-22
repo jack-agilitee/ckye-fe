@@ -71,22 +71,22 @@ describe('LeftNav Component', () => {
     expect(console.log).toHaveBeenCalledWith('File item clicked: Commands.md');
   });
 
-  test('applies hover states correctly on list items', async () => {
+  test('supports keyboard navigation on list items', async () => {
     render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
     
     const commandsItem = screen.getByText('Commands.md').closest('.left-nav__list-item');
     
-    // Hover over the item
-    fireEvent.mouseEnter(commandsItem);
-    await waitFor(() => {
-      expect(commandsItem).toHaveClass('left-nav__list-item--hovered');
-    });
+    // Focus the item
+    commandsItem.focus();
+    expect(commandsItem).toHaveFocus();
     
-    // Leave hover
-    fireEvent.mouseLeave(commandsItem);
-    await waitFor(() => {
-      expect(commandsItem).not.toHaveClass('left-nav__list-item--hovered');
-    });
+    // Press Enter to activate
+    fireEvent.keyDown(commandsItem, { key: 'Enter' });
+    expect(console.log).toHaveBeenCalledWith('File item clicked: Commands.md');
+    
+    // Press Space to activate
+    fireEvent.keyDown(commandsItem, { key: ' ' });
+    expect(console.log).toHaveBeenCalledWith('File item clicked: Commands.md');
   });
 
   test('renders all context files correctly', () => {
@@ -161,19 +161,41 @@ describe('LeftNav Component', () => {
     expect(images.length).toBeGreaterThan(0);
   });
 
-  test('accessibility: components have proper structure for screen readers', () => {
+  test('accessibility: components have proper keyboard navigation', () => {
     render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
     
-    // Check for clickable elements
-    const clickableElements = [
+    // Check for keyboard accessible elements with proper attributes
+    const keyboardElements = [
       document.querySelector('.left-nav__account-changer'),
       document.querySelector('.left-nav__note'),
       document.querySelector('.left-nav__add-new'),
       ...document.querySelectorAll('.left-nav__list-item')
     ];
     
-    clickableElements.forEach(element => {
+    keyboardElements.forEach(element => {
       expect(element).toBeInTheDocument();
+      expect(element).toHaveAttribute('tabIndex', '0');
+      expect(element).toHaveAttribute('role', 'button');
     });
+  });
+
+  test('keyboard navigation works for all interactive elements', () => {
+    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    
+    // Test account changer keyboard activation
+    const accountChanger = document.querySelector('.left-nav__account-changer');
+    fireEvent.keyDown(accountChanger, { key: 'Enter' });
+    expect(mockOnAccountModalToggle).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith('Account changer clicked - opening AccountModal');
+    
+    // Test note icon keyboard activation
+    const noteIcon = document.querySelector('.left-nav__note');
+    fireEvent.keyDown(noteIcon, { key: ' ' });
+    expect(console.log).toHaveBeenCalledWith('Note/Settings icon clicked');
+    
+    // Test add new button keyboard activation
+    const addNewButton = document.querySelector('.left-nav__add-new');
+    fireEvent.keyDown(addNewButton, { key: 'Enter' });
+    expect(console.log).toHaveBeenCalledWith('Add New button clicked');
   });
 });
