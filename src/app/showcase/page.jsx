@@ -11,6 +11,8 @@ import ListItem from '@/components/molecules/ListItem/ListItem';
 import SeatType, { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
 import WorkspaceSelector from '@/components/molecules/WorkspaceSelector/WorkspaceSelector';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
+import Avatar from '@/components/atoms/Avatar/Avatar';
+import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
 import styles from './page.module.scss';
 
 export default function ShowcasePage() {
@@ -822,6 +824,139 @@ const options = [
               </pre>
             </div>
           </div>
+
+          {/* Avatar Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>Avatar</h3>
+            <p className={styles.showcase__componentDescription}>
+              A versatile avatar component displaying user initials with multiple sizes and color variants
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Size Variants</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', display: 'flex', gap: '16px', alignItems: 'center' }}>
+                  <Avatar initial="S" size="small" />
+                  <Avatar initial="M" size="medium" />
+                  <Avatar initial="L" size="large" />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Color Variants</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', display: 'flex', gap: '16px', alignItems: 'center' }}>
+                  <Avatar initial="D" variant="default" />
+                  <Avatar initial="P" variant="primary" />
+                  <Avatar initial="S" variant="selected" />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Different Initials</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <Avatar initial="A" />
+                  <Avatar initial="B" />
+                  <Avatar initial="JD" />
+                  <Avatar initial="MK" />
+                  <Avatar initial="X" />
+                  <Avatar initial="Z" />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>User List Example</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {[
+                      { name: 'Alice Anderson', initial: 'A' },
+                      { name: 'Bob Brown', initial: 'B' },
+                      { name: 'Charlie Chen', initial: 'C' },
+                      { name: 'Diana Davis', initial: 'D' }
+                    ].map((user) => (
+                      <div key={user.name} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <Avatar initial={user.initial} size="small" />
+                        <span style={{ color: '#D5D5D5' }}>{user.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Team Grid</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+                    {['Engineering', 'Design', 'Marketing', 'Sales'].map((team, index) => (
+                      <div key={team} style={{ textAlign: 'center' }}>
+                        <Avatar 
+                          initial={team.charAt(0)} 
+                          size="large" 
+                          variant={index === 0 ? 'primary' : 'default'}
+                        />
+                        <p style={{ marginTop: '8px', fontSize: '12px', color: '#9B9B9B' }}>{team}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Combined with Other Components</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <Avatar initial="JO" size="medium" />
+                        <div>
+                          <div style={{ color: '#D5D5D5', fontWeight: 'bold' }}>James Otey</div>
+                          <div style={{ color: '#9B9B9B', fontSize: '12px' }}>Admin</div>
+                        </div>
+                      </div>
+                      <SeatType type={SEAT_TYPES.ADMIN} />
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <Avatar initial="SW" size="medium" variant="primary" />
+                        <div>
+                          <div style={{ color: '#D5D5D5', fontWeight: 'bold' }}>Sarah Williams</div>
+                          <div style={{ color: '#9B9B9B', fontSize: '12px' }}>Editor</div>
+                        </div>
+                      </div>
+                      <SeatType type={SEAT_TYPES.EDITOR} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import Avatar from '@/components/atoms/Avatar/Avatar';
+
+// Basic usage
+<Avatar initial="A" />
+
+// Size variants
+<Avatar initial="S" size="small" />
+<Avatar initial="M" size="medium" />
+<Avatar initial="L" size="large" />
+
+// Color variants
+<Avatar initial="J" variant="default" />
+<Avatar initial="J" variant="primary" />
+<Avatar initial="J" variant="selected" />
+
+// Combined props
+<Avatar 
+  initial="JD" 
+  size="large" 
+  variant="primary" 
+  className="custom-avatar"
+/>`}
+              </pre>
+            </div>
+          </div>
         </section>
 
         {/* Molecules Section */}
@@ -1404,6 +1539,149 @@ const [selected, setSelected] = useState([
   isAdmin={true}
   onAdminBack={() => console.log('Exiting admin mode')}
 />`}
+              </pre>
+            </div>
+          </div>
+
+          {/* SettingsModal Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>SettingsModal</h3>
+            <p className={styles.showcase__componentDescription}>
+              A modal component for workspace selection, user account management, and quick access to settings
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default SettingsModal</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {(() => {
+                    const [showModal, setShowModal] = useState(false);
+                    const workspaces = [
+                      { id: '1', name: 'AEO', memberCount: 3 },
+                      { id: '2', name: 'Dollar General', memberCount: 5 },
+                      { id: '3', name: 'Agilitee', memberCount: 10 }
+                    ];
+                    
+                    return (
+                      <>
+                        <Button 
+                          onClick={() => setShowModal(true)}
+                          icon="/settings.svg"
+                        >
+                          Open Settings Modal
+                        </Button>
+                        {showModal && (
+                          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+                            <SettingsModal
+                              workspaces={workspaces}
+                              currentWorkspaceId="1"
+                              userEmail="james@agilitee.com"
+                              onDismiss={() => setShowModal(false)}
+                            />
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Click button to open modal. Click outside or press ESC to close.</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>With Different Workspaces</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {(() => {
+                    const [showModal, setShowModal] = useState(false);
+                    const workspaces = [
+                      { id: '1', name: 'Personal', memberCount: 1 },
+                      { id: '2', name: 'Work Team', memberCount: 25 },
+                      { id: '3', name: 'Client Project', memberCount: 8 },
+                      { id: '4', name: 'Open Source', memberCount: 150 }
+                    ];
+                    
+                    return (
+                      <>
+                        <Button 
+                          onClick={() => setShowModal(true)}
+                          icon="/settings.svg"
+                          variant="secondary"
+                        >
+                          Open with Multiple Workspaces
+                        </Button>
+                        {showModal && (
+                          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+                            <SettingsModal
+                              workspaces={workspaces}
+                              currentWorkspaceId="2"
+                              userEmail="user@company.com"
+                              onDismiss={() => setShowModal(false)}
+                            />
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Static Preview</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', display: 'flex', justifyContent: 'center' }}>
+                  <div style={{ position: 'relative' }}>
+                    <SettingsModal
+                      workspaces={[
+                        { id: '1', name: 'AEO', memberCount: 3 },
+                        { id: '2', name: 'Dollar General', memberCount: 5 },
+                        { id: '3', name: 'Agilitee', memberCount: 10 }
+                      ]}
+                      currentWorkspaceId="1"
+                      userEmail="james@agilitee.com"
+                      onDismiss={() => console.log('Dismiss')}
+                    />
+                  </div>
+                </div>
+                <p className={styles.showcase__hint}>Static preview - interactions log to console</p>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
+
+const workspaces = [
+  { id: '1', name: 'AEO', memberCount: 3 },
+  { id: '2', name: 'Dollar General', memberCount: 5 },
+  { id: '3', name: 'Agilitee', memberCount: 10 }
+];
+
+function App() {
+  const [showModal, setShowModal] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setShowModal(true)}>
+        Open Settings
+      </Button>
+      
+      {showModal && (
+        <SettingsModal
+          workspaces={workspaces}
+          currentWorkspaceId="1"
+          userEmail="james@agilitee.com"
+          onDismiss={() => setShowModal(false)}
+        />
+      )}
+    </>
+  );
+}
+
+// Workspace object structure
+{
+  id: string,          // Unique identifier
+  name: string,        // Display name
+  memberCount: number  // Number of members
+}`}
               </pre>
             </div>
           </div>

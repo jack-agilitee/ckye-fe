@@ -1,0 +1,136 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.settings-modal {
+  background-color: $black-bg-dark;
+  border: 1px solid $black-light;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 290px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+  &__workspace {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  &__workspace-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 40px;
+    flex: 1;
+  }
+
+  &__workspace-name {
+    @include heading-3;
+    color: $white-primary;
+    margin: 0;
+  }
+
+  &__workspace-members {
+    @include body-small;
+    @include font-semibold;
+    color: $white-secondary;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 11px;
+  }
+
+  &__action-button {
+    padding: 8px;
+    border-radius: 8px;
+    border-color: $code-blue;
+    color: $code-blue;
+    
+    &:hover {
+      background-color: rgba($code-blue, 0.1);
+    }
+  }
+
+  &__divider {
+    height: 1px;
+    background-color: $black-light;
+    margin: 0;
+  }
+
+  &__user-email {
+    @include body-small;
+    @include font-bold;
+    color: $white-secondary;
+  }
+
+  &__workspace-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__workspace-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px;
+    margin: -4px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba($white-primary, 0.05);
+    }
+
+    &--selected {
+      background-color: rgba($primary-color, 0.1);
+    }
+  }
+
+  &__workspace-item-left {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  &__workspace-item-name {
+    @include body-medium;
+    @include font-bold;
+    color: $white-primary;
+  }
+
+  &__workspace-item-check {
+    flex-shrink: 0;
+  }
+
+  &__logout {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 4px 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    align-self: flex-start;
+
+    &:hover {
+      background-color: rgba($white-primary, 0.05);
+    }
+  }
+
+  &__logout-icon {
+    flex-shrink: 0;
+  }
+
+  &__logout-text {
+    @include body-small;
+    @include font-medium;
+    color: $white-secondary;
+  }
+}
