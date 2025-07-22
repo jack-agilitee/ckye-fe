@@ -6,6 +6,7 @@ import Button from '@/components/atoms/Button/Button';
 import Chip from '@/components/atoms/Chip/Chip';
 import User from '@/components/molecules/User/User';
 import ListItem from '@/components/molecules/ListItem/ListItem';
+import SeatType, { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import styles from './page.module.scss';
 
@@ -536,6 +537,115 @@ const [chips, setChips] = useState(['Active', 'Pending', 'Completed']);
   selected={true}
   onClick={handleClick}
 />`}
+              </pre>
+            </div>
+          </div>
+
+          {/* SeatType Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>SeatType</h3>
+            <p className={styles.showcase__componentDescription}>
+              A visual indicator for user seat types with role-specific icons and colors
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>All Seat Types</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <SeatType type={SEAT_TYPES.MEMBER} />
+                    <SeatType type={SEAT_TYPES.EDITOR} />
+                    <SeatType type={SEAT_TYPES.ADMIN} />
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default (Member)</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <SeatType />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>With User Information</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <User name="John Doe" email="john@example.com" />
+                      <SeatType type={SEAT_TYPES.MEMBER} />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <User name="Jane Smith" email="jane@example.com" />
+                      <SeatType type={SEAT_TYPES.EDITOR} />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <User name="Admin User" email="admin@example.com" />
+                      <SeatType type={SEAT_TYPES.ADMIN} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>In a List Layout</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {[
+                      { name: 'Marketing Team', type: SEAT_TYPES.MEMBER },
+                      { name: 'Content Editors', type: SEAT_TYPES.EDITOR },
+                      { name: 'System Admins', type: SEAT_TYPES.ADMIN }
+                    ].map((group) => (
+                      <div key={group.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ color: '#D5D5D5' }}>{group.name}</span>
+                        <SeatType type={group.type} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Permission Grid</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <SeatType type={SEAT_TYPES.MEMBER} />
+                      <p style={{ marginTop: '8px', fontSize: '12px', color: '#9B9B9B' }}>View Only</p>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <SeatType type={SEAT_TYPES.EDITOR} />
+                      <p style={{ marginTop: '8px', fontSize: '12px', color: '#9B9B9B' }}>Can Edit</p>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <SeatType type={SEAT_TYPES.ADMIN} />
+                      <p style={{ marginTop: '8px', fontSize: '12px', color: '#9B9B9B' }}>Full Access</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import SeatType, { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
+
+// Default (Member)
+<SeatType />
+
+// Member variant
+<SeatType type={SEAT_TYPES.MEMBER} />
+
+// Editor variant
+<SeatType type={SEAT_TYPES.EDITOR} />
+
+// Admin variant
+<SeatType type={SEAT_TYPES.ADMIN} />
+
+// Using the enum
+const userRole = SEAT_TYPES.EDITOR;
+<SeatType type={userRole} />`}
               </pre>
             </div>
           </div>

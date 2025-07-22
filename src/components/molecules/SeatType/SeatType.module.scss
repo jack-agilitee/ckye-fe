@@ -1,0 +1,44 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.seat-type {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+  
+  &__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    
+    // Variant backgrounds
+    &--member {
+      background-color: $black-light;
+    }
+    
+    &--editor {
+      background-color: $editor-green;
+    }
+    
+    &--admin {
+      background-color: $admin-red;
+    }
+  }
+  
+  &__icon {
+    display: block;
+  }
+  
+  &__text {
+    @include body-large;
+    @include font-medium;
+    color: $white-primary;
+    white-space: nowrap;
+    min-width: 186px; // Fixed width from Figma design
+  }
+}

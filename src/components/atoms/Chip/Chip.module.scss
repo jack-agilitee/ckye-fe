@@ -4,6 +4,8 @@
 .chip {
   display: inline-flex;
   align-items: center;
+  justify-content: space-between;
+  width: fit-content;
   gap: 4px;
   padding: 2px 4px 2px 8px;
   background-color: $black-light;
