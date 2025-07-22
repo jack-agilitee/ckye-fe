@@ -1,8 +1,4 @@
-// Variable declarations to match Figma design
-$white-secondary: #9B9B9B;
-$white-primary: #D5D5D5;
-$black-light-hover: #383838;
-$black-light: #353535;
+@import '../../../styles/variables';
 
 .list-item {
   background-color: transparent;
