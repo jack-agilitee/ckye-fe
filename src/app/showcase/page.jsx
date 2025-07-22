@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import SearchBar from '@/components/atoms/SearchBar/SearchBar';
 import Button from '@/components/atoms/Button/Button';
+import Chip from '@/components/atoms/Chip/Chip';
 import User from '@/components/molecules/User/User';
 import ListItem from '@/components/molecules/ListItem/ListItem';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
@@ -201,6 +202,169 @@ export default function ShowcasePage() {
 <Button disabled onClick={handleClick}>
   Disabled Button
 </Button>`}
+              </pre>
+            </div>
+          </div>
+
+          {/* Chip Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>Chip</h3>
+            <p className={styles.showcase__componentDescription}>
+              A dismissible chip/tag component with hover states for displaying selected items or filters
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default Chip</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <Chip 
+                    text="James Otey"
+                    onDismiss={() => alert('Chip dismissed!')}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Multiple Chips</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  {(() => {
+                    const [chips, setChips] = useState(['Active', 'Pending', 'Completed', 'Archived']);
+                    return (
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {chips.map((chip, index) => (
+                          <Chip 
+                            key={chip}
+                            text={chip}
+                            onDismiss={() => {
+                              setChips(chips.filter((_, i) => i !== index));
+                            }}
+                          />
+                        ))}
+                        {chips.length === 0 && (
+                          <span style={{ color: '#9B9B9B' }}>All chips removed!</span>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Click chips to remove them</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>User Tags</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  {(() => {
+                    const [users, setUsers] = useState(['James Otey', 'Sarah Williams', 'Michael Chen', 'Jane Smith']);
+                    return (
+                      <div>
+                        <div style={{ marginBottom: '12px', color: '#9B9B9B' }}>
+                          Selected users:
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                          {users.map((user) => (
+                            <Chip 
+                              key={user}
+                              text={user}
+                              onDismiss={() => {
+                                setUsers(users.filter(u => u !== user));
+                                console.log(`Removed ${user}`);
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Long Text Handling</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', maxWidth: '400px' }}>
+                  <Chip 
+                    text="Christopher Alexander Thompson III"
+                    onDismiss={() => console.log('Long name chip dismissed')}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Interactive Demo</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  {(() => {
+                    const allTags = ['React', 'Next.js', 'TypeScript', 'SCSS', 'Jest', 'Node.js'];
+                    const [selectedTags, setSelectedTags] = useState(['React', 'Next.js']);
+                    const [availableTags, setAvailableTags] = useState(allTags.filter(t => !selectedTags.includes(t)));
+                    
+                    return (
+                      <div>
+                        <div style={{ marginBottom: '12px' }}>
+                          <label style={{ color: '#9B9B9B', marginRight: '8px' }}>Add tag:</label>
+                          <select 
+                            onChange={(e) => {
+                              if (e.target.value) {
+                                setSelectedTags([...selectedTags, e.target.value]);
+                                setAvailableTags(availableTags.filter(t => t !== e.target.value));
+                                e.target.value = '';
+                              }
+                            }}
+                            style={{ 
+                              backgroundColor: '#353535', 
+                              color: '#D5D5D5', 
+                              border: '1px solid #353535',
+                              padding: '4px 8px',
+                              borderRadius: '4px'
+                            }}
+                          >
+                            <option value="">Select a tag...</option>
+                            {availableTags.map(tag => (
+                              <option key={tag} value={tag}>{tag}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                          {selectedTags.map((tag) => (
+                            <Chip 
+                              key={tag}
+                              text={tag}
+                              onDismiss={() => {
+                                setSelectedTags(selectedTags.filter(t => t !== tag));
+                                setAvailableTags([...availableTags, tag].sort());
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Add and remove tags interactively</p>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import Chip from '@/components/atoms/Chip/Chip';
+
+// Basic usage
+<Chip 
+  text="James Otey" 
+  onDismiss={() => console.log('Dismissed')}
+/>
+
+// Multiple chips with removal
+const [chips, setChips] = useState(['Active', 'Pending', 'Completed']);
+
+{chips.map((chip, index) => (
+  <Chip 
+    key={chip}
+    text={chip}
+    onDismiss={() => {
+      setChips(chips.filter((_, i) => i !== index));
+    }}
+  />
+))}`}
               </pre>
             </div>
           </div>
