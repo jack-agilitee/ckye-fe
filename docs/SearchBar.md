@@ -160,5 +160,6 @@ export default function UsersPage() {
 
 ## Notes
 - The component is marked as a Client Component (`'use client'`) due to its interactive nature
-- The search icon is embedded as an inline SVG for better performance and styling control
+- The search icon is loaded from `/public/search__icon.svg` using Next.js Image component
 - The component follows the project's functional component patterns with React hooks
+- No index.js file is used - import the component directly from SearchBar.jsx
