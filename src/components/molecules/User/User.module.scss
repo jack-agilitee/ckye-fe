@@ -1,7 +1,4 @@
-// Variable declarations to match Figma design
-$avatar-bg: #353535; // Black/Light
-$text-primary: #d5d5d5; // White/Primary
-$text-secondary: #9b9b9b; // White/Secondary
+@import '../../../styles/variables';
 
 .user {
   display: flex;
@@ -13,7 +10,7 @@ $text-secondary: #9b9b9b; // White/Secondary
   &__avatar {
     width: 40px;
     height: 40px;
-    background-color: $avatar-bg;
+    background-color: $black-light;
     border-radius: 8px;
     display: flex;
     align-items: center;

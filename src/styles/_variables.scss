@@ -1,0 +1,20 @@
+// Global SCSS Variables
+
+// Color Variables from Figma Design System
+// Source: https://www.figma.com/design/1wJBV3eb9vlRvuxQICmBwY/Cyke-Web-App?node-id=5-229&m=dev
+
+// Primary Colors
+$white-primary: #D5D5D5;      // White/Primary - Main text color for selected/active states
+$white-secondary: #9B9B9B;    // White/Secondary - Secondary text color for default states
+
+// Background Colors
+$black-bg-light: #202020;     // Black/BG Light - Main background color
+$black-light: #353535;        // Black/Light - Selected item background
+$black-light-hover: #383838;  // Black/Light Hover - Hover state background (from ListItem component)
+
+// Semantic Colors
+$text-primary: $white-primary;
+$text-secondary: $white-secondary;
+$background-dark: $black-bg-light;
+$background-selected: $black-light;
+$background-hover: $black-light-hover;

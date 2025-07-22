@@ -1,9 +1,4 @@
-// Variable declarations to match Figma design
-$border-color: #353535;
-$text-color: #9b9b9b;
-$background-color: transparent;
-$focus-color: #ffffff;
-$focus-border-color: #666666;
+@import '../../../styles/variables';
 
 .search-bar {
   position: relative;
@@ -13,19 +8,19 @@ $focus-border-color: #666666;
   height: 100%;
   min-height: 32px;
   padding: 8px 12px;
-  background-color: $background-color;
-  border: 1px solid $border-color;
+  background-color: transparent;
+  border: 1px solid $black-light;
   border-radius: 8px;
   cursor: text;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: lighten($border-color, 10%);
+    border-color: lighten($black-light, 10%);
   }
 
   &--focused {
-    border-color: $focus-border-color;
-    box-shadow: 0 0 0 1px $focus-border-color;
+    border-color: #666666;
+    box-shadow: 0 0 0 1px #666666;
   }
 
   &__icon {
@@ -33,11 +28,11 @@ $focus-border-color: #666666;
     width: 16px;
     height: 16px;
     margin-right: 8px;
-    color: $text-color;
+    color: $white-secondary;
     transition: color 0.2s ease;
 
     .search-bar--focused & {
-      color: $focus-color;
+      color: $white-primary;
     }
   }
 
@@ -48,7 +43,7 @@ $focus-border-color: #666666;
     padding: 0;
     background-color: transparent;
     border: none;
-    color: $focus-color;
+    color: #ffffff;
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-weight: 500;
@@ -57,7 +52,7 @@ $focus-border-color: #666666;
     outline: none;
 
     &::placeholder {
-      color: $text-color;
+      color: $white-secondary;
     }
 
     &:disabled {
@@ -68,7 +63,7 @@ $focus-border-color: #666666;
 
   // Accessibility focus styles
   &:focus-within {
-    outline: 2px solid $focus-color;
+    outline: 2px solid $white-primary;
     outline-offset: 2px;
   }
 
