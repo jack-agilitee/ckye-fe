@@ -3,15 +3,13 @@ import '@testing-library/jest-dom';
 import LeftNav from './LeftNav';
 
 describe('LeftNav Component', () => {
-  const mockOnAccountModalToggle = jest.fn();
-
   beforeEach(() => {
     jest.clearAllMocks();
     console.log = jest.fn();
   });
 
   test('renders LeftNav component with correct structure', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     expect(screen.getByText('AEO')).toBeInTheDocument();
     expect(screen.getByText('CONTEXT')).toBeInTheDocument();
@@ -22,24 +20,29 @@ describe('LeftNav Component', () => {
   });
 
   test('renders avatar with correct initial letter', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     const avatarElements = screen.getAllByText('A');
     expect(avatarElements).toHaveLength(1);
   });
 
-  test('calls onAccountModalToggle when account changer is clicked', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+  test('opens AccountModal when account changer is clicked', () => {
+    render(<LeftNav />);
+    
+    // Initially modal should not be visible
+    expect(screen.queryByText('Settings')).not.toBeInTheDocument();
     
     const accountChanger = screen.getByText('AEO').closest('.left-nav__account-changer');
     fireEvent.click(accountChanger);
     
-    expect(mockOnAccountModalToggle).toHaveBeenCalledTimes(1);
+    // Now modal should be visible
+    expect(screen.getByText('Settings')).toBeInTheDocument();
+    expect(screen.getByText('Invite Members')).toBeInTheDocument();
     expect(console.log).toHaveBeenCalledWith('Account changer clicked - opening AccountModal');
   });
 
   test('console logs and shows TODO when note/settings icon is clicked', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     const noteIcon = document.querySelector('.left-nav__note');
     fireEvent.click(noteIcon);
@@ -48,7 +51,7 @@ describe('LeftNav Component', () => {
   });
 
   test('console logs and shows TODO when Add New is clicked', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     const addNewButton = screen.getByText('Add New');
     fireEvent.click(addNewButton);
@@ -57,7 +60,7 @@ describe('LeftNav Component', () => {
   });
 
   test('handles file selection correctly', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     // Initially Claude.md should be selected
     const claudeItem = screen.getByText('Claude.md').closest('.left-nav__list-item');
@@ -71,7 +74,7 @@ describe('LeftNav Component', () => {
   });
 
   test('supports keyboard navigation on list items', async () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     const commandsItem = screen.getByText('Commands.md').closest('.left-nav__list-item');
     
@@ -89,7 +92,7 @@ describe('LeftNav Component', () => {
   });
 
   test('renders all context files correctly', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     const contextFiles = ['Claude.md', 'Commands.md', 'Integrations/MCP'];
     
@@ -99,7 +102,7 @@ describe('LeftNav Component', () => {
   });
 
   test('handles file clicks with console logging and TODO comments', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     // Test clicking on different files
     const files = ['Claude.md', 'Commands.md', 'Integrations/MCP'];
@@ -112,7 +115,7 @@ describe('LeftNav Component', () => {
   });
 
   test('maintains selected state correctly when switching files', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     // Initially Claude.md is selected
     let claudeItem = screen.getByText('Claude.md').closest('.left-nav__list-item');
@@ -131,7 +134,7 @@ describe('LeftNav Component', () => {
   });
 
   test('renders with correct BEM class structure', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     // Check for main BEM classes
     expect(document.querySelector('.left-nav')).toBeInTheDocument();
@@ -141,19 +144,24 @@ describe('LeftNav Component', () => {
     expect(document.querySelector('.left-nav__file-list')).toBeInTheDocument();
   });
 
-  test('handles onAccountModalToggle prop correctly', () => {
-    // Test without prop
+  test('closes AccountModal when clicking outside', () => {
     render(<LeftNav />);
     
+    // Open modal first
     const accountChanger = screen.getByText('AEO').closest('.left-nav__account-changer');
     fireEvent.click(accountChanger);
+    expect(screen.getByText('Settings')).toBeInTheDocument();
     
-    // Should not throw error when prop is undefined
-    expect(console.log).toHaveBeenCalledWith('Account changer clicked - opening AccountModal');
+    // Click outside to close (click overlay)
+    const overlay = document.querySelector('.account-modal__overlay');
+    fireEvent.click(overlay);
+    
+    // Modal should be closed
+    expect(screen.queryByText('Settings')).not.toBeInTheDocument();
   });
 
   test('displays correct icons for selected and unselected states', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     // Check that images are rendered (even though we can't test the actual src easily in JSDOM)
     const images = document.querySelectorAll('.left-nav__list-item-icon-img');
@@ -161,7 +169,7 @@ describe('LeftNav Component', () => {
   });
 
   test('accessibility: components have proper keyboard navigation', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     // Check for keyboard accessible elements with proper attributes
     const keyboardElements = [
@@ -179,13 +187,13 @@ describe('LeftNav Component', () => {
   });
 
   test('keyboard navigation works for all interactive elements', () => {
-    render(<LeftNav onAccountModalToggle={mockOnAccountModalToggle} />);
+    render(<LeftNav />);
     
     // Test account changer keyboard activation
     const accountChanger = document.querySelector('.left-nav__account-changer');
     fireEvent.keyDown(accountChanger, { key: 'Enter' });
-    expect(mockOnAccountModalToggle).toHaveBeenCalled();
     expect(console.log).toHaveBeenCalledWith('Account changer clicked - opening AccountModal');
+    expect(screen.getByText('Settings')).toBeInTheDocument(); // Modal should open
     
     // Test note icon keyboard activation
     const noteIcon = document.querySelector('.left-nav__note');

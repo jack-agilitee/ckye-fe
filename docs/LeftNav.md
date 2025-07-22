@@ -20,9 +20,7 @@ The LeftNav component consists of:
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `onAccountModalToggle` | `function` | `undefined` | Callback function triggered when account changer is clicked |
+This component does not accept any props. It manages the AccountModal state internally.
 
 ## Usage Examples
 
@@ -32,45 +30,28 @@ The LeftNav component consists of:
 import LeftNav from './components/LeftNav/LeftNav';
 
 function App() {
-  const handleAccountModalToggle = () => {
-    console.log('Toggle account modal');
-  };
-
   return (
     <div className="app">
-      <LeftNav onAccountModalToggle={handleAccountModalToggle} />
+      <LeftNav />
     </div>
   );
 }
 ```
 
-### With State Management
+### Complete Layout Example
 
 ```jsx
-'use client';
-
-import { useState } from 'react';
 import LeftNav from './components/LeftNav/LeftNav';
-import AccountModal from './components/AccountModal/AccountModal';
 
-function App() {
-  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
-
-  const handleAccountModalToggle = () => {
-    setIsAccountModalOpen(!isAccountModalOpen);
-  };
-
-  const handleAccountModalClose = () => {
-    setIsAccountModalOpen(false);
-  };
-
+function Layout() {
   return (
-    <div className="app">
-      <LeftNav onAccountModalToggle={handleAccountModalToggle} />
-      <AccountModal 
-        isOpen={isAccountModalOpen} 
-        onClose={handleAccountModalClose} 
-      />
+    <div className="app-layout">
+      <aside className="sidebar">
+        <LeftNav />
+      </aside>
+      <main className="main-content">
+        {/* Your main content here */}
+      </main>
     </div>
   );
 }
@@ -80,7 +61,7 @@ function App() {
 
 ### Account Changer
 - **Trigger**: Click on the AEO section
-- **Action**: Calls `onAccountModalToggle` prop
+- **Action**: Opens the AccountModal internally
 - **Console Log**: "Account changer clicked - opening AccountModal"
 
 ### Note/Settings Icon
@@ -168,7 +149,8 @@ npm test LeftNav.test.jsx
 5. **Context Menu**: Right-click options for file management
 
 ### Integration Points
-- Works with `AccountModal` component for account switching
+- Includes `AccountModal` component internally for account switching
+- Self-contained navigation solution
 - Designed to integrate with file management system
 - Ready for backend API integration for file operations
 

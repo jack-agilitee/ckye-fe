@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import AccountModal from '../AccountModal/AccountModal';
 
 const imgIcon = "http://localhost:3845/assets/fa4a69234bc3df3a0da8f69a03c3b00875636abe.svg";
 const imgIcon1 = "http://localhost:3845/assets/9a30c46fd6fb5c258f1a75302caeb94a99e3f2bd.svg";
@@ -93,12 +94,17 @@ const ListItem = ({
 };
 
 
-const LeftNav = ({ onAccountModalToggle }) => {
+const LeftNav = () => {
   const [selectedFile, setSelectedFile] = useState("Claude.md");
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
 
   const handleAccountClick = () => {
     console.log("Account changer clicked - opening AccountModal");
-    if (onAccountModalToggle) onAccountModalToggle();
+    setIsAccountModalOpen(true);
+  };
+
+  const handleAccountModalClose = () => {
+    setIsAccountModalOpen(false);
   };
 
   const handleAddNewClick = () => {
@@ -117,75 +123,82 @@ const LeftNav = ({ onAccountModalToggle }) => {
   ];
 
   return (
-    <div className="left-nav">
-      <div 
-      className="left-nav__account-changer" 
-      onClick={handleAccountClick}
-      tabIndex={0}
-      role="button"
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleAccountClick();
-        }
-      }}
-    >
-        <div className="left-nav__account">
-          <div className="left-nav__avatar">
-            <div className="left-nav__avatar-text">
-              <p>A</p>
+    <>
+      <div className="left-nav">
+        <div 
+        className="left-nav__account-changer" 
+        onClick={handleAccountClick}
+        tabIndex={0}
+        role="button"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleAccountClick();
+          }
+        }}
+      >
+          <div className="left-nav__account">
+            <div className="left-nav__avatar">
+              <div className="left-nav__avatar-text">
+                <p>A</p>
+              </div>
+            </div>
+            <div className="left-nav__name">
+              <div className="left-nav__name-text">
+                <p>AEO</p>
+              </div>
+              <div className="left-nav__chevron">
+                <ChevronDown />
+              </div>
             </div>
           </div>
-          <div className="left-nav__name">
-            <div className="left-nav__name-text">
-              <p>AEO</p>
-            </div>
-            <div className="left-nav__chevron">
-              <ChevronDown />
-            </div>
+          <div className="left-nav__note-wrapper">
+            <Note />
           </div>
         </div>
-        <div className="left-nav__note-wrapper">
-          <Note />
-        </div>
-      </div>
-      
-      <div className="left-nav__content">
-        <div className="left-nav__sections">
-          <div className="left-nav__context-section">
-            <div className="left-nav__context-title">
-              <p>CONTEXT</p>
-            </div>
-            <div className="left-nav__file-list">
-              {contextFiles.map((file) => (
-                <div key={file.name} className="left-nav__file-item">
-                  <ListItem 
-                    state={file.selected ? "Selected" : "Unselected"}
-                    fileName={file.name}
-                    onClick={handleFileClick}
-                  />
+        
+        <div className="left-nav__content">
+          <div className="left-nav__sections">
+            <div className="left-nav__context-section">
+              <div className="left-nav__context-title">
+                <p>CONTEXT</p>
+              </div>
+              <div className="left-nav__file-list">
+                {contextFiles.map((file) => (
+                  <div key={file.name} className="left-nav__file-item">
+                    <ListItem 
+                      state={file.selected ? "Selected" : "Unselected"}
+                      fileName={file.name}
+                      onClick={handleFileClick}
+                    />
+                  </div>
+                ))}
+                <div 
+                  className="left-nav__add-new" 
+                  onClick={handleAddNewClick}
+                  tabIndex={0}
+                  role="button"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleAddNewClick();
+                    }
+                  }}
+                >
+                  <span className="left-nav__add-new-icon">+</span>
+                  <span className="left-nav__add-new-text">Add New</span>
                 </div>
-              ))}
-              <div 
-                className="left-nav__add-new" 
-                onClick={handleAddNewClick}
-                tabIndex={0}
-                role="button"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleAddNewClick();
-                  }
-                }}
-              >
-                <span className="left-nav__add-new-icon">+</span>
-                <span className="left-nav__add-new-text">Add New</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      
+      <AccountModal 
+        isOpen={isAccountModalOpen} 
+        onClose={handleAccountModalClose} 
+      />
+    </>
   );
 };
 
