@@ -15,7 +15,14 @@
   
   &:hover:not(&--disabled) {
     opacity: 0.8;
-    border-color: $background-hover;
+    
+    &.button--primary {
+      border-color: $background-hover;
+    }
+    
+    &.button--secondary {
+      opacity: 0.9;
+    }
   }
 
   &:focus-visible {
@@ -33,7 +40,15 @@
   }
 
   &--secondary {
-    border-color: $primary-color;
+    border-color: $secondary-color;
+    
+    .button__text {
+      color: $secondary-color;
+    }
+    
+    .button__icon {
+      filter: brightness(0) saturate(100%) invert(65%) sepia(17%) saturate(758%) hue-rotate(178deg) brightness(91%) contrast(84%);
+    }
   }
 
   // Disabled state

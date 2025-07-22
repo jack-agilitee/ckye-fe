@@ -60,7 +60,7 @@ import Button from '@/components/atoms/Button/Button';
 
 ### Variants
 - **Primary**: Default variant with `$black-light` border color
-- **Secondary**: Alternative variant with `$primary-color` border color
+- **Secondary**: Alternative variant with `$secondary-color` (#74A0C8) border color, text, and icon
 
 ### States
 - **Default**: Normal interactive state
