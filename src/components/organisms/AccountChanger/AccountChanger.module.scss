@@ -40,11 +40,8 @@
   }
 
   &__avatar-text {
-    @include body-medium;
-    @include font-bold;
+    @include button-text;
     color: $white-primary;
-    font-size: 14px;
-    letter-spacing: 0.2px;
     line-height: 1;
   }
 
@@ -55,11 +52,8 @@
   }
 
   &__name {
-    @include body-medium;
-    @include font-bold;
+    @include button-text;
     color: $white-primary;
-    font-size: 14px;
-    letter-spacing: 0.2px;
   }
 
   &__chevron {
