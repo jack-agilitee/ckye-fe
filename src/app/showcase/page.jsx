@@ -9,6 +9,7 @@ import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import User from '@/components/molecules/User/User';
 import ListItem from '@/components/molecules/ListItem/ListItem';
 import SeatType, { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
+import WorkspaceSelector from '@/components/molecules/WorkspaceSelector/WorkspaceSelector';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import styles from './page.module.scss';
 
@@ -1098,6 +1099,190 @@ const options = [
 // Using the enum
 const userRole = SEAT_TYPES.EDITOR;
 <SeatType type={userRole} />`}
+              </pre>
+            </div>
+          </div>
+
+          {/* WorkspaceSelector Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>WorkspaceSelector</h3>
+            <p className={styles.showcase__componentDescription}>
+              A multi-select autocomplete component for selecting workspace members with chip display and keyboard navigation
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default WorkspaceSelector</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const [selectedUsers, setSelectedUsers] = useState([]);
+                    const users = [
+                      { id: '1', name: 'James Otey' },
+                      { id: '2', name: 'Jack Nichols' },
+                      { id: '3', name: 'Steve Street' },
+                      { id: '4', name: 'Sullivan Street' },
+                      { id: '5', name: 'Dave Fullam' },
+                      { id: '6', name: 'Phil Stephenson' },
+                      { id: '7', name: 'Sam Street' },
+                      { id: '8', name: 'Andrew Venn' }
+                    ];
+                    
+                    return (
+                      <WorkspaceSelector
+                        label="Workspace"
+                        placeholder="Select workspace members..."
+                        options={users}
+                        value={selectedUsers}
+                        onChange={setSelectedUsers}
+                      />
+                    );
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Pre-selected Values</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const [selectedUsers, setSelectedUsers] = useState([
+                      { id: '1', name: 'James Otey' },
+                      { id: '2', name: 'Jack Nichols' }
+                    ]);
+                    const users = [
+                      { id: '1', name: 'James Otey' },
+                      { id: '2', name: 'Jack Nichols' },
+                      { id: '3', name: 'Steve Street' },
+                      { id: '4', name: 'Sullivan Street' },
+                      { id: '5', name: 'Dave Fullam' }
+                    ];
+                    
+                    return (
+                      <WorkspaceSelector
+                        label="Team Members"
+                        options={users}
+                        value={selectedUsers}
+                        onChange={setSelectedUsers}
+                      />
+                    );
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Labels</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const [selectedProjects, setSelectedProjects] = useState([]);
+                    const projects = [
+                      { id: 'p1', name: 'Project Alpha' },
+                      { id: 'p2', name: 'Project Beta' },
+                      { id: 'p3', name: 'Project Gamma' },
+                      { id: 'p4', name: 'Project Delta' }
+                    ];
+                    
+                    return (
+                      <WorkspaceSelector
+                        label="Assigned Projects"
+                        placeholder="Select projects..."
+                        options={projects}
+                        value={selectedProjects}
+                        onChange={setSelectedProjects}
+                      />
+                    );
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>With Maximum Selection</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const [selectedUsers, setSelectedUsers] = useState([]);
+                    const users = [
+                      { id: '1', name: 'James Otey' },
+                      { id: '2', name: 'Jack Nichols' },
+                      { id: '3', name: 'Steve Street' },
+                      { id: '4', name: 'Sullivan Street' },
+                      { id: '5', name: 'Dave Fullam' }
+                    ];
+                    
+                    const handleChange = (newValue) => {
+                      if (newValue.length <= 3) {
+                        setSelectedUsers(newValue);
+                      } else {
+                        alert('Maximum 3 users can be selected');
+                      }
+                    };
+                    
+                    return (
+                      <>
+                        <WorkspaceSelector
+                          label="Select up to 3 users"
+                          options={users}
+                          value={selectedUsers}
+                          onChange={handleChange}
+                        />
+                        <p className={styles.showcase__hint}>
+                          Selected: {selectedUsers.length}/3 users
+                        </p>
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Empty State</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const [selectedUsers, setSelectedUsers] = useState([]);
+                    
+                    return (
+                      <WorkspaceSelector
+                        label="No Options Available"
+                        placeholder="No users to select..."
+                        options={[]}
+                        value={selectedUsers}
+                        onChange={setSelectedUsers}
+                      />
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Shows behavior when no options are available</p>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import WorkspaceSelector from '@/components/molecules/WorkspaceSelector/WorkspaceSelector';
+
+const [selectedUsers, setSelectedUsers] = useState([]);
+
+const users = [
+  { id: '1', name: 'James Otey' },
+  { id: '2', name: 'Jack Nichols' },
+  { id: '3', name: 'Steve Street' }
+];
+
+<WorkspaceSelector
+  label="Workspace"
+  placeholder="Select workspace members..."
+  options={users}
+  value={selectedUsers}
+  onChange={setSelectedUsers}
+/>
+
+// With pre-selected values
+const [selected, setSelected] = useState([
+  { id: '1', name: 'James Otey' }
+]);
+
+<WorkspaceSelector
+  options={users}
+  value={selected}
+  onChange={setSelected}
+/>`}
               </pre>
             </div>
           </div>
