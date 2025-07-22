@@ -1,0 +1,334 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.left-nav {
+  background-color: color('bg-dark');
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  // Account Changer Section
+  @include element('account-changer') {
+    @include interactive-element;
+    @include flex-between;
+    position: absolute;
+    box-sizing: border-box;
+    left: space('lg');
+    padding: 0;
+    top: space('xl');
+    width: 11.75rem;
+  }
+
+  // Account Info
+  @include element('account') {
+    @include flex-start;
+    box-sizing: border-box;
+    gap: space('sm');
+    padding: 0;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  // Avatar
+  @include element('avatar') {
+    @include avatar(space('xl'));
+
+    @include element('text') {
+      @include text-primary;
+      font-size: font-size('base');
+      line-height: 0;
+      text-align: left;
+      white-space: nowrap;
+      letter-spacing: 0.0125rem;
+
+      p {
+        margin: 0;
+        line-height: normal;
+        white-space: pre;
+      }
+    }
+  }
+
+  // Name Section
+  @include element('name') {
+    @include flex-start;
+    box-sizing: border-box;
+    gap: space('sm');
+    padding: 0;
+    position: relative;
+    flex-shrink: 0;
+
+    @include element('text') {
+      @include text-primary;
+      font-size: font-size('base');
+      line-height: 0;
+      text-align: left;
+      white-space: nowrap;
+      letter-spacing: 0.0125rem;
+
+      p {
+        margin: 0;
+        line-height: normal;
+        white-space: pre;
+      }
+    }
+  }
+
+  // Chevron Icon
+  @include element('chevron') {
+    @include icon-container;
+
+    @include element('down') {
+      position: relative;
+      width: 100%;
+      height: 100%;
+
+      @include element('icon') {
+        position: absolute;
+        bottom: 28.125%;
+        left: 9.375%;
+        right: 9.375%;
+        top: 28.125%;
+      }
+
+      @include element('img') {
+        display: block;
+        max-width: none;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  // Note/Settings Wrapper
+  @include element('note-wrapper') {
+    @include icon-container;
+  }
+
+  // Note/Settings Icon
+  @include element('note') {
+    @include interactive-element;
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    @include element('icon') {
+      position: absolute;
+      bottom: 9.375%;
+      left: 9.375%;
+      right: 10.792%;
+      top: 12.5%;
+    }
+
+    @include element('img') {
+      display: block;
+      max-width: none;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // Main Content Area
+  @include element('content') {
+    position: absolute;
+    bottom: space('xl');
+    box-sizing: border-box;
+    @include flex-column;
+    align-items: flex-start;
+    justify-content: space-between;
+    left: space('lg');
+    padding: 0;
+    top: 5rem;
+    width: 11.625rem;
+  }
+
+  // Sections Container
+  @include element('sections') {
+    box-sizing: border-box;
+    @include flex-column;
+    gap: space('xxl');
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0;
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  // Context Section
+  @include element('context-section') {
+    box-sizing: border-box;
+    @include flex-column;
+    gap: space('md');
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0;
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  // Context Title
+  @include element('context-title') {
+    @include text-secondary;
+    @include flex-column;
+    justify-content: center;
+    line-height: 0;
+    font-style: normal;
+    position: relative;
+    flex-shrink: 0;
+    font-size: font-size('xs');
+    text-align: left;
+    letter-spacing: 0.0125rem;
+    width: 100%;
+
+    p {
+      margin: 0;
+      line-height: normal;
+    }
+  }
+
+  // File List Container
+  @include element('file-list') {
+    box-sizing: border-box;
+    @include flex-column;
+    gap: space('sm');
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0;
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  // File Item Container
+  @include element('file-item') {
+    position: relative;
+    border-radius: radius('md');
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  // List Item
+  @include element('list-item') {
+    @include interactive-element;
+    position: relative;
+    border-radius: radius('md');
+    width: 100%;
+    height: 100%;
+    transition: background-color transition('normal');
+
+    @include modifier('selected') {
+      background-color: color('bg-light');
+    }
+
+    &:hover:not(&--selected),
+    &:focus:not(&--selected) {
+      background-color: rgba(color('bg-light'), 0.5);
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid color('accent-blue');
+      outline-offset: 2px;
+    }
+
+    @include element('content') {
+      @include flex-start;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    @include element('container') {
+      box-sizing: border-box;
+      @include flex-start;
+      gap: space('sm');
+      padding: space('xs') space('sm');
+      position: relative;
+      width: 100%;
+    }
+
+    @include element('icon-wrapper') {
+      @include icon-container;
+    }
+
+    @include element('icon') {
+      position: absolute;
+      bottom: 6.25%;
+      left: 12.5%;
+      right: 12.5%;
+      top: 6.25%;
+
+      @include element('img') {
+        display: block;
+        max-width: none;
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    @include element('label') {
+      @include flex-column;
+      font-family: font('primary'), sans-serif;
+      font-weight: font-weight('medium');
+      justify-content: center;
+      line-height: 0;
+      font-style: normal;
+      position: relative;
+      flex-shrink: 0;
+      font-size: font-size('sm');
+      text-align: left;
+      white-space: nowrap;
+      letter-spacing: 0.0125rem;
+    }
+
+    @include element('text') {
+      margin: 0;
+      line-height: normal;
+      white-space: pre;
+    }
+
+    // Color states
+    &--selected {
+      .left-nav__list-item__label {
+        color: color('text-primary');
+      }
+    }
+
+    &:not(&--selected) {
+      .left-nav__list-item__label {
+        color: color('text-secondary');
+      }
+    }
+  }
+
+  // Add New Button
+  @include element('add-new') {
+    @include interactive-element;
+    @include flex-start;
+    gap: space('sm');
+    padding: space('xs') space('sm');
+    border-radius: radius('md');
+    transition: all transition('normal');
+    color: color('text-secondary');
+    font-family: font('primary'), sans-serif;
+    font-weight: font-weight('medium');
+    font-size: font-size('sm');
+
+    &:hover,
+    &:focus {
+      background-color: rgba(color('bg-light'), 0.5);
+      color: color('text-primary');
+    }
+
+    @include element('icon') {
+      font-size: 1rem;
+      font-weight: font-weight('bold');
+    }
+
+    @include element('text') {
+      white-space: nowrap;
+    }
+  }
+}

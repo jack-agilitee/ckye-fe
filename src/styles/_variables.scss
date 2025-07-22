@@ -1,0 +1,99 @@
+// Color Variables
+$colors: (
+  'bg-dark': #202020,
+  'bg-light': #353535,
+  'bg-modal': #252525,
+  'text-primary': #d5d5d5,
+  'text-secondary': #9b9b9b,
+  'accent-blue': #74a0c8,
+  'overlay': rgba(0, 0, 0, 0.5)
+);
+
+// Typography
+$fonts: (
+  'primary': 'Inter',
+  'heading': 'Overpass'
+);
+
+// Font Weights
+$font-weights: (
+  'normal': 400,
+  'medium': 500,
+  'semibold': 600,
+  'bold': 700
+);
+
+// Font Sizes
+$font-sizes: (
+  'xs': 0.625rem,   // 10px
+  'sm': 0.75rem,    // 12px
+  'base': 0.875rem, // 14px
+  'lg': 1rem,       // 16px
+  'xl': 1.25rem     // 20px
+);
+
+// Spacing
+$spacing: (
+  'xs': 0.25rem,   // 4px
+  'sm': 0.5rem,    // 8px
+  'md': 0.75rem,   // 12px
+  'lg': 1rem,      // 16px
+  'xl': 1.5rem,    // 24px
+  'xxl': 2rem,     // 32px
+  'xxxl': 2.5rem   // 40px
+);
+
+// Border Radius
+$border-radius: (
+  'sm': 0.25rem,   // 4px
+  'md': 0.5rem,    // 8px
+  'lg': 0.75rem,   // 12px
+  'xl': 1rem       // 16px
+);
+
+// Transitions
+$transitions: (
+  'fast': 0.1s ease,
+  'normal': 0.2s ease,
+  'slow': 0.3s ease
+);
+
+// Z-index layers
+$z-index: (
+  'dropdown': 100,
+  'modal': 1000,
+  'tooltip': 1100
+);
+
+// Helper functions
+@function color($key) {
+  @return map-get($colors, $key);
+}
+
+@function font($key) {
+  @return map-get($fonts, $key);
+}
+
+@function font-weight($key) {
+  @return map-get($font-weights, $key);
+}
+
+@function font-size($key) {
+  @return map-get($font-sizes, $key);
+}
+
+@function space($key) {
+  @return map-get($spacing, $key);
+}
+
+@function radius($key) {
+  @return map-get($border-radius, $key);
+}
+
+@function transition($key) {
+  @return map-get($transitions, $key);
+}
+
+@function z($key) {
+  @return map-get($z-index, $key);
+}

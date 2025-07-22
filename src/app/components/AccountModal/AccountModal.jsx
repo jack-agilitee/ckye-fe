@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import styles from './AccountModal.module.css';
 
 const img = "http://localhost:3845/assets/47a7e7fad015de80110d0caec6bac8ae6ab23559.svg";
 const img1 = "http://localhost:3845/assets/c7d2f16c57b076ac55609b38c86641d480b6a099.svg";

@@ -1,0 +1,129 @@
+// Interactive element mixin
+@mixin interactive-element {
+  cursor: pointer;
+  transition: transition('normal');
+  
+  &:hover,
+  &:focus {
+    opacity: 0.8;
+    outline: none;
+  }
+  
+  &:focus-visible {
+    outline: 2px solid color('accent-blue');
+    outline-offset: 2px;
+  }
+}
+
+// Avatar mixin
+@mixin avatar($size: space('xl')) {
+  background-color: color('bg-light');
+  border-radius: radius('sm');
+  width: $size;
+  height: $size;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+// Text styling mixins
+@mixin text-primary {
+  color: color('text-primary');
+  font-family: font('heading'), sans-serif;
+  font-weight: font-weight('bold');
+}
+
+@mixin text-secondary {
+  color: color('text-secondary');
+  font-family: font('primary'), sans-serif;
+  font-weight: font-weight('semibold');
+}
+
+@mixin text-label {
+  color: color('text-secondary');
+  font-family: font('primary'), sans-serif;
+  font-weight: font-weight('medium');
+}
+
+// BEM modifier helper
+@mixin modifier($modifier) {
+  &--#{$modifier} {
+    @content;
+  }
+}
+
+// BEM element helper
+@mixin element($element) {
+  &__#{$element} {
+    @content;
+  }
+}
+
+// Flexbox helpers
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Button/CTA mixin
+@mixin cta-button {
+  @include interactive-element;
+  border: 1px solid color('accent-blue');
+  border-radius: radius('md');
+  padding: space('sm');
+  background: transparent;
+  
+  &:hover {
+    background-color: rgba(color('accent-blue'), 0.1);
+  }
+}
+
+// Modal overlay mixin
+@mixin modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: color('overlay');
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: z('modal');
+}
+
+// Icon container mixin
+@mixin icon-container($size: 1rem) {
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+  width: $size;
+  height: $size;
+  
+  img {
+    display: block;
+    max-width: none;
+    width: 100%;
+    height: 100%;
+  }
+}

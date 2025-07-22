@@ -1,0 +1,399 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.account-modal {
+  // Overlay
+  @include element('overlay') {
+    @include modal-overlay;
+  }
+
+  // Modal Container
+  background-color: color('bg-modal');
+  position: relative;
+  border-radius: space('lg');
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  border: 1px solid color('bg-light');
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+  // Modal Content
+  @include element('content') {
+    box-sizing: border-box;
+    @include flex-column;
+    gap: space('md');
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: space('lg');
+    position: relative;
+    width: 100%;
+  }
+
+  // Workspace Section
+  @include element('workspace') {
+    box-sizing: border-box;
+    @include flex-start;
+    gap: space('md');
+    padding: 0;
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+
+    @include element('info') {
+      box-sizing: border-box;
+      @include flex-column;
+      height: space('xxxl');
+      align-items: flex-start;
+      justify-content: space-between;
+      line-height: 0;
+      padding: 0;
+      position: relative;
+      flex-shrink: 0;
+      text-align: left;
+      letter-spacing: 0.0125rem;
+      width: 11.625rem;
+    }
+
+    @include element('name') {
+      @include flex-column;
+      font-family: font('heading'), sans-serif;
+      font-weight: font-weight('bold');
+      justify-content: center;
+      position: relative;
+      flex-shrink: 0;
+      color: color('text-primary');
+      font-size: font-size('lg');
+      width: 100%;
+
+      p {
+        margin: 0;
+        line-height: normal;
+      }
+    }
+
+    @include element('members') {
+      flex-basis: 0;
+      @include flex-column;
+      font-family: font('primary'), sans-serif;
+      font-weight: font-weight('semibold');
+      flex-grow: 1;
+      justify-content: center;
+      min-height: 1px;
+      min-width: 1px;
+      position: relative;
+      flex-shrink: 0;
+      color: color('text-secondary');
+      font-size: font-size('sm');
+      width: 100%;
+
+      p {
+        margin: 0;
+        line-height: normal;
+      }
+    }
+  }
+
+  // Avatar
+  @include element('avatar') {
+    @include avatar(space('xxxl'));
+
+    @include element('text') {
+      @include text-primary;
+      font-size: font-size('xl');
+      line-height: 0;
+      text-align: left;
+      white-space: nowrap;
+      letter-spacing: 0.0125rem;
+
+      p {
+        margin: 0;
+        line-height: normal;
+        white-space: pre;
+      }
+    }
+  }
+
+  // CTAs Section
+  @include element('ctas') {
+    box-sizing: border-box;
+    @include flex-start;
+    gap: 0.6875rem;
+    padding: 0;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  // CTA Button
+  @include element('cta') {
+    @include cta-button;
+    @include flex-start;
+    gap: space('sm');
+
+    @include element('icon') {
+      @include icon-container;
+
+      .account-modal__settings-icon,
+      .account-modal__invite-icon {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .account-modal__settings-icon {
+        padding: 9.375%;
+      }
+
+      .account-modal__invite-icon {
+        position: absolute;
+        bottom: 6.25%;
+        left: 10.501%;
+        right: 6.25%;
+        top: 6.25%;
+      }
+    }
+
+    @include element('text') {
+      @include flex-column;
+      font-family: font('primary'), sans-serif;
+      font-weight: font-weight('semibold');
+      justify-content: center;
+      line-height: 0;
+      font-style: normal;
+      position: relative;
+      flex-shrink: 0;
+      color: color('accent-blue');
+      font-size: font-size('base');
+      text-align: left;
+      white-space: nowrap;
+      letter-spacing: 0.0125rem;
+
+      p {
+        margin: 0;
+        line-height: normal;
+        white-space: pre;
+      }
+    }
+  }
+
+  // Icon Images
+  @include element('icon-img'),
+  @include element('settings-icon'),
+  @include element('invite-icon') {
+    display: block;
+    max-width: none;
+    width: 100%;
+    height: 100%;
+  }
+
+  // Divider
+  @include element('divider') {
+    height: 0;
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+
+    img {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: -1px;
+      width: 100%;
+      height: auto;
+    }
+
+    @include element('img') {
+      display: block;
+      max-width: none;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // Accounts Section
+  @include element('accounts-section') {
+    box-sizing: border-box;
+    @include flex-column;
+    gap: space('md');
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0;
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  // Email
+  @include element('email') {
+    @include text-secondary;
+    @include flex-column;
+    justify-content: center;
+    line-height: 0;
+    font-style: normal;
+    position: relative;
+    flex-shrink: 0;
+    font-size: font-size('sm');
+    text-align: left;
+    white-space: nowrap;
+    letter-spacing: 0.0125rem;
+
+    p {
+      margin: 0;
+      line-height: normal;
+      white-space: pre;
+    }
+  }
+
+  // Accounts List
+  @include element('accounts-list') {
+    box-sizing: border-box;
+    @include flex-column;
+    gap: space('md');
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0;
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  // Individual Account
+  @include element('account') {
+    @include interactive-element;
+    box-sizing: border-box;
+    @include flex-between;
+    padding: 0;
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+
+    @include element('left') {
+      box-sizing: border-box;
+      @include flex-start;
+      gap: space('sm');
+      padding: 0;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    @include element('avatar') {
+      @include avatar(space('xl'));
+
+      @include element('text') {
+        @include text-primary;
+        font-size: font-size('base');
+        line-height: 0;
+        text-align: left;
+        white-space: nowrap;
+        letter-spacing: 0.0125rem;
+
+        p {
+          margin: 0;
+          line-height: normal;
+          white-space: pre;
+        }
+      }
+    }
+
+    @include element('name') {
+      box-sizing: border-box;
+      @include flex-start;
+      gap: space('sm');
+      padding: 0;
+      position: relative;
+      flex-shrink: 0;
+
+      @include element('text') {
+        @include text-primary;
+        font-size: font-size('base');
+        line-height: 0;
+        text-align: left;
+        white-space: nowrap;
+        letter-spacing: 0.0125rem;
+
+        p {
+          margin: 0;
+          line-height: normal;
+          white-space: pre;
+        }
+      }
+    }
+  }
+
+  // Checkmark
+  @include element('checkmark') {
+    @include icon-container;
+    opacity: 0;
+    transition: opacity transition('normal');
+
+    @include modifier('visible') {
+      opacity: 1;
+    }
+
+    @include element('icon') {
+      position: absolute;
+      inset: 6.25%;
+    }
+
+    @include element('img') {
+      display: block;
+      max-width: none;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // Logout Section
+  @include element('logout') {
+    @include interactive-element;
+    box-sizing: border-box;
+    @include flex-start;
+    gap: space('sm');
+    height: space('xl');
+    padding: space('xs') space('sm');
+    border-radius: radius('md');
+    flex-shrink: 0;
+    width: 11.625rem;
+
+    &:hover,
+    &:focus {
+      background-color: rgba(color('bg-light'), 0.5);
+    }
+
+    @include element('icon') {
+      @include icon-container;
+
+      @include element('wrapper') {
+        position: absolute;
+        inset: 9.375%;
+      }
+    }
+
+    @include element('img') {
+      display: block;
+      max-width: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    @include element('text') {
+      @include text-label;
+      @include flex-column;
+      justify-content: center;
+      line-height: 0;
+      font-style: normal;
+      position: relative;
+      flex-shrink: 0;
+      font-size: font-size('sm');
+      text-align: left;
+      white-space: nowrap;
+      letter-spacing: 0.0125rem;
+
+      p {
+        margin: 0;
+        line-height: normal;
+        white-space: pre;
+      }
+    }
+  }
+}
