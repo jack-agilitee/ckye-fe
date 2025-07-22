@@ -5,6 +5,7 @@ import SearchBar from '@/components/atoms/SearchBar/SearchBar';
 import Button from '@/components/atoms/Button/Button';
 import Chip from '@/components/atoms/Chip/Chip';
 import TextField from '@/components/atoms/TextField/TextField';
+import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import User from '@/components/molecules/User/User';
 import ListItem from '@/components/molecules/ListItem/ListItem';
 import SeatType, { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
@@ -554,6 +555,268 @@ const inputRef = useRef();
   ref={inputRef}
   label="Username"
   name="username"
+/>`}
+              </pre>
+            </div>
+          </div>
+
+          {/* Dropdown Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>Dropdown</h3>
+            <p className={styles.showcase__componentDescription}>
+              A custom select dropdown with label support, keyboard navigation, and error states
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default Dropdown</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <Dropdown 
+                    label="Workspace"
+                    placeholder="Search Users"
+                    options={[
+                      { value: 'user1', label: 'John Doe' },
+                      { value: 'user2', label: 'Jane Smith' },
+                      { value: 'user3', label: 'Bob Johnson' },
+                      { value: 'user4', label: 'Alice Williams' }
+                    ]}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Controlled Dropdown</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const [selectedUser, setSelectedUser] = useState('');
+                    return (
+                      <>
+                        <Dropdown 
+                          label="Assign To"
+                          placeholder="Select a user"
+                          value={selectedUser}
+                          onChange={(e) => setSelectedUser(e.target.value)}
+                          options={[
+                            { value: 'user1', label: 'John Doe' },
+                            { value: 'user2', label: 'Jane Smith' },
+                            { value: 'user3', label: 'Bob Johnson' }
+                          ]}
+                        />
+                        <p className={styles.showcase__hint}>Selected: {selectedUser || '(none)'}</p>
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Required Dropdown</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <Dropdown 
+                    label="Priority"
+                    placeholder="Select priority"
+                    required
+                    options={[
+                      { value: 'low', label: 'Low' },
+                      { value: 'medium', label: 'Medium' },
+                      { value: 'high', label: 'High' },
+                      { value: 'urgent', label: 'Urgent' }
+                    ]}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Error State</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <Dropdown 
+                    label="Category"
+                    placeholder="Choose a category"
+                    error
+                    errorMessage="Please select a valid category"
+                    options={[
+                      { value: 'bug', label: 'Bug' },
+                      { value: 'feature', label: 'Feature' },
+                      { value: 'improvement', label: 'Improvement' },
+                      { value: 'documentation', label: 'Documentation' }
+                    ]}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Disabled State</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <Dropdown 
+                    label="Disabled Dropdown"
+                    placeholder="Cannot select"
+                    disabled
+                    options={[
+                      { value: '1', label: 'Option 1' },
+                      { value: '2', label: 'Option 2' }
+                    ]}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>With Pre-selected Value</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <Dropdown 
+                    label="Status"
+                    value="active"
+                    options={[
+                      { value: 'active', label: 'Active' },
+                      { value: 'inactive', label: 'Inactive' },
+                      { value: 'pending', label: 'Pending' },
+                      { value: 'archived', label: 'Archived' }
+                    ]}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Long Options List</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <Dropdown 
+                    label="Country"
+                    placeholder="Select your country"
+                    options={[
+                      { value: 'us', label: 'United States' },
+                      { value: 'uk', label: 'United Kingdom' },
+                      { value: 'ca', label: 'Canada' },
+                      { value: 'au', label: 'Australia' },
+                      { value: 'de', label: 'Germany' },
+                      { value: 'fr', label: 'France' },
+                      { value: 'es', label: 'Spain' },
+                      { value: 'it', label: 'Italy' },
+                      { value: 'jp', label: 'Japan' },
+                      { value: 'cn', label: 'China' },
+                      { value: 'in', label: 'India' },
+                      { value: 'br', label: 'Brazil' }
+                    ]}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Form Integration Example</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const [formData, setFormData] = useState({
+                      category: '',
+                      priority: ''
+                    });
+                    const [errors, setErrors] = useState({});
+                    
+                    const handleSubmit = (e) => {
+                      e.preventDefault();
+                      const newErrors = {};
+                      
+                      if (!formData.category) {
+                        newErrors.category = 'Category is required';
+                      }
+                      if (!formData.priority) {
+                        newErrors.priority = 'Priority is required';
+                      }
+                      
+                      setErrors(newErrors);
+                      
+                      if (Object.keys(newErrors).length === 0) {
+                        alert(`Form submitted!\nCategory: ${formData.category}\nPriority: ${formData.priority}`);
+                      }
+                    };
+                    
+                    return (
+                      <form onSubmit={handleSubmit}>
+                        <div style={{ marginBottom: '16px' }}>
+                          <Dropdown 
+                            label="Category"
+                            placeholder="Select a category"
+                            value={formData.category}
+                            onChange={(e) => {
+                              setFormData({ ...formData, category: e.target.value });
+                              if (errors.category) {
+                                setErrors({ ...errors, category: '' });
+                              }
+                            }}
+                            options={[
+                              { value: 'bug', label: 'Bug' },
+                              { value: 'feature', label: 'Feature' },
+                              { value: 'improvement', label: 'Improvement' }
+                            ]}
+                            error={!!errors.category}
+                            errorMessage={errors.category}
+                            required
+                          />
+                        </div>
+                        <div style={{ marginBottom: '16px' }}>
+                          <Dropdown 
+                            label="Priority"
+                            placeholder="Select priority"
+                            value={formData.priority}
+                            onChange={(e) => {
+                              setFormData({ ...formData, priority: e.target.value });
+                              if (errors.priority) {
+                                setErrors({ ...errors, priority: '' });
+                              }
+                            }}
+                            options={[
+                              { value: 'low', label: 'Low' },
+                              { value: 'medium', label: 'Medium' },
+                              { value: 'high', label: 'High' }
+                            ]}
+                            error={!!errors.priority}
+                            errorMessage={errors.priority}
+                            required
+                          />
+                        </div>
+                        <Button type="submit" icon="/check.svg">
+                          Submit Issue
+                        </Button>
+                      </form>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import Dropdown from '@/components/atoms/Dropdown/Dropdown';
+
+// Basic usage
+const options = [
+  { value: 'user1', label: 'John Doe' },
+  { value: 'user2', label: 'Jane Smith' },
+  { value: 'user3', label: 'Bob Johnson' }
+];
+
+<Dropdown 
+  label="Workspace"
+  placeholder="Search Users"
+  options={options}
+  value={selectedValue}
+  onChange={(e) => setSelectedValue(e.target.value)}
+/>
+
+// With validation
+<Dropdown 
+  label="Category"
+  options={categoryOptions}
+  value={category}
+  onChange={handleChange}
+  error={!!error}
+  errorMessage={error}
+  required
+/>
+
+// Uncontrolled
+<Dropdown 
+  name="priority"
+  label="Priority"
+  options={priorityOptions}
 />`}
               </pre>
             </div>
