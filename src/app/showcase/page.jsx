@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import SearchBar from '@/components/atoms/SearchBar/SearchBar';
+import Button from '@/components/atoms/Button/Button';
 import User from '@/components/molecules/User/User';
 import ListItem from '@/components/molecules/ListItem/ListItem';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
@@ -91,6 +92,115 @@ export default function ShowcasePage() {
   placeholder="Search Users" 
   onSearch={(value) => console.log(value)}
 />`}
+              </pre>
+            </div>
+          </div>
+
+          {/* Button Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>Button</h3>
+            <p className={styles.showcase__componentDescription}>
+              A versatile button component with icon support and multiple variants
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Primary Button</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <Button onClick={() => alert('Primary button clicked!')}>
+                    Settings
+                  </Button>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Secondary Button</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <Button 
+                    variant="secondary" 
+                    onClick={() => alert('Secondary button clicked!')}
+                  >
+                    Secondary Action
+                  </Button>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Icons</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <Button icon="/plus.svg" onClick={() => console.log('Add')}>
+                    Add Item
+                  </Button>
+                  <Button icon="/file.svg" onClick={() => console.log('File')}>
+                    Files
+                  </Button>
+                  <Button icon="/invite.svg" onClick={() => console.log('Invite')}>
+                    Invite
+                  </Button>
+                  <Button icon={null} onClick={() => console.log('No icon')}>
+                    No Icon
+                  </Button>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Button States</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <Button onClick={() => console.log('Normal')}>
+                    Normal
+                  </Button>
+                  <Button disabled onClick={() => console.log('This should not fire')}>
+                    Disabled
+                  </Button>
+                  <Button 
+                    variant="secondary" 
+                    disabled 
+                    onClick={() => console.log('This should not fire')}
+                  >
+                    Disabled Secondary
+                  </Button>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Button Types</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <form onSubmit={(e) => { e.preventDefault(); alert('Form submitted!'); }} style={{ display: 'flex', gap: '12px' }}>
+                    <Button type="submit" icon="/check.svg">
+                      Submit
+                    </Button>
+                    <Button type="reset" icon="/close.svg" variant="secondary">
+                      Reset
+                    </Button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import Button from '@/components/atoms/Button/Button';
+
+// Primary button with default settings icon
+<Button onClick={() => console.log('clicked')}>
+  Settings
+</Button>
+
+// Secondary variant
+<Button variant="secondary" onClick={handleClick}>
+  Secondary Action
+</Button>
+
+// Custom icon
+<Button icon="/custom-icon.svg" onClick={handleClick}>
+  Custom Action
+</Button>
+
+// Disabled state
+<Button disabled onClick={handleClick}>
+  Disabled Button
+</Button>`}
               </pre>
             </div>
           </div>

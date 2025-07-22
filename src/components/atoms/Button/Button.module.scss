@@ -1,0 +1,73 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background-color: transparent;
+  border: 1px solid $black-light;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  
+  &:hover:not(&--disabled) {
+    opacity: 0.8;
+    
+    &.button--primary {
+      border-color: $background-hover;
+    }
+    
+    &.button--secondary {
+      opacity: 0.9;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+
+  &:active:not(&--disabled) {
+    transform: scale(0.98);
+  }
+
+  // Variants
+  &--primary {
+    border-color: $black-light;
+  }
+
+  &--secondary {
+    border-color: $secondary-color;
+    
+    .button__text {
+      color: $secondary-color;
+    }
+    
+    .button__icon {
+      filter: brightness(0) saturate(100%) invert(65%) sepia(17%) saturate(758%) hue-rotate(178deg) brightness(91%) contrast(84%);
+    }
+  }
+
+  // Disabled state
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  // Elements
+  &__icon {
+    flex-shrink: 0;
+    display: block;
+  }
+
+  &__text {
+    @include body-large;
+    @include font-semibold;
+    color: $white-primary;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+  }
+}
