@@ -1,0 +1,51 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px 2px 8px;
+  background-color: $black-light;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &:hover,
+  &--hovered {
+    background-color: $black-light-hover;
+    
+    .chip__text {
+      color: $white-primary;
+    }
+    
+    .chip__icon {
+      filter: brightness(0) saturate(100%) invert(87%) sepia(3%) saturate(190%) hue-rotate(186deg) brightness(91%) contrast(89%);
+    }
+  }
+  
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+  
+  &__text {
+    @include body-small;
+    @include font-medium;
+    color: $white-secondary;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+  }
+  
+  &__icon {
+    flex-shrink: 0;
+    display: block;
+    filter: brightness(0) saturate(100%) invert(65%) sepia(5%) saturate(174%) hue-rotate(186deg) brightness(92%) contrast(88%);
+    transition: filter 0.2s ease;
+  }
+}
