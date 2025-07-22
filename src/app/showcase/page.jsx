@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import SearchBar from '@/components/atoms/SearchBar/SearchBar';
 import Button from '@/components/atoms/Button/Button';
 import Chip from '@/components/atoms/Chip/Chip';
@@ -13,6 +13,7 @@ import WorkspaceSelector from '@/components/molecules/WorkspaceSelector/Workspac
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
+import MarkdownEditor from '@/components/organisms/MarkdownEditor/MarkdownEditor';
 import styles from './page.module.scss';
 
 export default function ShowcasePage() {
@@ -1682,6 +1683,173 @@ function App() {
   name: string,        // Display name
   memberCount: number  // Number of members
 }`}
+              </pre>
+            </div>
+          </div>
+
+          {/* MarkdownEditor Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>MarkdownEditor</h3>
+            <p className={styles.showcase__componentDescription}>
+              A full-featured markdown editor with live preview, syntax highlighting, and rich toolbar
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default MarkdownEditor</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const [content, setContent] = useState(`# Welcome to the Markdown Editor
+
+This is a **full-featured** markdown editor with:
+- Live preview mode
+- Syntax highlighting
+- Rich toolbar
+
+## Code Example
+
+\`\`\`javascript
+// Example code with syntax highlighting
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+
+console.log(greet('World'));
+\`\`\`
+
+## Features
+
+1. **Bold**, *italic*, and \`inline code\`
+2. [Links](https://example.com)
+3. Tables support
+4. And much more!
+
+> This is a blockquote with some wisdom.
+
+Try editing this content or toggle to preview mode!`);
+
+                    return (
+                      <MarkdownEditor
+                        initialValue={content}
+                        onChange={setContent}
+                        placeholder="Start writing your markdown..."
+                      />
+                    );
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Empty Editor with Custom Placeholder</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <MarkdownEditor
+                    placeholder="Write your documentation here..."
+                    onChange={(content) => console.log('Content changed:', content)}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Read-Only Mode</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <MarkdownEditor
+                    initialValue={`# Read-Only Content
+
+This editor is in read-only mode. You can toggle between edit and preview, but cannot modify the content.
+
+## Use Cases
+- Displaying documentation
+- Showing saved content
+- Preview-only scenarios`}
+                    readOnly={true}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Form Integration Example</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const editorRef = useRef();
+                    const [savedContent, setSavedContent] = useState('');
+                    
+                    const handleSave = () => {
+                      const content = editorRef.current?.getMarkdown();
+                      setSavedContent(content);
+                      alert('Content saved! Check console for output.');
+                      console.log('Saved content:', content);
+                    };
+
+                    const handleLoad = () => {
+                      editorRef.current?.setMarkdown(`# Loaded Content
+
+This content was loaded programmatically using the ref API.
+
+You can use \`editorRef.current.setMarkdown(content)\` to update the editor content.`);
+                    };
+
+                    return (
+                      <div>
+                        <div style={{ marginBottom: '16px', display: 'flex', gap: '8px' }}>
+                          <Button onClick={handleSave} icon="/check.svg">
+                            Save Content
+                          </Button>
+                          <Button onClick={handleLoad} variant="secondary" icon="/file.svg">
+                            Load Sample
+                          </Button>
+                        </div>
+                        <MarkdownEditor
+                          ref={editorRef}
+                          initialValue="# Document Title\n\nStart writing..."
+                          placeholder="Write your document..."
+                        />
+                        {savedContent && (
+                          <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#353535', borderRadius: '4px' }}>
+                            <p style={{ margin: 0, fontSize: '12px', color: '#9B9B9B' }}>
+                              Last saved content length: {savedContent.length} characters
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import MarkdownEditor from '@/components/organisms/MarkdownEditor/MarkdownEditor';
+
+// Basic usage
+const [content, setContent] = useState('# Hello World');
+
+<MarkdownEditor
+  initialValue={content}
+  onChange={setContent}
+  placeholder="Start writing..."
+/>
+
+// With ref for programmatic control
+const editorRef = useRef();
+
+<MarkdownEditor
+  ref={editorRef}
+  initialValue="# Initial Content"
+/>
+
+// Get content
+const markdown = editorRef.current.getMarkdown();
+
+// Set content
+editorRef.current.setMarkdown('# New Content');
+
+// Read-only mode
+<MarkdownEditor
+  initialValue={content}
+  readOnly={true}
+/>`}
               </pre>
             </div>
           </div>
