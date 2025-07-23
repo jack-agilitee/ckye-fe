@@ -16,6 +16,7 @@ import Avatar from '@/components/atoms/Avatar/Avatar';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
 import AddWorkspaceModal from '@/components/organisms/AddWorkspaceModal/AddWorkspaceModal';
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
+import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
 import styles from './page.module.scss';
@@ -2138,6 +2139,154 @@ const workspaces = [
         {/* Templates Section */}
         <section className={styles.showcase__section}>
           <h2 className={styles.showcase__sectionTitle}>Templates</h2>
+          
+          {/* Sidebar Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>Sidebar</h3>
+            <p className={styles.showcase__componentDescription}>
+              A left navigation sidebar template with account header, dynamic context items, and workspace navigation
+            </p>
+            
+            <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default Sidebar</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '500px', borderRadius: '4px', overflow: 'hidden' }}>
+                  {(() => {
+                    const contextItems = [
+                      { id: '1', name: 'Claude.md' },
+                      { id: '2', name: 'Commands.md' },
+                      { id: '3', name: 'Integrations/MCP' }
+                    ];
+                    
+                    return (
+                      <Sidebar
+                        contextItems={contextItems}
+                        selectedItemId="1"
+                        accountName="AEO"
+                        accountInitial="A"
+                        onContextItemClick={(item) => console.log('Context item clicked:', item.name)}
+                        onAddNewClick={() => console.log('Add new clicked')}
+                        onAccountClick={() => console.log('Account clicked')}
+                        onNotesClick={() => console.log('Notes clicked')}
+                      />
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Click items to see console output. Claude.md is selected by default.</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Admin User Sidebar</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '500px', borderRadius: '4px', overflow: 'hidden' }}>
+                  {(() => {
+                    const contextItems = [
+                      { id: '1', name: 'README.md' },
+                      { id: '2', name: 'Package.json' },
+                      { id: '3', name: 'Config.yaml' },
+                      { id: '4', name: 'Admin Notes.md' }
+                    ];
+                    
+                    return (
+                      <Sidebar
+                        contextItems={contextItems}
+                        selectedItemId="4"
+                        isAdmin={true}
+                        accountName="Agilitee"
+                        accountInitial="A"
+                        onContextItemClick={(item) => console.log('Admin context item:', item.name)}
+                        onAddNewClick={() => console.log('Admin add new')}
+                        onAccountClick={() => console.log('Admin account clicked')}
+                        onNotesClick={() => console.log('Admin notes clicked')}
+                      />
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Shows admin section at bottom. Click "Ckye Admin" to navigate to admin workspace.</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Empty Context Items</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '500px', borderRadius: '4px', overflow: 'hidden' }}>
+                  {(() => {
+                    return (
+                      <Sidebar
+                        contextItems={[]}
+                        selectedItemId={null}
+                        accountName="Demo"
+                        accountInitial="D"
+                        onContextItemClick={(item) => console.log('Empty context item:', item.name)}
+                        onAddNewClick={() => console.log('Add first item')}
+                      />
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Sidebar with no context items - only "Add New" is available.</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Admin Mode</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '500px', borderRadius: '4px', overflow: 'hidden' }}>
+                  {(() => {
+                    return (
+                      <Sidebar
+                        isAdminMode={true}
+                        accountName="Admin User"
+                        accountInitial="A"
+                        onAccountClick={() => console.log('Admin account clicked')}
+                        onNotesClick={() => console.log('Admin notes clicked')}
+                        onAdminBack={() => console.log('Admin back clicked - redirecting home')}
+                      />
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Admin mode shows AccountChanger with admin header and simplified navigation to Workspaces and Users.</p>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import Sidebar from '@/components/templates/Sidebar/Sidebar';
+
+const contextItems = [
+  { id: '1', name: 'Claude.md' },
+  { id: '2', name: 'Commands.md' },
+  { id: '3', name: 'Integrations/MCP' }
+];
+
+const [selectedItem, setSelectedItem] = useState('1');
+
+<div style={{ display: 'flex', height: '100vh' }}>
+  <Sidebar
+    contextItems={contextItems}
+    selectedItemId={selectedItem}
+    isAdmin={false}
+    accountName="AEO"
+    accountInitial="A"
+    onContextItemClick={(item) => {
+      setSelectedItem(item.id);
+      console.log('Navigate to:', item.name);
+    }}
+    onAddNewClick={() => console.log('Open create modal')}
+    onAccountClick={() => console.log('Open account modal')}
+    onNotesClick={() => console.log('Create new note')}
+  />
+  <main style={{ flex: 1 }}>
+    {/* Main content */}
+  </main>
+</div>
+
+// Admin Mode - Shows admin navigation only
+<Sidebar 
+  isAdminMode={true}
+  accountName="Admin User"
+  accountInitial="A"
+  onAccountClick={() => console.log('Admin account')}
+  onNotesClick={() => console.log('Admin notes')}
+/>`}
+              </pre>
+            </div>
+          </div>
           
           {/* UsersTable Component */}
           <div className={styles.showcase__component}>
