@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import ListItem from '@/components/molecules/ListItem/ListItem';
 import styles from './Sidebar.module.scss';
@@ -19,6 +19,7 @@ const Sidebar = ({
   onAdminBack
 }) => {
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleContextItemClick = (item) => {
     if (onContextItemClick) {
@@ -85,13 +86,13 @@ const Sidebar = ({
                 <ListItem
                   text="Workspaces"
                   icon="/box.svg"
-                  selected={false}
+                  selected={pathname === '/admin/workspaces'}
                   onClick={handleWorkspacesClick}
                 />
                 <ListItem
                   text="Users"
                   icon="/person.svg"
-                  selected={false}
+                  selected={pathname === '/admin/users'}
                   onClick={handleUsersClick}
                 />
               </div>
