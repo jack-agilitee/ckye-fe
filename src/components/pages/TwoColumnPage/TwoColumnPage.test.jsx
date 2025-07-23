@@ -1,15 +1,15 @@
 import { render, screen } from '@testing-library/react';
-import AuthPage from './AuthPage';
+import TwoColumnPage from './TwoColumnPage';
 
-describe('AuthPage Template', () => {
+describe('TwoColumnPage Component', () => {
   it('renders without crashing', () => {
-    render(<AuthPage />);
+    render(<TwoColumnPage />);
     expect(screen.getByText('Left Navigation')).toBeInTheDocument();
     expect(screen.getByText('Main Content')).toBeInTheDocument();
   });
 
   it('displays default placeholder content when no props provided', () => {
-    render(<AuthPage />);
+    render(<TwoColumnPage />);
     
     // Check left placeholder
     expect(screen.getByText('Left Navigation')).toBeInTheDocument();
@@ -23,7 +23,7 @@ describe('AuthPage Template', () => {
   it('renders custom left content when provided', () => {
     const CustomLeftContent = () => <div data-testid="custom-left">Custom Navigation</div>;
     
-    render(<AuthPage leftContent={<CustomLeftContent />} />);
+    render(<TwoColumnPage leftContent={<CustomLeftContent />} />);
     
     expect(screen.getByTestId('custom-left')).toBeInTheDocument();
     expect(screen.getByText('Custom Navigation')).toBeInTheDocument();
@@ -33,7 +33,7 @@ describe('AuthPage Template', () => {
   it('renders custom right content when provided', () => {
     const CustomRightContent = () => <div data-testid="custom-right">Custom Main Content</div>;
     
-    render(<AuthPage rightContent={<CustomRightContent />} />);
+    render(<TwoColumnPage rightContent={<CustomRightContent />} />);
     
     expect(screen.getByTestId('custom-right')).toBeInTheDocument();
     expect(screen.getByText('Custom Main Content')).toBeInTheDocument();
@@ -45,7 +45,7 @@ describe('AuthPage Template', () => {
     const CustomRightContent = () => <div data-testid="custom-right">Custom Content</div>;
     
     render(
-      <AuthPage 
+      <TwoColumnPage 
         leftContent={<CustomLeftContent />} 
         rightContent={<CustomRightContent />} 
       />
@@ -58,14 +58,14 @@ describe('AuthPage Template', () => {
   });
 
   it('applies custom className when provided', () => {
-    const { container } = render(<AuthPage className="custom-class" />);
-    const authPageElement = container.firstChild;
+    const { container } = render(<TwoColumnPage className="custom-class" />);
+    const twoColumnPageElement = container.firstChild;
     
-    expect(authPageElement).toHaveClass('custom-class');
+    expect(twoColumnPageElement).toHaveClass('custom-class');
   });
 
   it('has proper semantic structure for accessibility', () => {
-    render(<AuthPage />);
+    render(<TwoColumnPage />);
     
     // Check that headings are properly structured
     const leftHeading = screen.getByRole('heading', { name: 'Left Navigation' });
@@ -102,7 +102,7 @@ describe('AuthPage Template', () => {
     );
     
     render(
-      <AuthPage 
+      <TwoColumnPage 
         leftContent={<ComplexLeftContent />} 
         rightContent={<ComplexRightContent />} 
       />
@@ -126,7 +126,7 @@ describe('AuthPage Template', () => {
     );
     
     render(
-      <AuthPage 
+      <TwoColumnPage 
         leftContent={<SmallLeftContent />} 
         rightContent={<LargeRightContent />} 
       />

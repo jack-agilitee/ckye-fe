@@ -1,6 +1,6 @@
-# AuthPage Template Component
+# TwoColumnPage Component
 
-A responsive two-column layout template for authenticated pages, designed for admin dashboards and similar interfaces.
+A responsive two-column layout component for authenticated pages, designed for admin dashboards and similar interfaces.
 
 ## Figma Reference
 - **URL**: https://www.figma.com/design/1wJBV3eb9vlRvuxQICmBwY/Cyke-Web-App?node-id=7-722&m=dev
@@ -8,7 +8,7 @@ A responsive two-column layout template for authenticated pages, designed for ad
 
 ## Overview
 
-The AuthPage template provides a consistent layout structure with:
+The TwoColumnPage component provides a consistent layout structure with:
 - **Left Section**: Fixed-width sidebar for navigation (200px desktop, full-width mobile)
 - **Right Section**: Flexible main content area
 - **Responsive Design**: Mobile-first approach with breakpoints
@@ -18,11 +18,11 @@ The AuthPage template provides a consistent layout structure with:
 
 ### Basic Usage
 ```jsx
-import AuthPage from '@/components/templates/AuthPage/AuthPage';
+import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 
 const MyPage = () => {
   return (
-    <AuthPage 
+    <TwoColumnPage 
       leftContent={<Navigation />}
       rightContent={<MainContent />}
     />
@@ -33,12 +33,12 @@ const MyPage = () => {
 ### With Placeholder Content
 ```jsx
 // Shows default placeholder content for both sections
-<AuthPage />
+<TwoColumnPage />
 ```
 
 ### Custom Styling
 ```jsx
-<AuthPage 
+<TwoColumnPage 
   className="custom-page-styles"
   leftContent={<SideNav />}
   rightContent={<Dashboard />}
@@ -70,7 +70,7 @@ const MyPage = () => {
 The component uses CSS Modules with BEM methodology:
 
 ```scss
-.auth-page {
+.two-column-page {
   &__left { /* Left sidebar styles */ }
   &__right { /* Right content area styles */ }
   &__placeholder { /* Placeholder content styles */ }
@@ -87,13 +87,13 @@ The component uses CSS Modules with BEM methodology:
 
 ### Admin Dashboard
 ```jsx
-import AuthPage from '@/components/templates/AuthPage/AuthPage';
+import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import AdminNav from '@/components/organisms/AdminNav/AdminNav';
 import UsersList from '@/components/organisms/UsersList/UsersList';
 
 const AdminDashboard = () => {
   return (
-    <AuthPage 
+    <TwoColumnPage 
       leftContent={<AdminNav />}
       rightContent={<UsersList />}
     />
@@ -103,13 +103,13 @@ const AdminDashboard = () => {
 
 ### Settings Page
 ```jsx
-import AuthPage from '@/components/templates/AuthPage/AuthPage';
+import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import SettingsNav from '@/components/molecules/SettingsNav/SettingsNav';
 import AccountSettings from '@/components/organisms/AccountSettings/AccountSettings';
 
 const SettingsPage = () => {
   return (
-    <AuthPage 
+    <TwoColumnPage 
       leftContent={<SettingsNav />}
       rightContent={<AccountSettings />}
     />
@@ -147,7 +147,7 @@ const ComplexPage = () => {
   );
 
   return (
-    <AuthPage 
+    <TwoColumnPage 
       leftContent={leftContent}
       rightContent={rightContent}
     />
@@ -177,18 +177,18 @@ The component includes comprehensive tests covering:
 
 Run tests with:
 ```bash
-npm run test -- AuthPage.test.jsx
+npm run test -- TwoColumnPage.test.jsx
 ```
 
 ## Development Notes
 
 ### File Structure
 ```
-src/components/templates/AuthPage/
-├── AuthPage.jsx           # Main component
-├── AuthPage.module.scss   # Styles with BEM
-├── AuthPage.test.jsx      # Test suite
-└── README.md             # This documentation
+src/components/pages/TwoColumnPage/
+├── TwoColumnPage.jsx           # Main component
+├── TwoColumnPage.module.scss   # Styles with BEM
+├── TwoColumnPage.test.jsx      # Test suite
+└── README.md                  # This documentation
 ```
 
 ### Design Decisions
