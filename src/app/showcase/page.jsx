@@ -14,6 +14,7 @@ import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
+import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
 import styles from './page.module.scss';
 
 export default function ShowcasePage() {
@@ -1920,6 +1921,86 @@ const users = [
   email: string,          // User's email address
   userType: string,       // One of SEAT_TYPES values
   workspaces: string[]    // Array of workspace names
+}`}
+              </pre>
+            </div>
+          </div>
+        </section>
+
+        {/* WorkspacesTable */}
+        <section className={`${styles.showcase__section} ${styles['showcase__section--templates']}`}>
+          <h2 className={styles.showcase__sectionTitle}>WorkspacesTable (Template)</h2>
+          <div className={styles.showcase__component}>
+            <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Basic Usage</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const workspaces = [
+                      { id: 1, name: 'Americal Eagle' },
+                      { id: 2, name: 'Dollar General' },
+                      { id: 3, name: 'Agilitee' },
+                      { id: 4, name: 'Control4' },
+                      { id: 5, name: 'Subway' }
+                    ];
+                    
+                    return <WorkspacesTable workspaces={workspaces} />;
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Empty State</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <WorkspacesTable workspaces={[]} />
+                </div>
+                <p className={styles.showcase__hint}>Shows table header with no data rows</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Long List Example</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const workspaces = [
+                      { id: 1, name: 'Americal Eagle' },
+                      { id: 2, name: 'Dollar General' },
+                      { id: 3, name: 'Agilitee' },
+                      { id: 4, name: 'Control4' },
+                      { id: 5, name: 'Subway' },
+                      { id: 6, name: 'Long Branch Mall' },
+                      { id: 7, name: 'Target' },
+                      { id: 8, name: 'Walmart' },
+                      { id: 9, name: 'Home Depot' },
+                      { id: 10, name: 'Best Buy' },
+                      { id: 11, name: 'Starbucks' },
+                      { id: 12, name: 'McDonalds' }
+                    ];
+                    
+                    return <WorkspacesTable workspaces={workspaces} />;
+                  })()}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
+
+const workspaces = [
+  { id: 1, name: 'Americal Eagle' },
+  { id: 2, name: 'Dollar General' },
+  { id: 3, name: 'Agilitee' },
+  { id: 4, name: 'Control4' },
+  { id: 5, name: 'Subway' }
+];
+
+<WorkspacesTable workspaces={workspaces} />
+
+// Workspace object structure
+{
+  id: string | number,  // Optional unique identifier
+  name: string         // Workspace name to display
 }`}
               </pre>
             </div>
