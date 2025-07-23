@@ -27,6 +27,8 @@
     overflow-x: auto;
     background-color: $background-dark;
     padding: 40px;
+    overflow-y: scroll;
+    max-height: 100vh;
 
     // Responsive behavior for mobile
     @media (max-width: 768px) {

@@ -4,19 +4,14 @@ import { useState } from 'react';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
+import { createUser } from '@/lib/api/users';
 import styles from './UsersPageClient.module.scss';
 
-export default function UsersPageClient({ initialUsers }) {
-  const [users] = useState(initialUsers);
+export default function UsersPageClient({ initialUsers, workspaces }) {
+  const [users, setUsers] = useState(initialUsers);
   const [filteredUsers, setFilteredUsers] = useState(initialUsers);
   const [searchValue, setSearchValue] = useState('');
   const [showAddUserModal, setShowAddUserModal] = useState(false);
-
-  // Extract unique workspaces from users
-  const workspaces = [...new Set(users.flatMap(user => user.workspaces))].map(name => ({
-    id: name,
-    name: name
-  }));
 
   // Handle search functionality
   const handleSearchChange = (e) => {
@@ -38,11 +33,34 @@ export default function UsersPageClient({ initialUsers }) {
     setShowAddUserModal(false);
   };
 
-  const handleAddUser = (userData) => {
-    // TODO: Call API to create user
-    console.log('Adding user:', userData);
-    // For now, just close the modal
-    setShowAddUserModal(false);
+  const handleAddUser = async (userData) => {
+    try {
+      // Call API to create user
+      const newUser = await createUser({
+        name: userData.name,
+        email: userData.email,
+        userType: 'Member', // Default to Member
+        workspaces: [userData.selectedWorkspace] // Add selected workspace
+      });
+      
+      // Add the new user to the list
+      const updatedUsers = [...users, newUser];
+      setUsers(updatedUsers);
+      
+      // Update filtered users if no search is active
+      if (!searchValue) {
+        setFilteredUsers(updatedUsers);
+      }
+      
+      // Close the modal
+      setShowAddUserModal(false);
+      
+      // Optionally show success message
+      console.log('User created successfully:', newUser);
+    } catch (error) {
+      console.error('Failed to create user:', error);
+      // TODO: Show error message to user
+    }
   };
 
   return (
