@@ -6,4 +6,11 @@
   flex-direction: column;
   height: 100%;
   gap: 24px;
+
+  &__loading {
+    @include body-medium;
+    color: $white-secondary;
+    text-align: center;
+    padding: 40px;
+  }
 }

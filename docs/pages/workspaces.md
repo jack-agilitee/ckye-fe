@@ -5,7 +5,8 @@ The Workspaces page provides administrators with a comprehensive view of all wor
 
 ## Route Information
 - **Path**: `/admin/workspaces`
-- **File Location**: `src/app/admin/workspaces/page.jsx`
+- **File Location**: `src/app/admin/workspaces/page.jsx` (Client Component)
+- **Layout Location**: `src/app/admin/workspaces/layout.jsx` (Metadata)
 - **Access Level**: Admin only
 
 ## Components Used
@@ -16,10 +17,11 @@ The Workspaces page provides administrators with a comprehensive view of all wor
   - WorkspacesTable - Displays list of workspaces with user information
 
 ## Data Requirements
-### Server-Side Data
+### Client-Side Data Fetching
 - **Function**: `getWorkspacesData()`
-- **Type**: Server-side async function
+- **Type**: Client-side async function (called in useEffect)
 - **Current Status**: Mock data (to be replaced with actual API call)
+- **Loading State**: Displays "Loading workspaces..." while fetching
 - **Response Format**:
 ```json
 [

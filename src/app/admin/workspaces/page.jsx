@@ -1,13 +1,11 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
 import styles from './page.module.scss';
-
-export const metadata = {
-  title: 'Workspaces | Ckye Admin',
-  description: 'Manage workspaces and users in the Ckye platform',
-};
 
 // TODO: Replace with actual API call when implemented
 async function getWorkspacesData() {
@@ -56,9 +54,27 @@ async function getWorkspacesData() {
   ];
 }
 
-const WorkspacesPage = async () => {
-  // Server-side data fetching
-  const workspaces = await getWorkspacesData();
+const WorkspacesPage = () => {
+  const [workspaces, setWorkspaces] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchWorkspaces = async () => {
+      try {
+        const data = await getWorkspacesData();
+        setWorkspaces(data);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkspaces();
+  }, []);
+
+  const handleAddWorkspace = () => {
+    console.log('Add workspace clicked');
+    // TODO: Implement add workspace functionality
+  };
   
   return (
     <TwoColumnPage
@@ -69,9 +85,13 @@ const WorkspacesPage = async () => {
             title="Workspaces"
             searchPlaceholder="Search Workspaces"
             addButtonText="Add Workspace"
-            onAdd={() => console.log('Add workspace clicked')}
+            onAdd={handleAddWorkspace}
           />
-          <WorkspacesTable workspaces={workspaces} />
+          {loading ? (
+            <div className={styles['workspaces-page__loading']}>Loading workspaces...</div>
+          ) : (
+            <WorkspacesTable workspaces={workspaces} />
+          )}
         </div>
       }
     />

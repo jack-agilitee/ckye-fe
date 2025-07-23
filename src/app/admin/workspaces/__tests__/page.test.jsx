@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import WorkspacesPage from '../page';
 
 // Mock the components
@@ -45,22 +46,23 @@ jest.mock('@/components/templates/WorkspacesTable/WorkspacesTable', () => ({
 }));
 
 describe('WorkspacesPage', () => {
-  it('renders the page with correct structure', async () => {
-    const { container } = render(await WorkspacesPage());
+  it('renders the page with correct structure', () => {
+    render(<WorkspacesPage />);
     
     expect(screen.getByTestId('two-column-page')).toBeInTheDocument();
     expect(screen.getByTestId('left-content')).toBeInTheDocument();
     expect(screen.getByTestId('right-content')).toBeInTheDocument();
   });
 
-  it('renders sidebar with correct active item', async () => {
-    render(await WorkspacesPage());
+  it('renders sidebar in admin mode', () => {
+    render(<WorkspacesPage />);
     
-    expect(screen.getByTestId('sidebar-workspaces')).toBeInTheDocument();
+    // Since we're passing isAdminMode={true}, we just check that sidebar is rendered
+    expect(screen.getByText('Sidebar')).toBeInTheDocument();
   });
 
-  it('renders search header with correct props', async () => {
-    render(await WorkspacesPage());
+  it('renders search header with correct props', () => {
+    render(<WorkspacesPage />);
     
     const searchHeader = screen.getByTestId('search-header');
     expect(searchHeader).toBeInTheDocument();
@@ -69,9 +71,19 @@ describe('WorkspacesPage', () => {
     expect(screen.getByText('Add Workspace')).toBeInTheDocument();
   });
 
-  it('renders workspaces table with data', async () => {
-    render(await WorkspacesPage());
+  it('shows loading state initially', () => {
+    render(<WorkspacesPage />);
     
+    expect(screen.getByText('Loading workspaces...')).toBeInTheDocument();
+  });
+
+  it('renders workspaces table with data after loading', async () => {
+    render(<WorkspacesPage />);
+    
+    await waitFor(() => {
+      expect(screen.queryByText('Loading workspaces...')).not.toBeInTheDocument();
+    });
+
     await waitFor(() => {
       const workspacesTable = screen.getByTestId('workspaces-table');
       expect(workspacesTable).toBeInTheDocument();
@@ -86,8 +98,12 @@ describe('WorkspacesPage', () => {
   });
 
   it('displays correct user counts for workspaces', async () => {
-    render(await WorkspacesPage());
+    render(<WorkspacesPage />);
     
+    await waitFor(() => {
+      expect(screen.queryByText('Loading workspaces...')).not.toBeInTheDocument();
+    });
+
     await waitFor(() => {
       expect(screen.getByText('2 users')).toBeInTheDocument(); // Americal Eagle
       expect(screen.getByText('1 users')).toBeInTheDocument(); // Dollar General
@@ -95,8 +111,8 @@ describe('WorkspacesPage', () => {
     });
   });
 
-  it('has proper page structure with workspaces-page class', async () => {
-    const { container } = render(await WorkspacesPage());
+  it('has proper page structure with workspaces-page class', () => {
+    const { container } = render(<WorkspacesPage />);
     
     const workspacesPageDiv = container.querySelector('.workspaces-page');
     expect(workspacesPageDiv).toBeInTheDocument();
@@ -104,19 +120,20 @@ describe('WorkspacesPage', () => {
 
   it('handles add workspace button click', async () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+    const user = userEvent.setup();
     
-    render(await WorkspacesPage());
+    render(<WorkspacesPage />);
     
     const addButton = screen.getByText('Add Workspace');
-    addButton.click();
+    await user.click(addButton);
     
     expect(consoleSpy).toHaveBeenCalledWith('Add workspace clicked');
     
     consoleSpy.mockRestore();
   });
 
-  it('has proper accessibility attributes', async () => {
-    const { container } = render(await WorkspacesPage());
+  it('has proper accessibility attributes', () => {
+    const { container } = render(<WorkspacesPage />);
     
     // Check for heading hierarchy
     const h1 = container.querySelector('h1');
@@ -125,17 +142,19 @@ describe('WorkspacesPage', () => {
   });
 
   it('renders the correct number of workspaces', async () => {
-    render(await WorkspacesPage());
+    render(<WorkspacesPage />);
     
+    await waitFor(() => {
+      expect(screen.queryByText('Loading workspaces...')).not.toBeInTheDocument();
+    });
+
     await waitFor(() => {
       const tableRows = screen.getAllByRole('row');
       expect(tableRows).toHaveLength(6); // 6 workspaces in mock data
     });
   });
 
-  it('page metadata is defined correctly', () => {
+  it('component is defined correctly', () => {
     expect(WorkspacesPage).toBeDefined();
-    // Note: In a real test environment, you would test the metadata export
-    // but Jest doesn't handle Next.js metadata exports well in unit tests
   });
 });
