@@ -36,7 +36,6 @@ export default function DashboardSidebar({
       
       // Select the newly created page
       setSelectedPageId(newPage.id);
-      router.push(`/dashboard/${companyName}?page=${newPage.id}`);
       
       // Refresh the page to update server data
       router.refresh();
@@ -50,11 +49,6 @@ export default function DashboardSidebar({
     // TODO: Implement account switching
   };
 
-  const handleNotesClick = () => {
-    console.log('Notes clicked');
-    // TODO: Implement notes functionality
-  };
-
   return (
     <Sidebar
       contextItems={pages}
@@ -66,7 +60,7 @@ export default function DashboardSidebar({
       onContextItemClick={handleContextItemClick}
       onAddNewClick={handleAddNewClick}
       onAccountClick={handleAccountClick}
-      onNotesClick={handleNotesClick}
+      onNotesClick={handleAddNewClick}
     />
   );
 }

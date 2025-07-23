@@ -12,14 +12,12 @@ const AccountChanger = ({
   onAdminBack
 }) => {
   const handleAccountClick = () => {
-    console.log('Account dropdown clicked - TODO: Open modal');
     if (onAccountClick) {
       onAccountClick();
     }
   };
 
   const handleNotesClick = () => {
-    console.log('Notes button clicked - TODO: Create new document');
     if (onNotesClick) {
       onNotesClick();
     }
