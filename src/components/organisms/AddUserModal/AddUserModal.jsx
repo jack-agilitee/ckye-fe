@@ -6,23 +6,23 @@ import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import Button from '@/components/atoms/Button/Button';
 import styles from './AddUserModal.module.scss';
 
-const AddUserModal = ({ closeModal, workspaces = [] }) => {
+const AddUserModal = ({ closeModal, workspaces = [], addUsers }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [selectedWorkspace, setSelectedWorkspace] = useState('');
 
   const handleInviteMembers = () => {
-    console.log('calling create user');
-    console.log('Name:', name);
-    console.log('Email:', email);
-    console.log('Selected Workspace:', selectedWorkspace);
-    
-    // TODO: Call the create user API
-    // Example: await createUser({ name, email, workspace: selectedWorkspace });
+    if (addUsers) {
+      addUsers({
+        name,
+        email, 
+        selectedWorkspace
+      })
+    }
   };
 
-  const handleWorkspaceChange = (value) => {
-    setSelectedWorkspace(value);
+  const handleWorkspaceChange = (e) => {
+    setSelectedWorkspace(e.target.value);
   };
 
   // Transform workspaces array into dropdown options
