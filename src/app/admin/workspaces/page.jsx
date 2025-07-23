@@ -5,6 +5,7 @@ import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
+import AddWorkspaceModal from '@/components/organisms/AddWorkspaceModal/AddWorkspaceModal';
 import styles from './page.module.scss';
 
 // TODO: Replace with actual API call when implemented
@@ -57,6 +58,7 @@ async function getWorkspacesData() {
 const WorkspacesPage = () => {
   const [workspaces, setWorkspaces] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchWorkspaces = async () => {
@@ -72,29 +74,36 @@ const WorkspacesPage = () => {
   }, []);
 
   const handleAddWorkspace = () => {
-    console.log('Add workspace clicked');
-    // TODO: Implement add workspace functionality
+    setIsAddModalOpen(true);
   };
   
   return (
-    <TwoColumnPage
-      leftContent={<Sidebar isAdminMode={true} />}
-      rightContent={
-        <div className={styles['workspaces-page']}>
-          <SearchHeader 
-            title="Workspaces"
-            searchPlaceholder="Search Workspaces"
-            addButtonText="Add Workspace"
-            onAdd={handleAddWorkspace}
-          />
-          {loading ? (
-            <div className={styles['workspaces-page__loading']}>Loading workspaces...</div>
-          ) : (
-            <WorkspacesTable workspaces={workspaces} />
-          )}
-        </div>
-      }
-    />
+    <>
+      <TwoColumnPage
+        leftContent={<Sidebar isAdminMode={true} />}
+        rightContent={
+          <div className={styles['workspaces-page']}>
+            <SearchHeader 
+              title="Workspaces"
+              searchPlaceholder="Search Workspaces"
+              buttonText="Add Workspace"
+              onButtonClick={handleAddWorkspace}
+            />
+            {loading ? (
+              <div className={styles['workspaces-page__loading']}>Loading workspaces...</div>
+            ) : (
+              <WorkspacesTable workspaces={workspaces} />
+            )}
+          </div>
+        }
+      />
+      {isAddModalOpen && (
+        <AddWorkspaceModal
+          closeModal={() => setIsAddModalOpen(false)}
+          users={[]} // TODO: Pass actual users list when available
+        />
+      )}
+    </>
   );
 };
 
