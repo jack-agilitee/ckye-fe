@@ -6,4 +6,20 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+
+  &__header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 12px 20px;
+    background-color: $background-dark;
+    border-bottom: 1px solid $border-color;
+    min-height: 48px;
+  }
+
+  &__status {
+    @include body-small;
+    color: $white-secondary;
+    font-style: italic;
+  }
 }

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
-import { addPage } from '@/lib/api/pages';
+import { upsertPage } from '@/lib/api/pages';
 
 export default function DashboardSidebar({ 
   initialPages, 
@@ -26,7 +26,7 @@ export default function DashboardSidebar({
       const newPageName = prompt('Enter page name:');
       if (!newPageName) return;
 
-      const newPage = await addPage({
+      const newPage = await upsertPage({
         name: newPageName.endsWith('.md') ? newPageName : `${newPageName}.md`,
         company: companyName,
         content: `# ${newPageName}\n\nStart writing your content here...`
@@ -55,7 +55,7 @@ export default function DashboardSidebar({
       <Sidebar
         contextItems={pages}
         selectedItemId={selectedPageId}
-        isAdmin={false}
+        isAdmin={true}
         isAdminMode={false}
         accountName={companyName}
         accountInitial={companyName.charAt(0).toUpperCase()}

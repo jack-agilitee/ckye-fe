@@ -26,7 +26,7 @@ The Dashboard page provides a two-column layout with a sidebar for navigation an
 - **Props Filled**: contextItems (array of pages)
 - **API Client Functions**: 
   - `getPages(companyName)` in `lib/api/pages.js`
-  - `addPage(pageData)` in `lib/api/pages.js`
+  - `upsertPage(pageData)` in `lib/api/pages.js` (handles both create and update)
 
 ### Response Format
 ```json

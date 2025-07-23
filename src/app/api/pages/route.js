@@ -64,6 +64,7 @@ export async function GET(request) {
 
 // POST /api/pages
 export async function POST(request) {
+  
   try {
     const body = await request.json();
     
@@ -90,7 +91,7 @@ export async function POST(request) {
     return NextResponse.json(newPage, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to create page' },
+      { error: error.error || 'Failed to create page' },
       { status: 500 }
     );
   }
