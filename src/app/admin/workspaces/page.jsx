@@ -77,6 +77,7 @@ const WorkspacesPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,6 +100,15 @@ const WorkspacesPage = () => {
   const handleAddWorkspace = () => {
     setIsAddModalOpen(true);
   };
+
+  const handleSearchChange = (value) => {
+    setSearchQuery(value);
+  };
+
+  // Filter workspaces based on search query
+  const filteredWorkspaces = workspaces.filter(workspace => 
+    workspace.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   
   return (
     <>
@@ -111,11 +121,12 @@ const WorkspacesPage = () => {
               searchPlaceholder="Search Workspaces"
               buttonText="Add Workspace"
               onButtonClick={handleAddWorkspace}
+              onSearchChange={handleSearchChange}
             />
             {loading ? (
               <div className={styles['workspaces-page__loading']}>Loading workspaces...</div>
             ) : (
-              <WorkspacesTable workspaces={workspaces} />
+              <WorkspacesTable workspaces={filteredWorkspaces} />
             )}
           </div>
         }
@@ -134,6 +145,8 @@ const WorkspacesPage = () => {
             // Add the new workspace to the list
             setWorkspaces([...workspaces, workspace]);
             setIsAddModalOpen(false);
+            // Clear search when adding new workspace so it's visible
+            setSearchQuery('');
           }}
         />
       )}
