@@ -1,8 +1,11 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
-
 export async function getPages(companyName) {
   try {
-    const response = await fetch(`${API_BASE}/api/pages?company=${encodeURIComponent(companyName)}`, {
+    // Use absolute URL for server-side requests
+    const baseUrl = typeof window === 'undefined' 
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}`
+      : '';
+      
+    const response = await fetch(`${baseUrl}/api/pages?company=${encodeURIComponent(companyName)}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -23,7 +26,12 @@ export async function getPages(companyName) {
 
 export async function getPageById(pageId) {
   try {
-    const response = await fetch(`${API_BASE}/api/pages/${pageId}`, {
+    // Use absolute URL for server-side requests
+    const baseUrl = typeof window === 'undefined' 
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}`
+      : '';
+      
+    const response = await fetch(`${baseUrl}/api/pages/${pageId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -44,7 +52,12 @@ export async function getPageById(pageId) {
 
 export async function addPage(pageData) {
   try {
-    const response = await fetch(`${API_BASE}/api/pages`, {
+    // Use absolute URL for server-side requests
+    const baseUrl = typeof window === 'undefined' 
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}`
+      : '';
+      
+    const response = await fetch(`${baseUrl}/api/pages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +79,12 @@ export async function addPage(pageData) {
 
 export async function updatePage(pageId, pageData) {
   try {
-    const response = await fetch(`${API_BASE}/api/pages/${pageId}`, {
+    // Use absolute URL for server-side requests
+    const baseUrl = typeof window === 'undefined' 
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}`
+      : '';
+      
+    const response = await fetch(`${baseUrl}/api/pages/${pageId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -88,7 +106,12 @@ export async function updatePage(pageId, pageData) {
 
 export async function deletePage(pageId) {
   try {
-    const response = await fetch(`${API_BASE}/api/pages/${pageId}`, {
+    // Use absolute URL for server-side requests
+    const baseUrl = typeof window === 'undefined' 
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}`
+      : '';
+      
+    const response = await fetch(`${baseUrl}/api/pages/${pageId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
