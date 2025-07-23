@@ -49,61 +49,13 @@
     gap: 8px;
   }
 
-  &__listItem {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 8px;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    width: 100%;
-    text-align: left;
-
-    &:hover {
-      background-color: rgba($white-primary, 0.05);
-    }
-
-    &--selected {
-      background-color: $black-light;
-      
-      .sidebar__listItemText {
-        color: $white-primary;
-      }
-    }
-  }
-
-  &__listItemIcon {
-    flex-shrink: 0;
-    opacity: 0.8;
-    
-    .sidebar__listItem--selected & {
-      opacity: 1;
-    }
-  }
-
-  &__listItemText {
-    @include body-medium;
-    @include font-medium;
-    color: $white-secondary;
-    letter-spacing: 0.2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    
-    .sidebar__listItem--selected & {
-      color: $white-primary;
-    }
-  }
-
   &__adminSection {
     margin-top: auto;
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
+
 
   // Responsive design
   @media (max-width: 768px) {
@@ -112,9 +64,4 @@
     max-height: 100vh;
   }
 
-  // Focus states for accessibility
-  &__listItem:focus-visible {
-    outline: 2px solid $primary-color;
-    outline-offset: 2px;
-  }
 }

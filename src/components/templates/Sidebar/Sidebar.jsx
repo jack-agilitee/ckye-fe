@@ -1,55 +1,67 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
+import ListItem from '@/components/molecules/ListItem/ListItem';
 import styles from './Sidebar.module.scss';
 
 const Sidebar = ({ 
   contextItems = [],
   selectedItemId = null,
   isAdmin = false,
+  isAdminMode = false,
   accountName = 'AEO',
   accountInitial = 'A',
   onContextItemClick,
   onAddNewClick,
-  onWorkspaceItemClick,
   onAccountClick,
-  onNotesClick
+  onNotesClick,
+  onAdminBack
 }) => {
   const router = useRouter();
 
   const handleContextItemClick = (item) => {
-    console.log(item.name);
     if (onContextItemClick) {
       onContextItemClick(item);
     }
   };
 
   const handleAddNewClick = () => {
-    console.log('add new');
     if (onAddNewClick) {
       onAddNewClick();
     }
   };
 
-  const handleWorkspaceItemClick = (itemName) => {
-    console.log(itemName);
-    if (onWorkspaceItemClick) {
-      onWorkspaceItemClick(itemName);
-    }
+  const handleSettingsClick = () => {
+    console.log('Settings');
+    // TODO: Navigate to settings page
+  };
+
+  const handleInviteMembersClick = () => {
+    console.log('Invite Members');
+    // TODO: Navigate to invite members page
   };
 
   const handleAdminClick = () => {
-    console.log('Ckye Admin');
-    // TODO: Replace with proper routing
     router.push('/admin/workspace');
   };
 
-  const workspaceItems = [
-    { name: 'Settings', icon: '/settings.svg' },
-    { name: 'Invite Members', icon: '/invite.svg' }
-  ];
+  const handleWorkspacesClick = () => {
+    router.push('/admin/workspace');
+  };
+
+  const handleUsersClick = () => {
+    router.push('/admin/users');
+  };
+
+  const handleAdminBack = () => {
+    if (onAdminBack) {
+      onAdminBack();
+    } else {
+      router.push('/');
+    }
+  };
+
 
   return (
     <div className={styles.sidebar}>
@@ -59,101 +71,90 @@ const Sidebar = ({
           accountInitial={accountInitial}
           onAccountClick={onAccountClick}
           onNotesClick={onNotesClick}
-          isAdmin={false}
+          isAdmin={isAdminMode}
+          onAdminBack={handleAdminBack}
         />
       </div>
 
       <div className={styles.sidebar__content}>
-        <div className={styles.sidebar__sections}>
-          {/* Context Section */}
-          <div className={styles.sidebar__section}>
-            <h3 className={styles.sidebar__sectionTitle}>CONTEXT</h3>
-            <div className={styles.sidebar__sectionContent}>
-              {contextItems.map((item) => (
-                <button
-                  key={item.id}
-                  className={`${styles.sidebar__listItem} ${
-                    item.id === selectedItemId ? styles['sidebar__listItem--selected'] : ''
-                  }`}
-                  onClick={() => handleContextItemClick(item)}
-                >
-                  <Image 
-                    src="/document.svg"
-                    alt=""
-                    width={16}
-                    height={16}
-                    className={styles.sidebar__listItemIcon}
-                  />
-                  <span className={styles.sidebar__listItemText}>
-                    {item.name}
-                  </span>
-                </button>
-              ))}
-              <button
-                className={styles.sidebar__listItem}
-                onClick={handleAddNewClick}
-              >
-                <Image 
-                  src="/plus.svg"
-                  alt=""
-                  width={16}
-                  height={16}
-                  className={styles.sidebar__listItemIcon}
+        {isAdminMode ? (
+          // Admin Mode Content
+          <div className={styles.sidebar__sections}>
+            <div className={styles.sidebar__section}>
+              <div className={styles.sidebar__sectionContent}>
+                <ListItem
+                  text="Workspaces"
+                  icon="/box.svg"
+                  selected={false}
+                  onClick={handleWorkspacesClick}
                 />
-                <span className={styles.sidebar__listItemText}>
-                  Add New
-                </span>
-              </button>
+                <ListItem
+                  text="Users"
+                  icon="/person.svg"
+                  selected={false}
+                  onClick={handleUsersClick}
+                />
+              </div>
             </div>
           </div>
-
-          {/* Workspace Section */}
-          <div className={styles.sidebar__section}>
-            <h3 className={styles.sidebar__sectionTitle}>WORKSPACE</h3>
-            <div className={styles.sidebar__sectionContent}>
-              {workspaceItems.map((item) => (
-                <button
-                  key={item.name}
-                  className={styles.sidebar__listItem}
-                  onClick={() => handleWorkspaceItemClick(item.name)}
-                >
-                  <Image 
-                    src={item.icon}
-                    alt=""
-                    width={16}
-                    height={16}
-                    className={styles.sidebar__listItemIcon}
+        ) : (
+          // Regular Mode Content
+          <div className={styles.sidebar__sections}>
+            {/* Context Section */}
+            <div className={styles.sidebar__section}>
+              <h3 className={styles.sidebar__sectionTitle}>CONTEXT</h3>
+              <div className={styles.sidebar__sectionContent}>
+                {contextItems.map((item) => (
+                  <ListItem
+                    key={item.id}
+                    text={item.name}
+                    icon="/document.svg"
+                    selected={item.id === selectedItemId}
+                    onClick={() => handleContextItemClick(item)}
                   />
-                  <span className={styles.sidebar__listItemText}>
-                    {item.name}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Admin Section - Conditional */}
-        {isAdmin && (
-          <div className={styles.sidebar__adminSection}>
-            <h3 className={styles.sidebar__sectionTitle}>ADMIN</h3>
-            <div className={styles.sidebar__sectionContent}>
-              <button
-                className={styles.sidebar__listItem}
-                onClick={handleAdminClick}
-              >
-                <Image 
-                  src="/person.svg"
-                  alt=""
-                  width={16}
-                  height={16}
-                  className={styles.sidebar__listItemIcon}
+                ))}
+                <ListItem
+                  text="Add New"
+                  icon="/plus.svg"
+                  selected={false}
+                  onClick={handleAddNewClick}
                 />
-                <span className={styles.sidebar__listItemText}>
-                  Ckye Admin
-                </span>
-              </button>
+              </div>
             </div>
+
+            {/* Workspace Section */}
+            <div className={styles.sidebar__section}>
+              <h3 className={styles.sidebar__sectionTitle}>WORKSPACE</h3>
+              <div className={styles.sidebar__sectionContent}>
+                <ListItem
+                  text="Settings"
+                  icon="/settings.svg"
+                  selected={false}
+                  onClick={handleSettingsClick}
+                />
+                <ListItem
+                  text="Invite Members"
+                  icon="/invite.svg"
+                  selected={false}
+                  onClick={handleInviteMembersClick}
+                />
+              </div>
+            </div>
+
+            {/* Admin Section - Conditional */}
+            {isAdmin && (
+              <div className={styles.sidebar__adminSection}>
+                <h3 className={styles.sidebar__sectionTitle}>ADMIN</h3>
+                <div className={styles.sidebar__sectionContent}>
+                  <ListItem
+                    text="Ckye Admin"
+                    icon="/person.svg"
+                    selected={false}
+                    onClick={handleAdminClick}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

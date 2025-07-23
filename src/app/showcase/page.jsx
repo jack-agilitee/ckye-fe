@@ -2166,7 +2166,6 @@ const workspaces = [
                         accountInitial="A"
                         onContextItemClick={(item) => console.log('Context item clicked:', item.name)}
                         onAddNewClick={() => console.log('Add new clicked')}
-                        onWorkspaceItemClick={(itemName) => console.log('Workspace item clicked:', itemName)}
                         onAccountClick={() => console.log('Account clicked')}
                         onNotesClick={() => console.log('Notes clicked')}
                       />
@@ -2196,7 +2195,6 @@ const workspaces = [
                         accountInitial="A"
                         onContextItemClick={(item) => console.log('Admin context item:', item.name)}
                         onAddNewClick={() => console.log('Admin add new')}
-                        onWorkspaceItemClick={(itemName) => console.log('Admin workspace:', itemName)}
                         onAccountClick={() => console.log('Admin account clicked')}
                         onNotesClick={() => console.log('Admin notes clicked')}
                       />
@@ -2218,12 +2216,30 @@ const workspaces = [
                         accountInitial="D"
                         onContextItemClick={(item) => console.log('Empty context item:', item.name)}
                         onAddNewClick={() => console.log('Add first item')}
-                        onWorkspaceItemClick={(itemName) => console.log('Workspace:', itemName)}
                       />
                     );
                   })()}
                 </div>
                 <p className={styles.showcase__hint}>Sidebar with no context items - only "Add New" is available.</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Admin Mode</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '500px', borderRadius: '4px', overflow: 'hidden' }}>
+                  {(() => {
+                    return (
+                      <Sidebar
+                        isAdminMode={true}
+                        accountName="Admin User"
+                        accountInitial="A"
+                        onAccountClick={() => console.log('Admin account clicked')}
+                        onNotesClick={() => console.log('Admin notes clicked')}
+                        onAdminBack={() => console.log('Admin back clicked - redirecting home')}
+                      />
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Admin mode shows AccountChanger with admin header and simplified navigation to Workspaces and Users.</p>
               </div>
             </div>
 
@@ -2252,9 +2268,6 @@ const [selectedItem, setSelectedItem] = useState('1');
       console.log('Navigate to:', item.name);
     }}
     onAddNewClick={() => console.log('Open create modal')}
-    onWorkspaceItemClick={(itemName) => {
-      console.log('Navigate to:', itemName);
-    }}
     onAccountClick={() => console.log('Open account modal')}
     onNotesClick={() => console.log('Create new note')}
   />
@@ -2263,10 +2276,13 @@ const [selectedItem, setSelectedItem] = useState('1');
   </main>
 </div>
 
-// Admin variant
+// Admin Mode - Shows admin navigation only
 <Sidebar 
-  isAdmin={true}
-  // ... other props
+  isAdminMode={true}
+  accountName="Admin User"
+  accountInitial="A"
+  onAccountClick={() => console.log('Admin account')}
+  onNotesClick={() => console.log('Admin notes')}
 />`}
               </pre>
             </div>

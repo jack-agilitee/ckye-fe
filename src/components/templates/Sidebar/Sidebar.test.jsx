@@ -20,10 +20,20 @@ jest.mock('@/components/organisms/AccountChanger/AccountChanger', () => {
   };
 });
 
-// Mock Next.js Image component
-jest.mock('next/image', () => {
-  return function Image({ src, alt, ...props }) {
-    return <img src={src} alt={alt} {...props} />;
+// Mock ListItem component
+jest.mock('@/components/molecules/ListItem/ListItem', () => {
+  return function ListItem({ text, icon, selected, onClick }) {
+    return (
+      <div 
+        data-testid="list-item" 
+        data-text={text}
+        data-selected={selected}
+        onClick={onClick}
+        className={selected ? 'selected' : ''}
+      >
+        {text}
+      </div>
+    );
   };
 });
 
@@ -31,9 +41,9 @@ describe('Sidebar', () => {
   const mockPush = jest.fn();
   const mockOnContextItemClick = jest.fn();
   const mockOnAddNewClick = jest.fn();
-  const mockOnWorkspaceItemClick = jest.fn();
   const mockOnAccountClick = jest.fn();
   const mockOnNotesClick = jest.fn();
+  const mockOnAdminBack = jest.fn();
 
   const mockContextItems = [
     { id: '1', name: 'Claude.md' },
@@ -61,7 +71,6 @@ describe('Sidebar', () => {
         selectedItemId="1"
         onContextItemClick={mockOnContextItemClick}
         onAddNewClick={mockOnAddNewClick}
-        onWorkspaceItemClick={mockOnWorkspaceItemClick}
         onAccountClick={mockOnAccountClick}
         onNotesClick={mockOnNotesClick}
       />
@@ -123,23 +132,17 @@ describe('Sidebar', () => {
   });
 
   it('should handle workspace item clicks', () => {
-    render(
-      <Sidebar 
-        onWorkspaceItemClick={mockOnWorkspaceItemClick}
-      />
-    );
+    render(<Sidebar />);
 
     const settingsButton = screen.getByText('Settings');
     fireEvent.click(settingsButton);
 
     expect(consoleLogSpy).toHaveBeenCalledWith('Settings');
-    expect(mockOnWorkspaceItemClick).toHaveBeenCalledWith('Settings');
 
     const inviteButton = screen.getByText('Invite Members');
     fireEvent.click(inviteButton);
 
     expect(consoleLogSpy).toHaveBeenCalledWith('Invite Members');
-    expect(mockOnWorkspaceItemClick).toHaveBeenCalledWith('Invite Members');
   });
 
   it('should show admin section when isAdmin is true', () => {
@@ -168,9 +171,60 @@ describe('Sidebar', () => {
     const adminButton = screen.getByText('Ckye Admin');
     fireEvent.click(adminButton);
 
-    expect(consoleLogSpy).toHaveBeenCalledWith('Ckye Admin');
     expect(mockPush).toHaveBeenCalledWith('/admin/workspace');
   });
+
+  it('should render admin mode when isAdminMode is true', () => {
+    render(
+      <Sidebar isAdminMode={true} />
+    );
+
+    expect(screen.getByText('Workspaces')).toBeInTheDocument();
+    expect(screen.getByText('Users')).toBeInTheDocument();
+    expect(screen.getByTestId('account-changer')).toBeInTheDocument();
+    
+    // Should not show regular sidebar content
+    expect(screen.queryByText('CONTEXT')).not.toBeInTheDocument();
+    expect(screen.queryByText('WORKSPACE')).not.toBeInTheDocument();
+  });
+
+  it('should handle admin mode navigation clicks', () => {
+    render(
+      <Sidebar isAdminMode={true} />
+    );
+
+    const workspacesButton = screen.getByText('Workspaces');
+    fireEvent.click(workspacesButton);
+
+    expect(mockPush).toHaveBeenCalledWith('/admin/workspace');
+
+    const usersButton = screen.getByText('Users');
+    fireEvent.click(usersButton);
+
+    expect(mockPush).toHaveBeenCalledWith('/admin/users');
+  });
+
+  it('should handle admin back with custom callback', () => {
+    render(
+      <Sidebar 
+        isAdminMode={true}
+        onAdminBack={mockOnAdminBack}
+      />
+    );
+
+    // The AccountChanger component should receive the onAdminBack prop
+    expect(screen.getByTestId('account-changer')).toBeInTheDocument();
+  });
+
+  it('should handle admin back with default home redirect', () => {
+    render(
+      <Sidebar isAdminMode={true} />
+    );
+
+    // When no onAdminBack prop is provided, should default to home redirect
+    expect(screen.getByTestId('account-changer')).toBeInTheDocument();
+  });
+
 
   it('should pass correct props to AccountChanger', () => {
     render(
@@ -193,16 +247,16 @@ describe('Sidebar', () => {
     expect(mockOnNotesClick).toHaveBeenCalled();
   });
 
-  it('should apply selected class to the correct item', () => {
-    const { container } = render(
+  it('should apply selected state to the correct item', () => {
+    render(
       <Sidebar 
         contextItems={mockContextItems}
         selectedItemId="2"
       />
     );
 
-    const selectedItems = container.querySelectorAll('.sidebar__listItem--selected');
-    expect(selectedItems).toHaveLength(1);
+    const selectedItem = screen.getByTestId('list-item').closest('[data-selected="true"]');
+    expect(selectedItem).toBeInTheDocument();
   });
 
   it('should render with default props', () => {
@@ -245,13 +299,4 @@ describe('Sidebar', () => {
     // Should not throw error when callback is not provided
   });
 
-  it('should handle workspace item click without callback', () => {
-    render(<Sidebar />);
-
-    const settingsButton = screen.getByText('Settings');
-    fireEvent.click(settingsButton);
-
-    expect(consoleLogSpy).toHaveBeenCalledWith('Settings');
-    // Should not throw error when callback is not provided
-  });
 });

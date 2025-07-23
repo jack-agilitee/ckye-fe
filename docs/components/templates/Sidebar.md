@@ -12,6 +12,7 @@ The Sidebar template component provides a complete left navigation layout for th
 - **Context Section**: Dynamic list of document/file items with selection state
 - **Workspace Section**: Static items (Settings, Invite Members) with console logging
 - **Admin Section**: Conditional section that appears only for admin users
+- **Admin Mode**: Complete alternative layout for admin interface with Workspaces and Users navigation
 - **Navigation**: Routing to admin workspace page and console logging for interactions
 - **Selection State**: Visual feedback for selected context items
 - **Responsive Design**: Adapts to mobile screens
@@ -40,9 +41,6 @@ const MyApp = () => {
     // TODO: Show modal or navigate to create new document
   };
 
-  const handleWorkspaceItemClick = (itemName) => {
-    // TODO: Navigate to settings or invite members page
-  };
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
@@ -54,12 +52,25 @@ const MyApp = () => {
         accountInitial="A"
         onContextItemClick={handleContextItemClick}
         onAddNewClick={handleAddNewClick}
-        onWorkspaceItemClick={handleWorkspaceItemClick}
         onAccountClick={() => console.log('Account clicked')}
         onNotesClick={() => console.log('Notes clicked')}
       />
       <main style={{ flex: 1 }}>
         {/* Main content area */}
+      </main>
+    </div>
+  );
+};
+
+// Admin Mode Example
+const AdminApp = () => {
+  return (
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <Sidebar
+        isAdminMode={true}
+      />
+      <main style={{ flex: 1 }}>
+        {/* Admin content area */}
       </main>
     </div>
   );
@@ -72,14 +83,15 @@ const MyApp = () => {
 |------|------|----------|---------|-------------|
 | contextItems | array | No | [] | Array of context item objects with `id` and `name` properties |
 | selectedItemId | string | No | null | ID of the currently selected context item |
-| isAdmin | boolean | No | false | Whether to show the admin section |
+| isAdmin | boolean | No | false | Whether to show the admin section in regular mode |
+| isAdminMode | boolean | No | false | Whether to render the admin mode layout with Workspaces/Users navigation |
 | accountName | string | No | 'AEO' | Account name displayed in header |
 | accountInitial | string | No | 'A' | Account initial displayed in avatar |
 | onContextItemClick | function | No | - | Callback when a context item is clicked |
 | onAddNewClick | function | No | - | Callback when "Add New" is clicked |
-| onWorkspaceItemClick | function | No | - | Callback when workspace items are clicked |
 | onAccountClick | function | No | - | Callback when account changer is clicked |
 | onNotesClick | function | No | - | Callback when notes button is clicked |
+| onAdminBack | function | No | - | Callback when admin back button is clicked (defaults to home redirect) |
 
 ## Context Item Object Structure
 
@@ -92,26 +104,46 @@ const MyApp = () => {
 
 ## Component Behavior
 
-### Context Section
+### Regular Mode (default)
+
+#### Context Section
 - **Dynamic Items**: Rendered from `contextItems` prop
 - **Selection State**: Item matching `selectedItemId` gets highlighted background
 - **Click Handling**: Logs item name to console and calls `onContextItemClick`
 - **Add New**: Always present, logs "add new" and calls `onAddNewClick`
 
-### Workspace Section
+#### Workspace Section
 - **Static Items**: Settings and Invite Members are always present
-- **Click Handling**: Logs item name to console and calls `onWorkspaceItemClick`
+- **Click Handling**: Logs item name to console with TODO comments for future navigation
 - **Icons**: Uses `/settings.svg` and `/invite.svg` from public directory
 
-### Admin Section
+#### Admin Section
 - **Conditional Rendering**: Only appears when `isAdmin` is true
 - **Navigation**: Clicking "Ckye Admin" navigates to `/admin/workspace`
 - **Console Logging**: Logs "Ckye Admin" when clicked
 
-### Account Header
+#### Account Header
 - **Integration**: Uses existing AccountChanger component
-- **Non-Admin Mode**: Always renders in default (non-admin) variant
+- **Admin State**: Controlled by `isAdmin` prop
 - **Props Passthrough**: Passes account-related props to AccountChanger
+
+### Admin Mode (`isAdminMode={true}`)
+
+#### Admin Header
+- **AccountChanger Integration**: Uses existing AccountChanger component with `isAdmin={true}`
+- **Admin Variant**: AccountChanger automatically renders admin header with back button and "Ckye Admin" title
+- **Props Passthrough**: Passes account-related props to AccountChanger
+
+#### Navigation Items
+- **Workspaces**: Navigates to `/admin/workspace`
+- **Users**: Navigates to `/admin/users`
+- **Icons**: Uses `/workspace.svg` and `/users.svg` from public directory
+
+#### Layout Differences
+- **No Context Section**: Context items are not shown in admin mode
+- **No Workspace Section**: Regular workspace items are not shown
+- **AccountChanger in Admin Mode**: Shows admin variant of AccountChanger
+- **Simplified Layout**: Only shows admin navigation items
 
 ## Styling
 
@@ -128,11 +160,17 @@ The component uses SCSS modules with BEM methodology:
 ## Icons Used
 
 The component uses the following icons from the public directory:
+
+### Regular Mode
 - `/document.svg` - For context items
 - `/plus.svg` - For "Add New" button
 - `/settings.svg` - For Settings item
 - `/invite.svg` - For Invite Members item
 - `/person.svg` - For Admin item
+
+### Admin Mode
+- `/workspace.svg` - For Workspaces navigation
+- `/users.svg` - For Users navigation
 
 ## Accessibility
 
