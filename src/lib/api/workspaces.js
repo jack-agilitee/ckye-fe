@@ -25,6 +25,7 @@ export async function getWorkspaces() {
 }
 
 export async function createWorkspace(workspaceData) {
+  console.log('j', workspaceData)
   try {
     // Use absolute URL for server-side requests
     const url = typeof window === 'undefined' 

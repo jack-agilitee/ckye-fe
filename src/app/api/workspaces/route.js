@@ -44,6 +44,20 @@ export async function GET() {
   }
 }
 
+// Mock users data to simulate user lookup
+const mockUsers = [
+  { id: '1', name: 'John Doe', email: 'john@example.com', avatar: null },
+  { id: '2', name: 'Jane Smith', email: 'jane@example.com', avatar: null },
+  { id: '3', name: 'Bob Wilson', email: 'bob@example.com', avatar: null },
+  { id: '4', name: 'Alice Brown', email: 'alice@example.com', avatar: null },
+  { id: '5', name: 'Charlie Davis', email: 'charlie@example.com', avatar: null },
+  { id: '6', name: 'Eve Martin', email: 'eve@example.com', avatar: null },
+  { id: '7', name: 'Frank Thompson', email: 'frank@example.com', avatar: null },
+  { id: '8', name: 'Grace Lee', email: 'grace@example.com', avatar: null },
+  { id: '9', name: 'Henry Williams', email: 'henry@example.com', avatar: null },
+  { id: '10', name: 'Iris Johnson', email: 'iris@example.com', avatar: null },
+];
+
 // POST /api/workspaces
 export async function POST(request) {
   try {
@@ -63,7 +77,8 @@ export async function POST(request) {
       id: mockWorkspaces.length + 1,
       name: body.name,
       description: body.description || '',
-      userCount: 0,
+      userCount: users.length,
+      users: body.userIds, // Include full user objects
       createdAt: new Date().toISOString(),
       status: 'active'
     };
