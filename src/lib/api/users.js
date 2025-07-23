@@ -1,9 +1,11 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
-
-export async function getUsers(params = {}) {
+export async function getUsers() {
   try {
-    const queryString = new URLSearchParams(params).toString();
-    const response = await fetch(`${API_BASE}/api/users${queryString ? `?${queryString}` : ''}`, {
+    // Use absolute URL for server-side requests
+    const url = typeof window === 'undefined' 
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/users`
+      : '/api/users';
+      
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -24,7 +26,12 @@ export async function getUsers(params = {}) {
 
 export async function createUser(userData) {
   try {
-    const response = await fetch(`${API_BASE}/api/users`, {
+    // Use absolute URL for server-side requests
+    const url = typeof window === 'undefined' 
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/users`
+      : '/api/users';
+      
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

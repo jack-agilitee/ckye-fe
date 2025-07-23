@@ -10,7 +10,8 @@ export const metadata = {
 
 export default async function UsersPage() {
   // Server-side API call to fetch users
-  const { data: users } = await getUsers();
+  const response = await getUsers();
+  const users = response.data;
   
   return (
     <TwoColumnPage

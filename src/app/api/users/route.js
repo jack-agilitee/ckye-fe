@@ -93,37 +93,11 @@ const mockUsers = [
 ];
 
 // GET /api/users
-export async function GET(request) {
+export async function GET() {
   try {
-    // Extract query parameters for future use
-    const { searchParams } = new URL(request.url);
-    const search = searchParams.get('search') || '';
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    
-    // Filter users based on search query
-    let filteredUsers = mockUsers;
-    if (search) {
-      filteredUsers = mockUsers.filter(user => 
-        user.name.toLowerCase().includes(search.toLowerCase()) ||
-        user.email.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-    
-    // Calculate pagination
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
-    
-    // Return successful response
+    // Return all users without filtering or pagination
     return NextResponse.json({
-      data: paginatedUsers,
-      meta: {
-        page,
-        limit,
-        total: filteredUsers.length,
-        totalPages: Math.ceil(filteredUsers.length / limit)
-      }
+      data: mockUsers
     });
   } catch {
     // Handle errors appropriately
