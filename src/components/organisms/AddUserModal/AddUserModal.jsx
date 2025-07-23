@@ -73,14 +73,14 @@ const AddUserModal = ({ closeModal, workspaces = [] }) => {
           
           <div className={styles['add-user-modal__actions']}>
             <Button
-              variant="secondary"
+              variant="primary"
               onClick={closeModal}
               className={styles['add-user-modal__button']}
             >
               Cancel
             </Button>
             <Button
-              variant="primary"
+              variant="secondary"
               onClick={handleInviteMembers}
               className={styles['add-user-modal__button']}
             >
