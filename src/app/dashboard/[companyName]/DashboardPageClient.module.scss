@@ -1,0 +1,37 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.dashboard-content {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background-color: $background-dark;
+    border-bottom: 1px solid $border-color;
+    min-height: 48px;
+  }
+
+  &__title {
+    @include heading-3;
+    color: $white-primary;
+    margin: 0;
+  }
+
+  &__status-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__status {
+    @include body-small;
+    color: $white-secondary;
+    font-style: italic;
+  }
+}

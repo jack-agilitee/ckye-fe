@@ -2,6 +2,10 @@
 @import '../../../styles/mixins';
 
 .settings-modal {
+  position: absolute;
+  top: 70px; // Position below the AccountChanger
+  left: 8px; // 8px from left edge of sidebar
+  right: 8px; // 8px from right edge of sidebar
   background-color: $black-bg-dark;
   border: 1px solid $black-light;
   border-radius: 16px;
@@ -9,8 +13,9 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 290px;
+  width: fit-content;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  z-index: 1000; // Ensure it's above other content
 
   &__workspace {
     // Custom styling for the User component when used as workspace header
