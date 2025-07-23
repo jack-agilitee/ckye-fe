@@ -1,36 +1,111 @@
 "use client";
 
-import { MDXEditor, MDXEditorMethods, headingsPlugin, toolbarPlugin, UndoRedo, BoldItalicUnderlineToggles } from "@mdxeditor/editor";
-import { FC } from "react";
+import { 
+  MDXEditor, 
+  MDXEditorMethods, 
+  headingsPlugin, 
+  toolbarPlugin, 
+  UndoRedo, 
+  BoldItalicUnderlineToggles,
+  listsPlugin,
+  quotePlugin,
+  thematicBreakPlugin,
+  linkPlugin,
+  linkDialogPlugin,
+  imagePlugin,
+  tablePlugin,
+  codeBlockPlugin,
+  codeMirrorPlugin,
+  diffSourcePlugin,
+  markdownShortcutPlugin,
+  frontmatterPlugin,
+  BlockTypeSelect,
+  CreateLink,
+  InsertImage,
+  InsertTable,
+  InsertThematicBreak,
+  ListsToggle,
+  CodeToggle,
+  DiffSourceToggleWrapper,
+  Separator
+} from "@mdxeditor/editor";
+import { FC, RefObject } from "react";
+import "@mdxeditor/editor/style.css";
+import styles from './MarkdownEditor.module.scss';
 
 interface MarkdownEditorProps {
   markdown: string;
-  editorRef?: React.MutableRefObject<MDXEditorMethods | null>;
+  editorRef?: RefObject<MDXEditorMethods | null>;
+  onChange?: (markdown: string) => void;
 }
 
 /**
- * Extend this Component further with the necessary plugins or props you need.
- * proxying the ref is necessary. Next.js dynamically imported components don't support refs.
+ * A fully-featured markdown editor with toolbar and multiple plugins
  */
-const MarkdownEditor: FC<MarkdownEditorProps> = ({ markdown = '', editorRef }) => {
+const MarkdownEditor: FC<MarkdownEditorProps> = ({ markdown = '', editorRef, onChange }) => {
   return (
-    <MDXEditor
-      onChange={(e) => console.log(e)}
-      ref={editorRef}
-      markdown={markdown}
-      plugins={[
-        headingsPlugin(),
-        toolbarPlugin({
-          toolbarClassName: 'my-classname',
-          toolbarContents: () => (
-            <>
-              <UndoRedo />
-              <BoldItalicUnderlineToggles />
-            </>
-          )
-        })
-      ]}
-    />
+    <div className={styles['markdown-editor']}>
+      <MDXEditor
+        onChange={(newMarkdown) => {
+          if (onChange) {
+            onChange(newMarkdown);
+          }
+        }}
+        ref={editorRef}
+        markdown={markdown}
+        plugins={[
+          headingsPlugin(),
+          listsPlugin(),
+          quotePlugin(),
+          thematicBreakPlugin(),
+          linkPlugin(),
+          linkDialogPlugin(),
+          imagePlugin(),
+          tablePlugin(),
+          codeBlockPlugin({ defaultCodeBlockLanguage: 'javascript' }),
+          codeMirrorPlugin({ 
+            codeBlockLanguages: { 
+              js: 'JavaScript', 
+              ts: 'TypeScript',
+              tsx: 'TypeScript React',
+              jsx: 'JavaScript React',
+              css: 'CSS',
+              scss: 'SCSS',
+              html: 'HTML',
+              json: 'JSON',
+              python: 'Python',
+              sql: 'SQL',
+              bash: 'Bash',
+              markdown: 'Markdown'
+            } 
+          }),
+          diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: markdown }),
+          markdownShortcutPlugin(),
+          frontmatterPlugin(),
+          toolbarPlugin({
+            toolbarContents: () => (
+              <>
+                <DiffSourceToggleWrapper>
+                  <Separator />
+                  <BoldItalicUnderlineToggles />
+                  <CodeToggle />
+                  <Separator />
+                  <BlockTypeSelect />
+                  <Separator />
+                  <ListsToggle />
+                  <Separator />
+                  <CreateLink />
+                  <InsertImage />
+                  <Separator />
+                  <InsertTable />
+                  <InsertThematicBreak />
+                </DiffSourceToggleWrapper>
+              </>
+            )
+          })
+        ]}
+      />
+    </div>
   );
 };
 
