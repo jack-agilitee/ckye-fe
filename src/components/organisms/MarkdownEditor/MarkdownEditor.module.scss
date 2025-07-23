@@ -1,0 +1,59 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.markdown-editor {
+  background-color: $background-dark;
+  border-radius: 8px;
+  height: 100%;
+  overflow: hidden;
+
+  &__container {
+    height: 100%;
+    padding: 40px;
+    overflow-y: auto;
+  }
+
+  &__placeholder {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  &__title {
+    @include heading-1;
+    color: $white-primary;
+    margin: 0 0 24px 0;
+  }
+
+  &__description {
+    @include body-large;
+    color: $white-secondary;
+    margin: 0 0 32px 0;
+  }
+
+  &__info {
+    @include body-medium;
+    color: $white-secondary;
+    margin: 0 0 16px 0;
+  }
+
+  &__features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      @include body-medium;
+      color: $white-secondary;
+      margin-bottom: 12px;
+      padding-left: 24px;
+      position: relative;
+
+      &:before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        color: $primary-color;
+      }
+    }
+  }
+}
