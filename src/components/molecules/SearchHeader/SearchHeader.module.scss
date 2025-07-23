@@ -1,0 +1,48 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.search-header {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+
+  &__title {
+    @include heading-2;
+    color: $white-primary;
+    margin: 0;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: space-between;
+  }
+
+  &__search {
+    flex: 1;
+    max-width: 300px;
+  }
+
+  &__button {
+    // Button component already has its own styles
+    // This is for any additional customization if needed
+  }
+
+  // Responsive layout
+  @media (max-width: 768px) {
+    &__controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__search {
+      max-width: 100%;
+    }
+
+    &__button {
+      width: 100%;
+    }
+  }
+}

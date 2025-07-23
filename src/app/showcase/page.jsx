@@ -10,6 +10,7 @@ import User from '@/components/molecules/User/User';
 import ListItem from '@/components/molecules/ListItem/ListItem';
 import SeatType, { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
 import WorkspaceSelector from '@/components/molecules/WorkspaceSelector/WorkspaceSelector';
+import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
@@ -1419,6 +1420,154 @@ const [selected, setSelected] = useState([
   options={users}
   value={selected}
   onChange={setSelected}
+/>`}
+              </pre>
+            </div>
+          </div>
+
+          {/* SearchHeader Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>SearchHeader</h3>
+            <p className={styles.showcase__componentDescription}>
+              A page header component with title, search functionality, and action button
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default Usage</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '24px', borderRadius: '4px' }}>
+                  {(() => {
+                    const [searchValue, setSearchValue] = useState('');
+                    
+                    return (
+                      <SearchHeader 
+                        searchValue={searchValue}
+                        onSearchChange={(e) => setSearchValue(e.target.value)}
+                        onSearch={(value) => {
+                          console.log('Searching for:', value);
+                          alert(`Searching for: ${value}`);
+                        }}
+                        onButtonClick={() => {
+                          console.log('Add Users clicked');
+                          alert('Add Users clicked!');
+                        }}
+                      />
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Try searching and clicking the button</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Text</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '24px', borderRadius: '4px' }}>
+                  <SearchHeader 
+                    title="Products"
+                    searchPlaceholder="Find products..."
+                    buttonText="New Product"
+                    onSearch={(value) => console.log('Product search:', value)}
+                    onButtonClick={() => console.log('New product')}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Different Page Types</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '24px', borderRadius: '4px' }}>
+                  <div style={{ marginBottom: '32px' }}>
+                    <SearchHeader 
+                      title="Projects"
+                      searchPlaceholder="Search projects..."
+                      buttonText="Create Project"
+                      onSearch={(value) => console.log('Project search:', value)}
+                      onButtonClick={() => console.log('Create project')}
+                    />
+                  </div>
+                  <div>
+                    <SearchHeader 
+                      title="Documents"
+                      searchPlaceholder="Find documents..."
+                      buttonText="Upload"
+                      onSearch={(value) => console.log('Document search:', value)}
+                      onButtonClick={() => console.log('Upload document')}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>With Controlled Search</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '24px', borderRadius: '4px' }}>
+                  {(() => {
+                    const [searchTerm, setSearchTerm] = useState('');
+                    const [lastSearch, setLastSearch] = useState('');
+                    
+                    return (
+                      <>
+                        <SearchHeader 
+                          title="Team Members"
+                          searchPlaceholder="Search team..."
+                          buttonText="Invite"
+                          searchValue={searchTerm}
+                          onSearchChange={(e) => setSearchTerm(e.target.value)}
+                          onSearch={(value) => {
+                            setLastSearch(value);
+                            console.log('Team search:', value);
+                          }}
+                          onButtonClick={() => console.log('Invite member')}
+                        />
+                        {lastSearch && (
+                          <p style={{ marginTop: '16px', color: '#9B9B9B' }}>
+                            Last search: "{lastSearch}"
+                          </p>
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
+
+// Basic usage
+<SearchHeader 
+  onSearch={(value) => console.log('Search:', value)}
+  onButtonClick={() => console.log('Button clicked')}
+/>
+
+// Custom text
+<SearchHeader 
+  title="Products"
+  searchPlaceholder="Find products..."
+  buttonText="New Product"
+  onSearch={handleSearch}
+  onButtonClick={handleAddProduct}
+/>
+
+// Controlled search
+const [searchValue, setSearchValue] = useState('');
+
+<SearchHeader 
+  searchValue={searchValue}
+  onSearchChange={(e) => setSearchValue(e.target.value)}
+  onSearch={handleSearch}
+  onButtonClick={handleAddUsers}
+/>
+
+// All props
+<SearchHeader 
+  title="Users"
+  searchPlaceholder="Search Users"
+  searchValue={searchValue}
+  onSearchChange={handleSearchChange}
+  onSearch={handleSearch}
+  buttonText="Add Users"
+  onButtonClick={handleButtonClick}
+  className="custom-header"
 />`}
               </pre>
             </div>
