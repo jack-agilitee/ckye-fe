@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import MarkdownEditor from '@/components/organisms/MarkdownEditor/MarkdownEditor';
+import dynamic from 'next/dynamic'
+const MarkdownEditor = dynamic(() => import('../../../components/organisms/MarkdownEditor/MarkdownEditor'), { ssr: false })
 import styles from './DashboardPageClient.module.scss';
 
 export default function DashboardPageClient({ 
@@ -15,8 +16,7 @@ export default function DashboardPageClient({
   return (
     <div className={styles['dashboard-content']}>
       <MarkdownEditor
-        content={currentPage?.content || ''}
-        placeholder="Select a page from the sidebar to start editing..."
+        markdown={currentPage?.content || 'Select a page from the sidebar to start editing...'}
         readOnly={false}
       />
     </div>
