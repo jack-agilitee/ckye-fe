@@ -19,6 +19,7 @@ import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
+import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import styles from './page.module.scss';
 
 export default function ShowcasePage() {
@@ -2150,7 +2151,7 @@ const workspaces = [
             <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Default Sidebar</h4>
-                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '500px', borderRadius: '4px', overflow: 'hidden' }}>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '100vh', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     const contextItems = [
                       { id: '1', name: 'Claude.md' },
@@ -2177,7 +2178,7 @@ const workspaces = [
 
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Admin User Sidebar</h4>
-                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '500px', borderRadius: '4px', overflow: 'hidden' }}>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '100vh', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     const contextItems = [
                       { id: '1', name: 'README.md' },
@@ -2206,7 +2207,7 @@ const workspaces = [
 
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Empty Context Items</h4>
-                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '500px', borderRadius: '4px', overflow: 'hidden' }}>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '100vh', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     return (
                       <Sidebar
@@ -2225,7 +2226,7 @@ const workspaces = [
 
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Admin Mode</h4>
-                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '500px', borderRadius: '4px', overflow: 'hidden' }}>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', height: '100vh', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     return (
                       <Sidebar
@@ -2298,7 +2299,7 @@ const [selectedItem, setSelectedItem] = useState('1');
             <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Default UsersTable</h4>
-                <div className={styles.showcase__exampleContent}>
+                <div className={styles.showcase__exampleContent} style={{ height: '100vh', backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     const users = [
                       {
@@ -2395,7 +2396,7 @@ const [selectedItem, setSelectedItem] = useState('1');
 
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Empty State</h4>
-                <div className={styles.showcase__exampleContent}>
+                <div className={styles.showcase__exampleContent} style={{ height: '100vh', backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   <UsersTable users={[]} />
                 </div>
                 <p className={styles.showcase__hint}>Shows table headers with no data rows</p>
@@ -2403,7 +2404,7 @@ const [selectedItem, setSelectedItem] = useState('1');
 
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Full Example</h4>
-                <div className={styles.showcase__exampleContent}>
+                <div className={styles.showcase__exampleContent} style={{ height: '100vh', backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     const users = [
                       {
@@ -2519,16 +2520,18 @@ const users = [
               </pre>
             </div>
           </div>
-        </section>
 
-        {/* WorkspacesTable */}
-        <section className={`${styles.showcase__section} ${styles['showcase__section--templates']}`}>
-          <h2 className={styles.showcase__sectionTitle}>WorkspacesTable (Template)</h2>
+          {/* WorkspacesTable Component */}
           <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>WorkspacesTable</h3>
+            <p className={styles.showcase__componentDescription}>
+              A table template displaying workspace information with name and management actions
+            </p>
+            
             <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
               <div className={styles.showcase__example}>
-                <h4 className={styles.showcase__exampleTitle}>Basic Usage</h4>
-                <div className={styles.showcase__exampleContent}>
+                <h4 className={styles.showcase__exampleTitle}>Default WorkspacesTable</h4>
+                <div className={styles.showcase__exampleContent} style={{ height: '100vh', backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     const workspaces = [
                       { id: 1, name: 'Americal Eagle' },
@@ -2545,29 +2548,23 @@ const users = [
 
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Empty State</h4>
-                <div className={styles.showcase__exampleContent}>
+                <div className={styles.showcase__exampleContent} style={{ height: '100vh', backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   <WorkspacesTable workspaces={[]} />
                 </div>
                 <p className={styles.showcase__hint}>Shows table header with no data rows</p>
               </div>
 
               <div className={styles.showcase__example}>
-                <h4 className={styles.showcase__exampleTitle}>Long List Example</h4>
-                <div className={styles.showcase__exampleContent}>
+                <h4 className={styles.showcase__exampleTitle}>Large Dataset</h4>
+                <div className={styles.showcase__exampleContent} style={{ height: '100vh', backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     const workspaces = [
-                      { id: 1, name: 'Americal Eagle' },
-                      { id: 2, name: 'Dollar General' },
-                      { id: 3, name: 'Agilitee' },
-                      { id: 4, name: 'Control4' },
-                      { id: 5, name: 'Subway' },
-                      { id: 6, name: 'Long Branch Mall' },
-                      { id: 7, name: 'Target' },
-                      { id: 8, name: 'Walmart' },
-                      { id: 9, name: 'Home Depot' },
-                      { id: 10, name: 'Best Buy' },
-                      { id: 11, name: 'Starbucks' },
-                      { id: 12, name: 'McDonalds' }
+                      { id: 1, name: 'Americal Eagle' }, { id: 2, name: 'Dollar General' },
+                      { id: 3, name: 'Agilitee' }, { id: 4, name: 'Control4' },
+                      { id: 5, name: 'Subway' }, { id: 6, name: 'Target' },
+                      { id: 7, name: 'Walmart' }, { id: 8, name: 'Best Buy' },
+                      { id: 9, name: 'Home Depot' }, { id: 10, name: 'Lowes' },
+                      { id: 11, name: 'Costco' }, { id: 12, name: 'McDonalds' }
                     ];
                     
                     return <WorkspacesTable workspaces={workspaces} />;
@@ -2599,7 +2596,128 @@ const workspaces = [
               </pre>
             </div>
           </div>
+
         </section>
+
+        {/* Pages Section */}
+        <section className={styles.showcase__section}>
+          <h2 className={styles.showcase__sectionTitle}>Pages</h2>
+          
+          {/* TwoColumnPage Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>TwoColumnPage</h3>
+            <p className={styles.showcase__componentDescription}>
+              A responsive two-column page layout with left navigation and main content areas
+            </p>
+            
+            <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default TwoColumnPage (with placeholders)</h4>
+                <div className={styles.showcase__exampleContent} style={{ height: '100vh', border: '1px solid #333' }}>
+                  <TwoColumnPage />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>TwoColumnPage with Custom Content</h4>
+                <div className={styles.showcase__exampleContent} style={{ height: '100vh', border: '1px solid #333' }}>
+                  <TwoColumnPage 
+                    leftContent={
+                      <div style={{ padding: '20px' }}>
+                        <h3 style={{ color: '#D5D5D5', margin: '0 0 16px 0' }}>Navigation</h3>
+                        <nav>
+                          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                            <li style={{ marginBottom: '8px' }}>
+                              <a href="#" style={{ color: '#9B9B9B', textDecoration: 'none' }}>Users</a>
+                            </li>
+                            <li style={{ marginBottom: '8px' }}>
+                              <a href="#" style={{ color: '#9B9B9B', textDecoration: 'none' }}>Workspaces</a>
+                            </li>
+                            <li style={{ marginBottom: '8px' }}>
+                              <a href="#" style={{ color: '#9B9B9B', textDecoration: 'none' }}>Settings</a>
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
+                    }
+                    rightContent={
+                      <div style={{ padding: '20px' }}>
+                        <header style={{ marginBottom: '20px' }}>
+                          <h1 style={{ color: '#D5D5D5', margin: '0 0 8px 0' }}>Dashboard</h1>
+                          <button style={{ 
+                            backgroundColor: '#0066CC', 
+                            color: 'white', 
+                            border: 'none', 
+                            padding: '8px 16px', 
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}>
+                            Add User
+                          </button>
+                        </header>
+                        <main>
+                          <p style={{ color: '#9B9B9B', margin: 0 }}>Main content area with dashboard widgets and data tables.</p>
+                        </main>
+                      </div>
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Mobile Responsive (stacked layout)</h4>
+                <div className={styles.showcase__exampleContent} style={{ height: '100vh', maxWidth: '375px', border: '1px solid #333', margin: '0 auto' }}>
+                  <TwoColumnPage 
+                    leftContent={
+                      <div style={{ padding: '16px', textAlign: 'center' }}>
+                        <h4 style={{ color: '#D5D5D5', margin: '0 0 12px 0' }}>Mobile Nav</h4>
+                        <p style={{ color: '#9B9B9B', fontSize: '12px', margin: 0 }}>Navigation shown at bottom on mobile</p>
+                      </div>
+                    }
+                    rightContent={
+                      <div style={{ padding: '16px' }}>
+                        <h2 style={{ color: '#D5D5D5', margin: '0 0 12px 0' }}>Mobile Content</h2>
+                        <p style={{ color: '#9B9B9B', fontSize: '14px', margin: 0 }}>Main content appears first on mobile devices for better UX.</p>
+                      </div>
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
+
+// Basic usage with placeholders
+<TwoColumnPage />
+
+// With custom content
+<TwoColumnPage 
+  leftContent={<NavigationComponent />}
+  rightContent={<MainContentComponent />}
+/>
+
+// With custom className
+<TwoColumnPage 
+  className="custom-page-styles"
+  leftContent={<SideNav />}
+  rightContent={<Dashboard />}
+/>
+
+// Props interface
+{
+  leftContent?: ReactNode,   // Content for left sidebar
+  rightContent?: ReactNode,  // Content for main area
+  className?: string        // Additional CSS classes
+}`}
+              </pre>
+            </div>
+          </div>
+
+        </section>
+
       </main>
     </div>
   );
