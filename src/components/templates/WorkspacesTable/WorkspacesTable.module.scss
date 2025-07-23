@@ -1,0 +1,35 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.workspaces-table {
+  width: 100%;
+  background-color: $background-dark;
+  border-radius: 8px;
+  overflow: hidden;
+
+  &__header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba($white-primary, 0.1);
+  }
+
+  &__header-text {
+    @include label;
+    color: $white-primary;
+  }
+
+  &__body {
+    padding: 12px;
+  }
+
+  &__row {
+    margin-bottom: 4px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__item {
+    // ListItem is used here in non-interactive context
+  }
+}
