@@ -82,10 +82,33 @@ const users = [
   }
 ];
 
+const pages = [
+  {
+    name: 'Claude.md',
+    content: `# Claude.md
+
+## Claude.md - Ionic/Angular/Capacitor Project
+
+### Project Overview
+This is an Ionic application built with Angular and Capacitor for cross-platform mobile development.
+
+### Rules
+Any time you do anything, check the commands.md file first to see if that command is found there. If you find something, use those instructions instead.
+Then when you execute the task, always go into the aeo/ folder for any work to be done or anything git related.`,
+    company: 'AEO'
+  },
+  {
+    name: 'Commands.md',
+    content: '# Commands\n\nList of available commands...',
+    company: 'AEO'
+  }
+];
+
 async function main() {
   console.log('Seeding database...');
   
-  // Delete existing users
+  // Delete existing data
+  await prisma.page.deleteMany();
   await prisma.user.deleteMany();
   
   // Create users
@@ -94,6 +117,14 @@ async function main() {
       data: user
     });
     console.log(`Created user: ${user.name}`);
+  }
+  
+  // Create pages
+  for (const page of pages) {
+    await prisma.page.create({
+      data: page
+    });
+    console.log(`Created page: ${page.name}`);
   }
   
   console.log('Seeding completed!');
