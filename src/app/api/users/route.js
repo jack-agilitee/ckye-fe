@@ -1,106 +1,59 @@
 import { NextResponse } from 'next/server';
-
-// Mock user data based on Figma design
-const mockUsers = [
-  {
-    id: 1,
-    name: 'Andrew Vonn',
-    email: 'andrew@agilitee.com',
-    userType: 'Member',
-    workspaces: ['Americal Eagle'],
-    avatar: 'A'
-  },
-  {
-    id: 2,
-    name: 'Eli Eljadi',
-    email: 'eli@agilitee.com',
-    userType: 'Member',
-    workspaces: ['Americal Eagle', 'Agilitee'],
-    avatar: 'E'
-  },
-  {
-    id: 3,
-    name: 'Erin Ramos',
-    email: 'erin@agilitee.com',
-    userType: 'Member',
-    workspaces: ['Americal Eagle'],
-    avatar: 'E'
-  },
-  {
-    id: 4,
-    name: 'Fadi',
-    email: 'fadi@agilitee.com',
-    userType: 'Member',
-    workspaces: ['Americal Eagle'],
-    avatar: 'F'
-  },
-  {
-    id: 5,
-    name: 'Holland Bohr',
-    email: 'holland@agilitee.com',
-    userType: 'Member',
-    workspaces: ['Dollar General'],
-    avatar: 'H'
-  },
-  {
-    id: 6,
-    name: 'Jack Nichols',
-    email: 'jack@agilitee.com',
-    userType: 'Admin',
-    workspaces: ['Americal Eagle', 'Dollar General', 'Agilitee'],
-    avatar: 'J'
-  },
-  {
-    id: 7,
-    name: 'James Otey',
-    email: 'james@agilitee.com',
-    userType: 'Admin',
-    workspaces: ['Americal Eagle'],
-    avatar: 'J'
-  },
-  {
-    id: 8,
-    name: 'JD McCulley',
-    email: 'jd@agilitee.com',
-    userType: 'Member',
-    workspaces: ['Americal Eagle'],
-    avatar: 'J'
-  },
-  {
-    id: 9,
-    name: 'John Elliot',
-    email: 'john@agilitee.com',
-    userType: 'Member',
-    workspaces: ['Americal Eagle'],
-    avatar: 'J'
-  },
-  {
-    id: 10,
-    name: 'Katelyn Thompson',
-    email: 'katelyn@agilitee.com',
-    userType: 'Member',
-    workspaces: ['Americal Eagle'],
-    avatar: 'K'
-  },
-  {
-    id: 11,
-    name: 'Phil Stephenson',
-    email: 'phil@agilitee.com',
-    userType: 'Member',
-    workspaces: ['Americal Eagle'],
-    avatar: 'P'
-  }
-];
+import { prisma } from '@/lib/prisma';
+import { Prisma } from '@/generated/prisma';
 
 // GET /api/users
-export async function GET() {
+export async function GET(request) {
   try {
-    // Return all users without filtering or pagination
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const search = searchParams.get('search') || '';
+    const sortBy = searchParams.get('sortBy') || 'createdAt';
+    const sortOrder = searchParams.get('sortOrder') || 'desc';
+
+    // Build where clause based on search
+    const where = search
+      ? {
+          OR: [
+            { name: { contains: search, mode: 'insensitive' } },
+            { email: { contains: search, mode: 'insensitive' } }
+          ]
+        }
+      : {};
+
+    // Execute query with pagination
+    const [users, total] = await prisma.$transaction([
+      prisma.user.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { [sortBy]: sortOrder },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          userType: true,
+          workspaces: true,
+          avatar: true,
+          createdAt: true,
+          updatedAt: true
+        }
+      }),
+      prisma.user.count({ where })
+    ]);
+
     return NextResponse.json({
-      data: mockUsers
+      data: users,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
     });
-  } catch {
-    // Handle errors appropriately
+  } catch (error) {
+    console.error('Error fetching users:', error);
     return NextResponse.json(
       { error: 'Failed to fetch users' },
       { status: 500 }
@@ -122,22 +75,39 @@ export async function POST(request) {
       );
     }
     
-    // Create new user (mock implementation)
-    const newUser = {
-      id: mockUsers.length + 1,
-      name: body.name,
-      email: body.email,
-      userType: body.userType || 'Member',
-      workspaces: body.workspaces || [],
-      avatar: body.name.charAt(0).toUpperCase()
-    };
-    
-    // In a real implementation, you would save to database here
-    mockUsers.push(newUser);
+    // Create new user
+    const user = await prisma.user.create({
+      data: {
+        name: body.name,
+        email: body.email,
+        userType: body.userType || 'Member',
+        workspaces: body.workspaces || [],
+        avatar: body.avatar || body.name.charAt(0).toUpperCase()
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        userType: true,
+        workspaces: true,
+        avatar: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
     
     // Return created resource
-    return NextResponse.json(newUser, { status: 201 });
-  } catch {
+    return NextResponse.json(user, { status: 201 });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return NextResponse.json(
+          { error: 'A user with this email already exists' },
+          { status: 409 }
+        );
+      }
+    }
+    console.error('Error creating user:', error);
     return NextResponse.json(
       { error: 'Failed to create user' },
       { status: 500 }
