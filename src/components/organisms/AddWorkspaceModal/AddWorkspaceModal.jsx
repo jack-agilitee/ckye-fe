@@ -9,18 +9,21 @@ import styles from './AddWorkspaceModal.module.scss';
 const AddWorkspaceModal = ({ 
   closeModal,
   users = [],
-  className = ''
+  className = '',
+  createWorkspace
 }) => {
   const [name, setName] = useState('');
   const [shortName, setShortName] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
 
   const handleCreateWorkspace = () => {
-    console.log('create workspace', {
-      name,
-      shortName,
-      selectedUsers
-    });
+    if (createWorkspace) {
+      createWorkspace({
+        name,
+        shortName,
+        selectedUsers
+      })
+    }
     // TODO: Hook up API call for workspace creation
   };
 

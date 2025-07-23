@@ -55,22 +55,45 @@ async function getWorkspacesData() {
   ];
 }
 
+// TODO: Replace with actual API call when implemented
+async function getUsersData() {
+  // Mock users data for the AddWorkspaceModal
+  return [
+    { id: '1', name: 'John Doe', email: 'john@example.com', avatar: null },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com', avatar: null },
+    { id: '3', name: 'Bob Wilson', email: 'bob@example.com', avatar: null },
+    { id: '4', name: 'Alice Brown', email: 'alice@example.com', avatar: null },
+    { id: '5', name: 'Charlie Davis', email: 'charlie@example.com', avatar: null },
+    { id: '6', name: 'Eve Martin', email: 'eve@example.com', avatar: null },
+    { id: '7', name: 'Frank Thompson', email: 'frank@example.com', avatar: null },
+    { id: '8', name: 'Grace Lee', email: 'grace@example.com', avatar: null },
+    { id: '9', name: 'Henry Williams', email: 'henry@example.com', avatar: null },
+    { id: '10', name: 'Iris Johnson', email: 'iris@example.com', avatar: null },
+  ];
+}
+
 const WorkspacesPage = () => {
   const [workspaces, setWorkspaces] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchWorkspaces = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getWorkspacesData();
-        setWorkspaces(data);
+        // Fetch both workspaces and users in parallel
+        const [workspacesData, usersData] = await Promise.all([
+          getWorkspacesData(),
+          getUsersData()
+        ]);
+        setWorkspaces(workspacesData);
+        setUsers(usersData);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchWorkspaces();
+    fetchData();
   }, []);
 
   const handleAddWorkspace = () => {
@@ -100,7 +123,18 @@ const WorkspacesPage = () => {
       {isAddModalOpen && (
         <AddWorkspaceModal
           closeModal={() => setIsAddModalOpen(false)}
-          users={[]} // TODO: Pass actual users list when available
+          users={users}
+          createWorkspace={(newWorkspace) => {
+            // Create a new workspace object with generated ID
+            const workspace = {
+              id: String(workspaces.length + 1),
+              name: newWorkspace.name,
+              users: users.filter(user => newWorkspace.selectedUsers.includes(user.id))
+            };
+            // Add the new workspace to the list
+            setWorkspaces([...workspaces, workspace]);
+            setIsAddModalOpen(false);
+          }}
         />
       )}
     </>
