@@ -9,7 +9,7 @@ import { addPage } from '@/lib/api/pages';
 export default function DashboardSidebar({ 
   initialPages, 
   companyName,
-  initialSelectedId 
+  initialSelectedId
 }) {
   const router = useRouter();
   const [pages, setPages] = useState(initialPages);
@@ -18,7 +18,6 @@ export default function DashboardSidebar({
 
   const handleContextItemClick = (item) => {
     setSelectedPageId(item.id);
-    // Update URL with selected page
     router.push(`/dashboard/${companyName}?page=${item.id}`);
   };
 
@@ -38,6 +37,7 @@ export default function DashboardSidebar({
       
       // Select the newly created page
       setSelectedPageId(newPage.id);
+      router.push(`/dashboard/${companyName}?page=${newPage.id}`);
       
       // Refresh the page to update server data
       router.refresh();

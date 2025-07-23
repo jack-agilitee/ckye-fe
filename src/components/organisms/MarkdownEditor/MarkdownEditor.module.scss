@@ -16,46 +16,54 @@
       color: $white-primary;
       font-family: inherit;
       height: 100%;
-      
+
       // Toolbar styling
       .mdxeditor-toolbar {
         background-color: $black-bg-light;
         border-bottom: 1px solid $border-color;
         padding: 8px 16px;
         gap: 8px;
-        
+        flex-wrap: wrap;
+
         button {
-          background-color: transparent;
+          background-color: $white-secondary;
           color: $white-secondary;
           border: 1px solid transparent;
           border-radius: 4px;
-          padding: 4px 8px;
+          padding: 4px;
           transition: all 0.2s ease;
-          
+          margin-left: 8px;
+          cursor: pointer;
+
+          span {
+            color: black;
+          }
+
+
           &:hover {
             background-color: rgba($white-primary, 0.1);
             color: $white-primary;
           }
-          
+
           &[data-state="on"] {
             background-color: rgba($primary-color, 0.2);
             color: $primary-color;
             border-color: $primary-color;
           }
         }
-        
+
         select {
           background-color: $black-bg-dark;
           color: $white-primary;
           border: 1px solid $border-color;
           border-radius: 4px;
           padding: 4px 8px;
-          
+
           &:hover {
             border-color: $primary-color;
           }
         }
-        
+
         .mdxeditor-toolbar-divider {
           background-color: $border-color;
           width: 1px;
@@ -63,38 +71,51 @@
           margin: 0 4px;
         }
       }
-      
+
       // Editor content area
       .mdxeditor-root-contenteditable {
         padding: 24px;
         color: $white-primary;
         background-color: $background-dark;
-        
-        h1, h2, h3, h4, h5, h6 {
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
           color: $white-primary;
           margin-top: 1.5em;
           margin-bottom: 0.5em;
         }
-        
-        h1 { @include heading-1; }
-        h2 { @include heading-2; }
-        h3 { @include heading-3; }
-        
+
+        h1 {
+          @include heading-1;
+        }
+
+        h2 {
+          @include heading-2;
+        }
+
+        h3 {
+          @include heading-3;
+        }
+
         p {
           @include body-medium;
           color: $white-primary;
           margin-bottom: 1em;
         }
-        
+
         a {
           color: $code-blue;
           text-decoration: none;
-          
+
           &:hover {
             text-decoration: underline;
           }
         }
-        
+
         code {
           background-color: $black-bg-light;
           color: $code-blue;
@@ -102,110 +123,112 @@
           border-radius: 3px;
           font-family: 'SF Mono', Monaco, monospace;
         }
-        
+
         pre {
           background-color: $black-bg-light;
           border: 1px solid $border-color;
           border-radius: 4px;
           padding: 16px;
           overflow-x: auto;
-          
+
           code {
             background-color: transparent;
             padding: 0;
           }
         }
-        
+
         blockquote {
           border-left: 4px solid $primary-color;
           padding-left: 16px;
           margin-left: 0;
           color: $white-secondary;
         }
-        
-        ul, ol {
+
+        ul,
+        ol {
           padding-left: 24px;
           margin-bottom: 1em;
-          
+
           li {
             margin-bottom: 0.5em;
             color: $white-primary;
           }
         }
-        
+
         table {
           border-collapse: collapse;
           width: 100%;
           margin-bottom: 1em;
-          
-          th, td {
+
+          th,
+          td {
             border: 1px solid $border-color;
             padding: 8px 12px;
             text-align: left;
           }
-          
+
           th {
             background-color: $black-bg-light;
             font-weight: 600;
           }
-          
+
           tr:nth-child(even) {
             background-color: rgba($white-primary, 0.02);
           }
         }
-        
+
         hr {
           border: none;
           border-top: 1px solid $border-color;
           margin: 2em 0;
         }
       }
-      
+
       // CodeMirror styling
       .cm-editor {
         background-color: $black-bg-light;
-        
+
         .cm-gutters {
           background-color: $black-bg-light;
           border-right: 1px solid $border-color;
           color: $white-secondary;
         }
-        
+
         .cm-activeLine {
           background-color: rgba($white-primary, 0.05);
         }
-        
+
         .cm-content {
           color: $white-primary;
         }
       }
-      
+
       // Dialog styling
       .mdxeditor-dialog {
         background-color: $black-bg-dark;
         border: 1px solid $border-color;
         color: $white-primary;
-        
+
         input {
           background-color: $black-bg-light;
           border: 1px solid $border-color;
           color: $white-primary;
           padding: 8px;
           border-radius: 4px;
-          
+
           &:focus {
             outline: none;
             border-color: $primary-color;
           }
         }
-        
+
         button {
           background-color: $primary-color;
           color: $white-primary;
           border: none;
           padding: 8px 16px;
           border-radius: 4px;
-          
+
           &:hover {
             background-color: darken($primary-color, 10%);
           }

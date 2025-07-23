@@ -16,10 +16,9 @@ export default function DashboardPageClient({
   companyName,
   selectedPageId 
 }) {
-  const [currentPageId, setCurrentPageId] = useState(selectedPageId);
   const [content, setContent] = useState('');
   
-  const currentPage = initialPages.find(p => p.id === currentPageId);
+  const currentPage = initialPages.find(p => p.id === selectedPageId);
   
   const handleContentChange = (newContent) => {
     setContent(newContent);

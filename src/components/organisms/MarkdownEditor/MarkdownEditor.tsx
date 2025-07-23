@@ -85,7 +85,6 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({ markdown = '', editorRef, onC
           toolbarPlugin({
             toolbarContents: () => (
               <>
-                <DiffSourceToggleWrapper>
                   <Separator />
                   <BoldItalicUnderlineToggles />
                   <CodeToggle />
@@ -99,7 +98,6 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({ markdown = '', editorRef, onC
                   <Separator />
                   <InsertTable />
                   <InsertThematicBreak />
-                </DiffSourceToggleWrapper>
               </>
             )
           })
