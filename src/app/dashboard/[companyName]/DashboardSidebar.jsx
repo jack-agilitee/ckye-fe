@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
+import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
 import { addPage } from '@/lib/api/pages';
 
 export default function DashboardSidebar({ 
@@ -13,6 +14,7 @@ export default function DashboardSidebar({
   const router = useRouter();
   const [pages, setPages] = useState(initialPages);
   const [selectedPageId, setSelectedPageId] = useState(initialSelectedId);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   const handleContextItemClick = (item) => {
     setSelectedPageId(item.id);
@@ -45,22 +47,33 @@ export default function DashboardSidebar({
   };
 
   const handleAccountClick = () => {
-    console.log('Account clicked');
-    // TODO: Implement account switching
+    setShowSettingsModal(true);
   };
 
   return (
-    <Sidebar
-      contextItems={pages}
-      selectedItemId={selectedPageId}
-      isAdmin={false}
-      isAdminMode={false}
-      accountName={companyName}
-      accountInitial={companyName.charAt(0).toUpperCase()}
-      onContextItemClick={handleContextItemClick}
-      onAddNewClick={handleAddNewClick}
-      onAccountClick={handleAccountClick}
-      onNotesClick={handleAddNewClick}
-    />
+    <div style={{ position: 'relative'}}>
+      <Sidebar
+        contextItems={pages}
+        selectedItemId={selectedPageId}
+        isAdmin={false}
+        isAdminMode={false}
+        accountName={companyName}
+        accountInitial={companyName.charAt(0).toUpperCase()}
+        onContextItemClick={handleContextItemClick}
+        onAddNewClick={handleAddNewClick}
+        onAccountClick={handleAccountClick}
+        onNotesClick={handleAddNewClick}
+      />
+      {showSettingsModal && (
+        <SettingsModal
+          workspaces={[
+            { id: '1', name: companyName, memberCount: 1 }
+          ]}
+          currentWorkspaceId="1"
+          userEmail="user@example.com"
+          onDismiss={() => setShowSettingsModal(false)}
+        />
+      )}
+    </div>
   );
 }
