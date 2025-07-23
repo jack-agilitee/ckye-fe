@@ -1700,7 +1700,7 @@ function App() {
               A table template displaying user information with name, email, user type, and workspaces
             </p>
             
-            <div className={styles.showcase__demo}>
+            <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Default UsersTable</h4>
                 <div className={styles.showcase__exampleContent}>
