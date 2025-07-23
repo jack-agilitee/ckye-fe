@@ -2299,7 +2299,7 @@ const [selectedItem, setSelectedItem] = useState('1');
             <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Default UsersTable</h4>
-                <div className={styles.showcase__exampleContent} style={{ height: '100vh', backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     const users = [
                       {
@@ -2396,7 +2396,7 @@ const [selectedItem, setSelectedItem] = useState('1');
 
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Empty State</h4>
-                <div className={styles.showcase__exampleContent} style={{ height: '100vh', backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   <UsersTable users={[]} />
                 </div>
                 <p className={styles.showcase__hint}>Shows table headers with no data rows</p>
@@ -2404,7 +2404,7 @@ const [selectedItem, setSelectedItem] = useState('1');
 
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Full Example</h4>
-                <div className={styles.showcase__exampleContent} style={{ height: '100vh', backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     const users = [
                       {
@@ -2531,7 +2531,7 @@ const users = [
             <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Default WorkspacesTable</h4>
-                <div className={styles.showcase__exampleContent} style={{ height: '100vh', backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     const workspaces = [
                       { id: 1, name: 'Americal Eagle' },
@@ -2548,7 +2548,7 @@ const users = [
 
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Empty State</h4>
-                <div className={styles.showcase__exampleContent} style={{ height: '100vh', backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   <WorkspacesTable workspaces={[]} />
                 </div>
                 <p className={styles.showcase__hint}>Shows table header with no data rows</p>
@@ -2556,7 +2556,7 @@ const users = [
 
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Large Dataset</h4>
-                <div className={styles.showcase__exampleContent} style={{ height: '100vh', backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     const workspaces = [
                       { id: 1, name: 'Americal Eagle' }, { id: 2, name: 'Dollar General' },
