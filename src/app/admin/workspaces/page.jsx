@@ -101,13 +101,13 @@ const WorkspacesPage = () => {
     setIsAddModalOpen(true);
   };
 
-  const handleSearchChange = (value) => {
-    setSearchQuery(value);
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value)
   };
 
   // Filter workspaces based on search query
   const filteredWorkspaces = workspaces.filter(workspace => 
-    workspace.name.toLowerCase().includes(searchQuery.toLowerCase())
+    workspace.name.toLowerCase().includes((searchQuery || '').toLowerCase())
   );
   
   return (
