@@ -15,6 +15,7 @@ import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
 import AddWorkspaceModal from '@/components/organisms/AddWorkspaceModal/AddWorkspaceModal';
+import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
 import styles from './page.module.scss';
@@ -1982,6 +1983,152 @@ const users = [
 //   shortName: "WN",
 //   selectedUsers: [{ id: '1', name: 'James Otey' }, ...]
 // }`}
+              </pre>
+            </div>
+          </div>
+
+          {/* AddUserModal Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>AddUserModal</h3>
+            <p className={styles.showcase__componentDescription}>
+              A modal component for adding new users with name, email, and workspace selection
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default AddUserModal</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', minHeight: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {(() => {
+                    const [showModal, setShowModal] = useState(false);
+                    const workspaces = [
+                      { id: '1', name: 'Development Team' },
+                      { id: '2', name: 'Design Team' },
+                      { id: '3', name: 'Marketing Team' },
+                      { id: '4', name: 'Product Team' },
+                      { id: '5', name: 'Sales Team' }
+                    ];
+                    
+                    return (
+                      <>
+                        <Button 
+                          onClick={() => setShowModal(true)}
+                          icon="/user-add.svg"
+                        >
+                          Add User
+                        </Button>
+                        {showModal && (
+                          <AddUserModal
+                            closeModal={() => setShowModal(false)}
+                            workspaces={workspaces}
+                          />
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Click button to open modal. Fill in form and click Invite Members to see console output.</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>With Many Workspaces</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', minHeight: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {(() => {
+                    const [showModal, setShowModal] = useState(false);
+                    const workspaces = [
+                      { id: 'aeo', name: 'American Eagle Outfitters' },
+                      { id: 'dg', name: 'Dollar General' },
+                      { id: 'agilitee', name: 'Agilitee' },
+                      { id: 'c4', name: 'Control4' },
+                      { id: 'subway', name: 'Subway' },
+                      { id: 'nike', name: 'Nike' },
+                      { id: 'apple', name: 'Apple Store' },
+                      { id: 'target', name: 'Target' },
+                      { id: 'walmart', name: 'Walmart' },
+                      { id: 'bestbuy', name: 'Best Buy' }
+                    ];
+                    
+                    return (
+                      <>
+                        <Button 
+                          onClick={() => setShowModal(true)}
+                          variant="primary"
+                          icon="/user-add.svg"
+                        >
+                          Invite New User
+                        </Button>
+                        {showModal && (
+                          <AddUserModal
+                            closeModal={() => {
+                              setShowModal(false);
+                              console.log('Modal closed');
+                            }}
+                            workspaces={workspaces}
+                          />
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Dropdown shows all available workspaces for selection</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>No Workspaces Available</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', minHeight: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {(() => {
+                    const [showModal, setShowModal] = useState(false);
+                    
+                    return (
+                      <>
+                        <Button 
+                          onClick={() => setShowModal(true)}
+                          variant="secondary"
+                        >
+                          Add User (No Workspaces)
+                        </Button>
+                        {showModal && (
+                          <AddUserModal
+                            closeModal={() => setShowModal(false)}
+                            workspaces={[]}
+                          />
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Modal works even without available workspaces</p>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
+
+const [showModal, setShowModal] = useState(false);
+
+const workspaces = [
+  { id: '1', name: 'Development Team' },
+  { id: '2', name: 'Design Team' },
+  { id: '3', name: 'Marketing Team' }
+];
+
+<Button onClick={() => setShowModal(true)}>
+  Add User
+</Button>
+
+{showModal && (
+  <AddUserModal
+    closeModal={() => setShowModal(false)}
+    workspaces={workspaces}
+  />
+)}
+
+// The component logs to console when Invite Members is clicked:
+// calling create user
+// Name: [entered name]
+// Email: [entered email]
+// Selected Workspace: [selected workspace id]`}
               </pre>
             </div>
           </div>
