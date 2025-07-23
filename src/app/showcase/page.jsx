@@ -19,6 +19,7 @@ import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
+import AuthPage from '@/components/templates/AuthPage/AuthPage';
 import styles from './page.module.scss';
 
 export default function ShowcasePage() {
@@ -2595,6 +2596,122 @@ const workspaces = [
 {
   id: string | number,  // Optional unique identifier
   name: string         // Workspace name to display
+}`}
+              </pre>
+            </div>
+          </div>
+        </section>
+
+        {/* AuthPage */}
+        <section className={`${styles.showcase__section} ${styles['showcase__section--templates']}`}>
+          <h2 className={styles.showcase__sectionTitle}>AuthPage (Template)</h2>
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>AuthPage</h3>
+            <p className={styles.showcase__componentDescription}>
+              A responsive two-column template for authenticated pages with left navigation and main content areas
+            </p>
+            
+            <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default AuthPage (with placeholders)</h4>
+                <div className={styles.showcase__exampleContent} style={{ height: '400px', border: '1px solid #333' }}>
+                  <AuthPage />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>AuthPage with Custom Content</h4>
+                <div className={styles.showcase__exampleContent} style={{ height: '400px', border: '1px solid #333' }}>
+                  <AuthPage 
+                    leftContent={
+                      <div style={{ padding: '20px' }}>
+                        <h3 style={{ color: '#D5D5D5', margin: '0 0 16px 0' }}>Navigation</h3>
+                        <nav>
+                          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                            <li style={{ marginBottom: '8px' }}>
+                              <a href="#" style={{ color: '#9B9B9B', textDecoration: 'none' }}>Users</a>
+                            </li>
+                            <li style={{ marginBottom: '8px' }}>
+                              <a href="#" style={{ color: '#9B9B9B', textDecoration: 'none' }}>Workspaces</a>
+                            </li>
+                            <li style={{ marginBottom: '8px' }}>
+                              <a href="#" style={{ color: '#9B9B9B', textDecoration: 'none' }}>Settings</a>
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
+                    }
+                    rightContent={
+                      <div style={{ padding: '20px' }}>
+                        <header style={{ marginBottom: '20px' }}>
+                          <h1 style={{ color: '#D5D5D5', margin: '0 0 8px 0' }}>Dashboard</h1>
+                          <button style={{ 
+                            backgroundColor: '#0066CC', 
+                            color: 'white', 
+                            border: 'none', 
+                            padding: '8px 16px', 
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}>
+                            Add User
+                          </button>
+                        </header>
+                        <main>
+                          <p style={{ color: '#9B9B9B', margin: 0 }}>Main content area with dashboard widgets and data tables.</p>
+                        </main>
+                      </div>
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Mobile Responsive (stacked layout)</h4>
+                <div className={styles.showcase__exampleContent} style={{ height: '600px', maxWidth: '375px', border: '1px solid #333', margin: '0 auto' }}>
+                  <AuthPage 
+                    leftContent={
+                      <div style={{ padding: '16px', textAlign: 'center' }}>
+                        <h4 style={{ color: '#D5D5D5', margin: '0 0 12px 0' }}>Mobile Nav</h4>
+                        <p style={{ color: '#9B9B9B', fontSize: '12px', margin: 0 }}>Navigation shown at bottom on mobile</p>
+                      </div>
+                    }
+                    rightContent={
+                      <div style={{ padding: '16px' }}>
+                        <h2 style={{ color: '#D5D5D5', margin: '0 0 12px 0' }}>Mobile Content</h2>
+                        <p style={{ color: '#9B9B9B', fontSize: '14px', margin: 0 }}>Main content appears first on mobile devices for better UX.</p>
+                      </div>
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import AuthPage from '@/components/templates/AuthPage/AuthPage';
+
+// Basic usage with placeholders
+<AuthPage />
+
+// With custom content
+<AuthPage 
+  leftContent={<NavigationComponent />}
+  rightContent={<MainContentComponent />}
+/>
+
+// With custom className
+<AuthPage 
+  className="custom-page-styles"
+  leftContent={<SideNav />}
+  rightContent={<Dashboard />}
+/>
+
+// Props interface
+{
+  leftContent?: ReactNode,   // Content for left sidebar
+  rightContent?: ReactNode,  // Content for main area
+  className?: string        // Additional CSS classes
 }`}
               </pre>
             </div>
