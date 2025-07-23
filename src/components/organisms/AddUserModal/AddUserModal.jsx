@@ -27,7 +27,7 @@ const AddUserModal = ({ closeModal, workspaces = [], addUsers }) => {
 
   // Transform workspaces array into dropdown options
   const workspaceOptions = workspaces.map(workspace => ({
-    value: workspace.id || workspace.name,
+    value: workspace.name,
     label: workspace.name
   }));
 

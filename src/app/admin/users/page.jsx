@@ -2,6 +2,7 @@ import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import UsersPageClient from './UsersPageClient';
 import { getUsers } from '@/lib/api/users';
+import { getWorkspaces } from '@/lib/api/workspaces';
 
 export const metadata = {
   title: 'Users | Ckye Admin',
@@ -9,9 +10,14 @@ export const metadata = {
 };
 
 export default async function UsersPage() {
-  // Server-side API call to fetch users
-  const response = await getUsers();
-  const users = response.data;
+  // Server-side API calls to fetch users and workspaces
+  const [usersResponse, workspacesResponse] = await Promise.all([
+    getUsers(),
+    getWorkspaces()
+  ]);
+  
+  const users = usersResponse.data;
+  const workspaces = workspacesResponse.data;
   
   return (
     <TwoColumnPage
@@ -21,7 +27,7 @@ export default async function UsersPage() {
         />
       }
       rightContent={
-        <UsersPageClient initialUsers={users} />
+        <UsersPageClient initialUsers={users} workspaces={workspaces} />
       }
     />
   );
