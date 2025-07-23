@@ -100,45 +100,47 @@ const Sidebar = ({
           </div>
         ) : (
           // Regular Mode Content
-          <div className={styles.sidebar__sections}>
-            {/* Context Section */}
-            <div className={styles.sidebar__section}>
-              <h3 className={styles.sidebar__sectionTitle}>CONTEXT</h3>
-              <div className={styles.sidebar__sectionContent}>
-                {contextItems.map((item) => (
+          <>
+            <div className={styles.sidebar__sections}>
+              {/* Context Section */}
+              <div className={styles.sidebar__section}>
+                <h3 className={styles.sidebar__sectionTitle}>CONTEXT</h3>
+                <div className={styles.sidebar__sectionContent}>
+                  {contextItems.map((item) => (
+                    <ListItem
+                      key={item.id}
+                      text={item.name}
+                      icon="/document.svg"
+                      selected={item.id === selectedItemId}
+                      onClick={() => handleContextItemClick(item)}
+                    />
+                  ))}
                   <ListItem
-                    key={item.id}
-                    text={item.name}
-                    icon="/document.svg"
-                    selected={item.id === selectedItemId}
-                    onClick={() => handleContextItemClick(item)}
+                    text="Add New"
+                    icon="/plus.svg"
+                    selected={false}
+                    onClick={handleAddNewClick}
                   />
-                ))}
-                <ListItem
-                  text="Add New"
-                  icon="/plus.svg"
-                  selected={false}
-                  onClick={handleAddNewClick}
-                />
+                </div>
               </div>
-            </div>
 
-            {/* Workspace Section */}
-            <div className={styles.sidebar__section}>
-              <h3 className={styles.sidebar__sectionTitle}>WORKSPACE</h3>
-              <div className={styles.sidebar__sectionContent}>
-                <ListItem
-                  text="Settings"
-                  icon="/settings.svg"
-                  selected={false}
-                  onClick={handleSettingsClick}
-                />
-                <ListItem
-                  text="Invite Members"
-                  icon="/invite.svg"
-                  selected={false}
-                  onClick={handleInviteMembersClick}
-                />
+              {/* Workspace Section */}
+              <div className={styles.sidebar__section}>
+                <h3 className={styles.sidebar__sectionTitle}>WORKSPACE</h3>
+                <div className={styles.sidebar__sectionContent}>
+                  <ListItem
+                    text="Settings"
+                    icon="/settings.svg"
+                    selected={false}
+                    onClick={handleSettingsClick}
+                  />
+                  <ListItem
+                    text="Invite Members"
+                    icon="/invite.svg"
+                    selected={false}
+                    onClick={handleInviteMembersClick}
+                  />
+                </div>
               </div>
             </div>
 
@@ -156,7 +158,7 @@ const Sidebar = ({
                 </div>
               </div>
             )}
-          </div>
+          </>
         )}
       </div>
     </div>
