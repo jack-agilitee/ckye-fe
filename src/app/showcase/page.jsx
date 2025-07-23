@@ -13,6 +13,7 @@ import WorkspaceSelector from '@/components/molecules/WorkspaceSelector/Workspac
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
+import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import styles from './page.module.scss';
 
 export default function ShowcasePage() {
@@ -1681,6 +1682,244 @@ function App() {
   id: string,          // Unique identifier
   name: string,        // Display name
   memberCount: number  // Number of members
+}`}
+              </pre>
+            </div>
+          </div>
+
+        </section>
+
+        {/* Templates Section */}
+        <section className={styles.showcase__section}>
+          <h2 className={styles.showcase__sectionTitle}>Templates</h2>
+          
+          {/* UsersTable Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>UsersTable</h3>
+            <p className={styles.showcase__componentDescription}>
+              A table template displaying user information with name, email, user type, and workspaces
+            </p>
+            
+            <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default UsersTable</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const users = [
+                      {
+                        name: 'Andrew Venn',
+                        email: 'andrew@agilitee.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Americal Eagle']
+                      },
+                      {
+                        name: 'Eli Eijadi',
+                        email: 'eli@agilitee.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Americal Eagle', 'Agilitee']
+                      },
+                      {
+                        name: 'Erin Ramos',
+                        email: 'erin@agilitee.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Americal Eagle']
+                      },
+                      {
+                        name: 'Jack Nichols',
+                        email: 'jack@agilitee.com',
+                        userType: SEAT_TYPES.ADMIN,
+                        workspaces: ['Americal Eagle', 'Dollar General', 'Agilitee']
+                      },
+                      {
+                        name: 'James Otey',
+                        email: 'james@agilitee.com',
+                        userType: SEAT_TYPES.ADMIN,
+                        workspaces: ['Americal Eagle']
+                      }
+                    ];
+                    
+                    return <UsersTable users={users} />;
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Mixed User Types</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const users = [
+                      {
+                        name: 'Admin User',
+                        email: 'admin@company.com',
+                        userType: SEAT_TYPES.ADMIN,
+                        workspaces: ['All Workspaces']
+                      },
+                      {
+                        name: 'Editor User',
+                        email: 'editor@company.com',
+                        userType: SEAT_TYPES.EDITOR,
+                        workspaces: ['Content Team', 'Marketing']
+                      },
+                      {
+                        name: 'Member User',
+                        email: 'member@company.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['General']
+                      }
+                    ];
+                    
+                    return <UsersTable users={users} />;
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Long Workspace Lists</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const users = [
+                      {
+                        name: 'Multi-workspace User',
+                        email: 'busy@company.com',
+                        userType: SEAT_TYPES.ADMIN,
+                        workspaces: ['Americal Eagle', 'Dollar General', 'Agilitee', 'Control4', 'Subway', 'Long Branch Mall', 'Target', 'Walmart']
+                      },
+                      {
+                        name: 'Another User',
+                        email: 'another@company.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Workspace One', 'Workspace Two', 'Workspace Three', 'Workspace Four', 'Workspace Five']
+                      }
+                    ];
+                    
+                    return <UsersTable users={users} />;
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Long workspace lists are automatically truncated with ellipsis</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Empty State</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <UsersTable users={[]} />
+                </div>
+                <p className={styles.showcase__hint}>Shows table headers with no data rows</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Full Example</h4>
+                <div className={styles.showcase__exampleContent}>
+                  {(() => {
+                    const users = [
+                      {
+                        name: 'Andrew Venn',
+                        email: 'andrew@agilitee.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Americal Eagle']
+                      },
+                      {
+                        name: 'Eli Eijadi',
+                        email: 'eli@agilitee.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Americal Eagle', 'Agilitee']
+                      },
+                      {
+                        name: 'Erin Ramos',
+                        email: 'erin@agilitee.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Americal Eagle']
+                      },
+                      {
+                        name: 'Fadi',
+                        email: 'fadi@agilitee.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Americal Eagle']
+                      },
+                      {
+                        name: 'Holland Bohr',
+                        email: 'holland@agilitee.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Dollar General']
+                      },
+                      {
+                        name: 'Jack Nichols',
+                        email: 'jack@agilitee.com',
+                        userType: SEAT_TYPES.ADMIN,
+                        workspaces: ['Americal Eagle', 'Dollar General', 'Agilitee', 'Control4', 'Subway', 'Long Branch']
+                      },
+                      {
+                        name: 'James Otey',
+                        email: 'james@agilitee.com',
+                        userType: SEAT_TYPES.ADMIN,
+                        workspaces: ['Americal Eagle']
+                      },
+                      {
+                        name: 'JD McCulley',
+                        email: 'jd@agilitee.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Americal Eagle']
+                      },
+                      {
+                        name: 'John Elliot',
+                        email: 'johne@agilitee.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Americal Eagle']
+                      },
+                      {
+                        name: 'Katelyn Thompson',
+                        email: 'katelyn@agilitee.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Americal Eagle']
+                      },
+                      {
+                        name: 'Phil Stephenson',
+                        email: 'phil@agilitee.com',
+                        userType: SEAT_TYPES.MEMBER,
+                        workspaces: ['Americal Eagle']
+                      }
+                    ];
+                    
+                    return <UsersTable users={users} />;
+                  })()}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import UsersTable from '@/components/templates/UsersTable/UsersTable';
+import { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
+
+const users = [
+  {
+    name: 'Andrew Venn',
+    email: 'andrew@agilitee.com',
+    userType: SEAT_TYPES.MEMBER,
+    workspaces: ['Americal Eagle']
+  },
+  {
+    name: 'Jack Nichols',
+    email: 'jack@agilitee.com',
+    userType: SEAT_TYPES.ADMIN,
+    workspaces: ['Americal Eagle', 'Dollar General', 'Agilitee']
+  },
+  {
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+    userType: SEAT_TYPES.EDITOR,
+    workspaces: ['Marketing', 'Sales']
+  }
+];
+
+<UsersTable users={users} />
+
+// User object structure
+{
+  name: string,           // User's full name
+  email: string,          // User's email address
+  userType: string,       // One of SEAT_TYPES values
+  workspaces: string[]    // Array of workspace names
 }`}
               </pre>
             </div>
