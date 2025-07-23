@@ -7,11 +7,14 @@ The Dashboard page provides a two-column layout with a sidebar for navigation an
 - **Path**: `/dashboard/[companyName]`
 - **File Location**: `src/app/dashboard/[companyName]/page.jsx`
 - **Access Level**: Private (requires authentication)
+- **Component Type**: Server Component with Client Components for interactivity
 
 ## Components Used
 - **Page Template**: TwoColumnPage
-- **Sidebar Component**: Sidebar (existing template component in non-admin mode)
-- **Content Components**: 
+- **Server Component**: DashboardPage (main page component)
+- **Client Components**: 
+  - DashboardSidebar (handles page navigation and creation)
+  - DashboardPageClient (displays markdown editor)
   - MarkdownEditor (placeholder component in organisms)
 
 ## Data Requirements

@@ -1,86 +1,37 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
 import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
-import Sidebar from '@/components/templates/Sidebar/Sidebar';
-import MarkdownEditor from '@/components/organisms/MarkdownEditor/MarkdownEditor';
-import { getPages, addPage } from '@/lib/api/pages';
+import DashboardSidebar from './DashboardSidebar';
+import DashboardPageClient from './DashboardPageClient';
+import { getPages } from '@/lib/api/pages';
 
-export default function DashboardPage() {
-  const params = useParams();
-  const companyName = params.companyName;
+export async function generateMetadata({ params }) {
+  const { companyName } = params;
   
-  const [pages, setPages] = useState([]);
-  const [selectedPageId, setSelectedPageId] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetchPages();
-  }, [companyName]);
-
-  const fetchPages = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const { data } = await getPages(companyName);
-      setPages(data);
-      
-      // Auto-select first page if available
-      if (data.length > 0 && !selectedPageId) {
-        setSelectedPageId(data[0].id);
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+  return {
+    title: `${companyName} Dashboard | Ckye`,
+    description: `Manage ${companyName} pages and documentation in the Ckye dashboard`,
+    keywords: ['dashboard', 'markdown', 'pages', companyName, 'Ckye'],
+    openGraph: {
+      title: `${companyName} Dashboard | Ckye`,
+      description: `Manage ${companyName} pages and documentation`,
+      type: 'website',
+    },
   };
+}
 
-  const handleContextItemClick = (item) => {
-    setSelectedPageId(item.id);
-  };
-
-  const handleAddNewClick = async () => {
-    try {
-      const newPageName = prompt('Enter page name:');
-      if (!newPageName) return;
-
-      const newPage = await addPage({
-        name: newPageName.endsWith('.md') ? newPageName : `${newPageName}.md`,
-        company: companyName,
-        content: `# ${newPageName}\n\nStart writing your content here...`
-      });
-
-      // Refresh pages list
-      await fetchPages();
-      
-      // Select the newly created page
-      setSelectedPageId(newPage.id);
-    } catch (err) {
-      alert(`Failed to create page: ${err.message}`);
-    }
-  };
-
-  const handleAccountClick = () => {
-    console.log('Account clicked');
-    // TODO: Implement account switching
-  };
-
-  const handleNotesClick = () => {
-    console.log('Notes clicked');
-    // TODO: Implement notes functionality
-  };
-
-  if (loading) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        <p>Loading...</p>
-      </div>
-    );
+export default async function DashboardPage({ params, searchParams }) {
+  const { companyName } = params;
+  
+  // Server-side API call to fetch pages
+  let pages = [];
+  let error = null;
+  
+  try {
+    const response = await getPages(companyName);
+    pages = response.data;
+  } catch (err) {
+    error = err.message;
   }
-
+  
   if (error) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
@@ -88,28 +39,24 @@ export default function DashboardPage() {
       </div>
     );
   }
-
+  
+  // Get selected page from URL or default to first page
+  const selectedPageId = searchParams?.page || (pages.length > 0 ? pages[0].id : null);
+  
   return (
     <TwoColumnPage
       leftContent={
-        <Sidebar
-          contextItems={pages}
-          selectedItemId={selectedPageId}
-          isAdmin={false}
-          isAdminMode={false}
-          accountName={companyName}
-          accountInitial={companyName.charAt(0).toUpperCase()}
-          onContextItemClick={handleContextItemClick}
-          onAddNewClick={handleAddNewClick}
-          onAccountClick={handleAccountClick}
-          onNotesClick={handleNotesClick}
+        <DashboardSidebar 
+          initialPages={pages} 
+          companyName={companyName}
+          initialSelectedId={selectedPageId}
         />
       }
       rightContent={
-        <MarkdownEditor
-          content=""
-          placeholder="Select a page from the sidebar to start editing..."
-          readOnly={false}
+        <DashboardPageClient 
+          initialPages={pages} 
+          companyName={companyName}
+          selectedPageId={selectedPageId}
         />
       }
     />

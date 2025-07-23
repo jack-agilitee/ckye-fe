@@ -1,16 +1,10 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { useParams } from 'next/navigation';
-import DashboardPage from '../page';
-import { getPages, addPage } from '@/lib/api/pages';
+import { render, screen } from '@testing-library/react';
+import DashboardPage, { generateMetadata } from '../page';
+import { getPages } from '@/lib/api/pages';
 
 // Mock the dependencies
-jest.mock('next/navigation', () => ({
-  useParams: jest.fn(),
-}));
-
 jest.mock('@/lib/api/pages', () => ({
   getPages: jest.fn(),
-  addPage: jest.fn(),
 }));
 
 jest.mock('@/components/pages/TwoColumnPage/TwoColumnPage', () => ({
@@ -23,41 +17,23 @@ jest.mock('@/components/pages/TwoColumnPage/TwoColumnPage', () => ({
   ),
 }));
 
-jest.mock('@/components/templates/Sidebar/Sidebar', () => ({
+jest.mock('../DashboardSidebar', () => ({
   __esModule: true,
-  default: ({ 
-    contextItems, 
-    selectedItemId, 
-    accountName, 
-    accountInitial,
-    onContextItemClick,
-    onAddNewClick 
-  }) => (
-    <div data-testid="sidebar">
-      <div data-testid="account-name">{accountName}</div>
-      <div data-testid="account-initial">{accountInitial}</div>
-      {contextItems.map((item) => (
-        <button
-          key={item.id}
-          data-testid={`context-item-${item.id}`}
-          className={selectedItemId === item.id ? 'selected' : ''}
-          onClick={() => onContextItemClick(item)}
-        >
-          {item.name}
-        </button>
-      ))}
-      <button data-testid="add-new-button" onClick={onAddNewClick}>
-        Add New
-      </button>
+  default: ({ initialPages, companyName, initialSelectedId }) => (
+    <div data-testid="dashboard-sidebar">
+      <div data-testid="company-name">{companyName}</div>
+      <div data-testid="pages-count">{initialPages.length}</div>
+      <div data-testid="selected-id">{initialSelectedId}</div>
     </div>
   ),
 }));
 
-jest.mock('@/components/organisms/MarkdownEditor/MarkdownEditor', () => ({
+jest.mock('../DashboardPageClient', () => ({
   __esModule: true,
-  default: ({ placeholder }) => (
-    <div data-testid="markdown-editor">
-      <p>{placeholder}</p>
+  default: ({ initialPages, selectedPageId }) => (
+    <div data-testid="dashboard-client">
+      <div data-testid="selected-page-id">{selectedPageId}</div>
+      <div data-testid="pages-length">{initialPages.length}</div>
     </div>
   ),
 }));
@@ -68,161 +44,96 @@ describe('DashboardPage', () => {
     { id: '2', name: 'Commands.md', content: '# Commands', company: 'AEO' },
   ];
 
+  const mockParams = { companyName: 'AEO' };
+  const mockSearchParams = {};
+
   beforeEach(() => {
     jest.clearAllMocks();
-    useParams.mockReturnValue({ companyName: 'AEO' });
     getPages.mockResolvedValue({ data: mockPages });
   });
 
-  it('renders the page with TwoColumnPage layout', async () => {
-    render(<DashboardPage />);
-    
-    await waitFor(() => {
+  describe('generateMetadata', () => {
+    it('generates correct metadata for company', async () => {
+      const metadata = await generateMetadata({ params: mockParams });
+      
+      expect(metadata).toEqual({
+        title: 'AEO Dashboard | Ckye',
+        description: 'Manage AEO pages and documentation in the Ckye dashboard',
+        keywords: ['dashboard', 'markdown', 'pages', 'AEO', 'Ckye'],
+        openGraph: {
+          title: 'AEO Dashboard | Ckye',
+          description: 'Manage AEO pages and documentation',
+          type: 'website',
+        },
+      });
+    });
+  });
+
+  describe('DashboardPage component', () => {
+    it('renders the page with TwoColumnPage layout', async () => {
+      const result = await DashboardPage({ params: mockParams, searchParams: mockSearchParams });
+      const { container } = render(result);
+      
       expect(screen.getByTestId('two-column-page')).toBeInTheDocument();
     });
-  });
 
-  it('fetches pages on mount', async () => {
-    render(<DashboardPage />);
-    
-    await waitFor(() => {
+    it('fetches pages on mount', async () => {
+      await DashboardPage({ params: mockParams, searchParams: mockSearchParams });
+      
       expect(getPages).toHaveBeenCalledWith('AEO');
     });
-  });
 
-  it('displays company name in sidebar', async () => {
-    render(<DashboardPage />);
-    
-    await waitFor(() => {
-      expect(screen.getByTestId('account-name')).toHaveTextContent('AEO');
-      expect(screen.getByTestId('account-initial')).toHaveTextContent('A');
-    });
-  });
-
-  it('displays fetched pages in sidebar', async () => {
-    render(<DashboardPage />);
-    
-    await waitFor(() => {
-      expect(screen.getByTestId('context-item-1')).toHaveTextContent('Claude.md');
-      expect(screen.getByTestId('context-item-2')).toHaveTextContent('Commands.md');
-    });
-  });
-
-  it('auto-selects first page', async () => {
-    render(<DashboardPage />);
-    
-    await waitFor(() => {
-      const firstItem = screen.getByTestId('context-item-1');
-      expect(firstItem).toHaveClass('selected');
-    });
-  });
-
-  it('handles page selection', async () => {
-    render(<DashboardPage />);
-    
-    await waitFor(() => {
-      const secondItem = screen.getByTestId('context-item-2');
-      fireEvent.click(secondItem);
+    it('passes company name to sidebar', async () => {
+      const result = await DashboardPage({ params: mockParams, searchParams: mockSearchParams });
+      render(result);
+      
+      expect(screen.getByTestId('company-name')).toHaveTextContent('AEO');
     });
 
-    // Check if selection changed
-    await waitFor(() => {
-      const secondItem = screen.getByTestId('context-item-2');
-      expect(secondItem).toHaveClass('selected');
-    });
-  });
-
-  it('handles adding new page', async () => {
-    const newPage = { id: '3', name: 'NewPage.md', content: '# NewPage', company: 'AEO' };
-    addPage.mockResolvedValue(newPage);
-    getPages.mockResolvedValueOnce({ data: mockPages })
-           .mockResolvedValueOnce({ data: [...mockPages, newPage] });
-    
-    // Mock prompt
-    global.prompt = jest.fn().mockReturnValue('NewPage');
-    
-    render(<DashboardPage />);
-    
-    await waitFor(() => {
-      const addButton = screen.getByTestId('add-new-button');
-      fireEvent.click(addButton);
+    it('passes pages to both sidebar and client', async () => {
+      const result = await DashboardPage({ params: mockParams, searchParams: mockSearchParams });
+      render(result);
+      
+      expect(screen.getByTestId('pages-count')).toHaveTextContent('2');
+      expect(screen.getByTestId('pages-length')).toHaveTextContent('2');
     });
 
-    await waitFor(() => {
-      expect(addPage).toHaveBeenCalledWith({
-        name: 'NewPage.md',
-        company: 'AEO',
-        content: '# NewPage\n\nStart writing your content here...'
+    it('auto-selects first page when no page param', async () => {
+      const result = await DashboardPage({ params: mockParams, searchParams: mockSearchParams });
+      render(result);
+      
+      expect(screen.getByTestId('selected-id')).toHaveTextContent('1');
+      expect(screen.getByTestId('selected-page-id')).toHaveTextContent('1');
+    });
+
+    it('selects page from URL params', async () => {
+      const result = await DashboardPage({ 
+        params: mockParams, 
+        searchParams: { page: '2' } 
       });
-      expect(getPages).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  it('handles add page cancellation', async () => {
-    global.prompt = jest.fn().mockReturnValue(null);
-    
-    render(<DashboardPage />);
-    
-    await waitFor(() => {
-      const addButton = screen.getByTestId('add-new-button');
-      fireEvent.click(addButton);
+      render(result);
+      
+      expect(screen.getByTestId('selected-id')).toHaveTextContent('2');
+      expect(screen.getByTestId('selected-page-id')).toHaveTextContent('2');
     });
 
-    expect(addPage).not.toHaveBeenCalled();
-  });
-
-  it('displays loading state', () => {
-    getPages.mockImplementation(() => new Promise(() => {})); // Never resolves
-    
-    render(<DashboardPage />);
-    
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-  });
-
-  it('displays error state', async () => {
-    getPages.mockRejectedValue(new Error('Failed to fetch'));
-    
-    render(<DashboardPage />);
-    
-    await waitFor(() => {
-      expect(screen.getByText('Error: Failed to fetch')).toBeInTheDocument();
-    });
-  });
-
-  it('handles add page error', async () => {
-    addPage.mockRejectedValue(new Error('Failed to create'));
-    global.prompt = jest.fn().mockReturnValue('NewPage');
-    global.alert = jest.fn();
-    
-    render(<DashboardPage />);
-    
-    await waitFor(() => {
-      const addButton = screen.getByTestId('add-new-button');
-      fireEvent.click(addButton);
+    it('handles empty pages list', async () => {
+      getPages.mockResolvedValue({ data: [] });
+      
+      const result = await DashboardPage({ params: mockParams, searchParams: mockSearchParams });
+      render(result);
+      
+      expect(screen.getByTestId('pages-count')).toHaveTextContent('0');
+      expect(screen.getByTestId('selected-id')).toBeEmptyDOMElement();
     });
 
-    await waitFor(() => {
-      expect(global.alert).toHaveBeenCalledWith('Failed to create page: Failed to create');
-    });
-  });
-
-  it('renders markdown editor with correct placeholder', async () => {
-    render(<DashboardPage />);
-    
-    await waitFor(() => {
-      expect(screen.getByTestId('markdown-editor')).toBeInTheDocument();
-      expect(screen.getByText('Select a page from the sidebar to start editing...')).toBeInTheDocument();
-    });
-  });
-
-  it('handles empty pages list', async () => {
-    getPages.mockResolvedValue({ data: [] });
-    
-    render(<DashboardPage />);
-    
-    await waitFor(() => {
-      expect(screen.getByTestId('sidebar')).toBeInTheDocument();
-      expect(screen.queryByTestId('context-item-1')).not.toBeInTheDocument();
+    it('displays error state', async () => {
+      getPages.mockRejectedValue(new Error('Failed to fetch'));
+      
+      const result = await DashboardPage({ params: mockParams, searchParams: mockSearchParams });
+      const { container } = render(result);
+      
+      expect(container.textContent).toContain('Error: Failed to fetch');
     });
   });
 });

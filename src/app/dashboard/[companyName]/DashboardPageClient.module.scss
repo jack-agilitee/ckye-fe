@@ -1,0 +1,9 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.dashboard-content {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
