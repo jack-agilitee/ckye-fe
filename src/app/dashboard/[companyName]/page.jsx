@@ -1,6 +1,4 @@
-import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
-import DashboardSidebar from './DashboardSidebar';
-import DashboardPageClient from './DashboardPageClient';
+import DashboardClient from './DashboardClient';
 import { getPages } from '@/lib/api/pages';
 
 export async function generateMetadata({ params }) {
@@ -44,21 +42,10 @@ export default async function DashboardPage({ params, searchParams }) {
   const selectedPageId = searchParams?.page || (pages.length > 0 ? pages[0].id : null);
   
   return (
-    <TwoColumnPage
-      leftContent={
-        <DashboardSidebar 
-          initialPages={pages} 
-          companyName={companyName}
-          initialSelectedId={selectedPageId}
-        />
-      }
-      rightContent={
-        <DashboardPageClient 
-          initialPages={pages} 
-          companyName={companyName}
-          selectedPageId={selectedPageId}
-        />
-      }
+    <DashboardClient 
+      initialPages={pages} 
+      companyName={companyName}
+      initialSelectedId={selectedPageId}
     />
   );
 }

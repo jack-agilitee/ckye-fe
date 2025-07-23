@@ -5,20 +5,15 @@ import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
 import { upsertPage } from '@/lib/api/pages';
+import { useDashboard } from '@/context/DashboardContext';
 
-export default function DashboardSidebar({ 
-  initialPages, 
-  companyName,
-  initialSelectedId
-}) {
+export default function DashboardSidebar() {
   const router = useRouter();
-  const [pages, setPages] = useState(initialPages);
-  const [selectedPageId, setSelectedPageId] = useState(initialSelectedId);
+  const { pages, selectedPageId, companyName, selectPage, addPage } = useDashboard();
   const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   const handleContextItemClick = (item) => {
-    setSelectedPageId(item.id);
-    router.push(`/dashboard/${companyName}?page=${item.id}`);
+    selectPage(item.id);
   };
 
   const handleAddNewClick = async () => {
@@ -32,12 +27,11 @@ export default function DashboardSidebar({
         content: `# ${newPageName}\n\nStart writing your content here...`
       });
 
-      // Update local state with new page
-      setPages([...pages, newPage]);
+      // Update context state with new page
+      addPage(newPage);
       
       // Select the newly created page
-      setSelectedPageId(newPage.id);
-      router.push(`/dashboard/${companyName}?page=${newPage.id}`);
+      selectPage(newPage.id);
       
       // Refresh the page to update server data
       router.refresh();
