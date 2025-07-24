@@ -1,62 +1,48 @@
 import { NextResponse } from 'next/server';
-
-// Mock workspace data
-const mockWorkspaces = [
-  {
-    id: 1,
-    name: 'Americal Eagle',
-    description: 'American Eagle Outfitters workspace',
-    userCount: 9,
-    createdAt: '2024-01-15T10:00:00Z',
-    status: 'active'
-  },
-  {
-    id: 2,
-    name: 'Dollar General',
-    description: 'Dollar General Corporation workspace',
-    userCount: 2,
-    createdAt: '2024-01-20T14:30:00Z',
-    status: 'active'
-  },
-  {
-    id: 3,
-    name: 'Agilitee',
-    description: 'Agilitee internal workspace',
-    userCount: 3,
-    createdAt: '2024-01-10T09:00:00Z',
-    status: 'active'
-  }
-];
+import { prisma } from '@/lib/prisma';
+import { Prisma } from '@/generated/prisma';
 
 // GET /api/workspaces
 export async function GET() {
   try {
-    // Return all workspaces without filtering or pagination
-    return NextResponse.json({
-      data: mockWorkspaces
+    // Return all workspaces with user count
+    const workspaces = await prisma.workspace.findMany({
+      select: {
+        id: true,
+        name: true,
+        shortName: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        _count: {
+          select: { userWorkspaces: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
     });
-  } catch {
-    // Handle errors appropriately
+
+    // Transform the data to include userCount
+    const transformedWorkspaces = workspaces.map(workspace => ({
+      id: workspace.id,
+      name: workspace.name,
+      shortName: workspace.shortName,
+      status: workspace.status,
+      userCount: workspace._count.userWorkspaces,
+      createdAt: workspace.createdAt,
+      updatedAt: workspace.updatedAt
+    }));
+
+    return NextResponse.json({
+      data: transformedWorkspaces
+    });
+  } catch (error) {
+    console.error('Error fetching workspaces:', error);
     return NextResponse.json(
       { error: 'Failed to fetch workspaces' },
       { status: 500 }
     );
   }
 }
-
-// Mock users data to simulate user lookup
-const mockUsers = [
-  { id: '1', name: 'John Doe', email: 'john@example.com', avatar: null },
-  { id: '2', name: 'Jane Smith', email: 'jane@example.com', avatar: null },
-  { id: '3', name: 'Bob Wilson', email: 'bob@example.com', avatar: null },
-  { id: '4', name: 'Alice Brown', email: 'alice@example.com', avatar: null },
-  { id: '5', name: 'Charlie Davis', email: 'charlie@example.com', avatar: null },
-  { id: '6', name: 'Eve Martin', email: 'eve@example.com', avatar: null },
-  { id: '7', name: 'Frank Thompson', email: 'frank@example.com', avatar: null },
-  { id: '8', name: 'Grace Lee', email: 'grace@example.com', avatar: null },
-  { id: '9', name: 'Henry Williams', email: 'henry@example.com', avatar: null },
-  { id: '10', name: 'Iris Johnson', email: 'iris@example.com', avatar: null },
-];
 
 // POST /api/workspaces
 export async function POST(request) {
@@ -72,23 +58,68 @@ export async function POST(request) {
       );
     }
     
-    // Create new workspace (mock implementation)
-    const newWorkspace = {
-      id: mockWorkspaces.length + 1,
-      name: body.name,
-      description: body.description || '',
-      userCount: users.length,
-      users: body.userIds, // Include full user objects
-      createdAt: new Date().toISOString(),
-      status: 'active'
+    // Start a transaction to create workspace and add users
+    const workspace = await prisma.$transaction(async (tx) => {
+      // Create the workspace
+      const newWorkspace = await tx.workspace.create({
+        data: {
+          name: body.name,
+          shortName: body.shortName || null,
+          status: body.status || 'active'
+        }
+      });
+
+      // If userIds are provided, create UserWorkspace relations
+      if (body.userIds && Array.isArray(body.userIds) && body.userIds.length > 0) {
+        await tx.userWorkspace.createMany({
+          data: body.userIds.map(userId => ({
+            userId,
+            workspaceId: newWorkspace.id,
+            role: 'member'
+          }))
+        });
+      }
+
+      // Return the workspace with user count
+      return await tx.workspace.findUnique({
+        where: { id: newWorkspace.id },
+        select: {
+          id: true,
+          name: true,
+          shortName: true,
+          status: true,
+          createdAt: true,
+          updatedAt: true,
+          _count: {
+            select: { userWorkspaces: true }
+          }
+        }
+      });
+    });
+
+    // Transform the response
+    const responseData = {
+      id: workspace.id,
+      name: workspace.name,
+      shortName: workspace.shortName,
+      status: workspace.status,
+      userCount: workspace._count.userWorkspaces,
+      createdAt: workspace.createdAt,
+      updatedAt: workspace.updatedAt
     };
     
-    // In a real implementation, you would save to database here
-    mockWorkspaces.push(newWorkspace);
-    
     // Return created resource
-    return NextResponse.json(newWorkspace, { status: 201 });
-  } catch {
+    return NextResponse.json(responseData, { status: 201 });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return NextResponse.json(
+          { error: 'A workspace with this name already exists' },
+          { status: 409 }
+        );
+      }
+    }
+    console.error('Error creating workspace:', error);
     return NextResponse.json(
       { error: 'Failed to create workspace' },
       { status: 500 }

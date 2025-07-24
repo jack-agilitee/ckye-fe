@@ -44,7 +44,7 @@ const Sidebar = ({
   };
 
   const handleAdminClick = () => {
-    router.push('/admin/workspace');
+    router.push('/admin/workspaces');
   };
 
   const handleWorkspacesClick = () => {

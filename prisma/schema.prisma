@@ -15,17 +15,46 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(cuid())
-  email      String   @unique
-  name       String
-  userType   String   @default("Member")
-  workspaces String[]
-  avatar     String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id             String          @id @default(cuid())
+  email          String          @unique
+  name           String
+  userType       String          @default("Member")
+  avatar         String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  userWorkspaces UserWorkspace[]
 
   @@index([email])
   @@map("users")
+}
+
+model Workspace {
+  id             String          @id @default(cuid())
+  name           String          @unique
+  shortName      String?
+  status         String          @default("active")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  userWorkspaces UserWorkspace[]
+
+  @@index([name])
+  @@map("workspaces")
+}
+
+model UserWorkspace {
+  id          String   @id @default(cuid())
+  userId      String
+  workspaceId String
+  joinedAt    DateTime @default(now())
+  role        String   @default("member")
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workspaceId])
+  @@index([userId])
+  @@index([workspaceId])
+  @@map("user_workspaces")
 }
 
 model Page {
