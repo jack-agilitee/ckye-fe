@@ -1,0 +1,144 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: $background-dark;
+  position: relative;
+  padding: 20px;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 60px;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__title {
+    @include heading-1;
+    color: $white-primary;
+    font-size: 32px;
+    margin: 0;
+  }
+
+  &__subtitle {
+    @include body-medium;
+    @include font-semibold;
+    color: $white-primary;
+    margin: 0;
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    background-color: transparent;
+    border: 1px solid $code-blue;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    @include body-medium;
+    @include font-semibold;
+    color: $code-blue;
+
+    &:hover {
+      background-color: rgba($code-blue, 0.1);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__buttonIcon {
+    filter: brightness(0) saturate(100%) invert(61%) sepia(51%) saturate(468%) hue-rotate(177deg) brightness(91%) contrast(84%);
+  }
+
+  &__definition {
+    position: absolute;
+    bottom: 100px;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &__definitionTop {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__ckye {
+    font-family: 'Overpass', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1;
+    color: $white-secondary;
+    margin: 0;
+  }
+
+  &__pronunciation {
+    display: flex;
+    gap: 16px;
+    font-family: 'Overpass', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1;
+    color: $white-secondary;
+
+    span {
+      white-space: nowrap;
+    }
+  }
+
+  &__description {
+    font-family: 'EB Garamond', serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    color: $white-secondary;
+    margin: 0;
+  }
+
+  &__footer {
+    position: absolute;
+    bottom: 28px;
+    @include body-small;
+    @include font-semibold;
+    color: $white-secondary;
+    text-align: center;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 480px) {
+  .login {
+    &__definition {
+      position: static;
+      margin-top: 60px;
+      margin-bottom: 40px;
+    }
+
+    &__footer {
+      position: static;
+      margin-top: 40px;
+    }
+  }
+}
