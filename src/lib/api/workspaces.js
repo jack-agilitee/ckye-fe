@@ -1,4 +1,4 @@
-export async function getWorkspaces() {
+export async function getWorkspaces(cookieHeader = null) {
   try {
     // Use absolute URL for server-side requests
     const url = typeof window === 'undefined' 
@@ -9,7 +9,9 @@ export async function getWorkspaces() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        ...(cookieHeader && { Cookie: cookieHeader }), // Forward cookies if provided
       },
+      credentials: 'same-origin', // Include cookies for client-side requests
     });
 
     if (!response.ok) {
@@ -24,7 +26,7 @@ export async function getWorkspaces() {
   }
 }
 
-export async function createWorkspace(workspaceData) {
+export async function createWorkspace(workspaceData, cookieHeader = null) {
   console.log('j', workspaceData)
   try {
     // Use absolute URL for server-side requests
@@ -36,7 +38,9 @@ export async function createWorkspace(workspaceData) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(cookieHeader && { Cookie: cookieHeader }), // Forward cookies if provided
       },
+      credentials: 'same-origin', // Include cookies for client-side requests
       body: JSON.stringify(workspaceData),
     });
 
