@@ -10,9 +10,28 @@ export const authOptions: NextAuthOptions = {
       tenantId: process.env.AZURE_AD_TENANT_ID!,
     }),
   ],
+  callbacks: {
+    async signIn({ user }) {
+      // Only allow @agilitee.com email addresses
+      if (user.email?.endsWith('@agilitee.com')) {
+        return true;
+      }
+      return false;
+    },
+    async session({ session }) {
+      return session;
+    },
+    async jwt({ token, account }) {
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+      return token;
+    },
+  },
   session: {
     strategy: 'jwt',
   },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);

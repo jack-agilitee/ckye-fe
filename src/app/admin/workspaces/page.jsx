@@ -3,6 +3,7 @@ import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import WorkspacesPageClient from './WorkspacesPageClient';
 import { getWorkspaces } from '@/lib/api/workspaces';
 import { getUsers } from '@/lib/api/users';
+import { cookies } from 'next/headers';
 
 export const metadata = {
   title: 'Workspaces | Ckye Admin',
@@ -10,10 +11,14 @@ export const metadata = {
 };
 
 export default async function WorkspacesPage() {
+  // Get cookies from the request headers
+  const cookieStore = cookies();
+  const cookieHeader = cookieStore.toString();
+  
   // Server-side API calls to fetch workspaces and users
   const [workspacesResponse, usersResponse] = await Promise.all([
-    getWorkspaces(),
-    getUsers()
+    getWorkspaces(cookieHeader),
+    getUsers(cookieHeader)
   ]);
   
   const workspaces = workspacesResponse.data;

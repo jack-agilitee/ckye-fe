@@ -5,14 +5,17 @@ const getBaseUrl = () => {
     : '';
 };
 
-export async function getPages(companyName) {
+export async function getPages(companyName, cookieHeader = null) {
   try {
     const baseUrl = getBaseUrl();
+    
     const response = await fetch(`${baseUrl}/api/pages?company=${encodeURIComponent(companyName)}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        ...(cookieHeader && { Cookie: cookieHeader }), // Forward cookies if provided
       },
+      credentials: 'same-origin', // Include cookies for client-side requests
     });
 
     if (!response.ok) {
@@ -27,7 +30,7 @@ export async function getPages(companyName) {
   }
 }
 
-export async function upsertPage(pageData) {
+export async function upsertPage(pageData, cookieHeader = null) {
   try {
     const baseUrl = getBaseUrl();
     
@@ -35,7 +38,9 @@ export async function upsertPage(pageData) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(cookieHeader && { Cookie: cookieHeader }), // Forward cookies if provided
       },
+      credentials: 'same-origin', // Include cookies for client-side requests
       body: JSON.stringify({
         name: pageData.name,
         content: pageData.content || '',

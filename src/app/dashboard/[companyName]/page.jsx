@@ -1,5 +1,6 @@
 import DashboardClient from './DashboardClient';
 import { getPages } from '@/lib/api/pages';
+import { cookies } from 'next/headers';
 
 export async function generateMetadata({ params }) {
   const { companyName } = params;
@@ -24,7 +25,11 @@ export default async function DashboardPage({ params, searchParams }) {
   let error = null;
   
   try {
-    const response = await getPages(companyName);
+    // Get cookies from the request headers
+    const cookieStore = cookies();
+    const cookieHeader = cookieStore.toString();
+    
+    const response = await getPages(companyName, cookieHeader);
     pages = response.data;
   } catch (err) {
     error = err.message;

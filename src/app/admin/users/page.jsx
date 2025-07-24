@@ -3,6 +3,7 @@ import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import UsersPageClient from './UsersPageClient';
 import { getUsers } from '@/lib/api/users';
 import { getWorkspaces } from '@/lib/api/workspaces';
+import { cookies } from 'next/headers';
 
 export const metadata = {
   title: 'Users | Ckye Admin',
@@ -10,10 +11,14 @@ export const metadata = {
 };
 
 export default async function UsersPage() {
+  // Get cookies from the request headers
+  const cookieStore = cookies();
+  const cookieHeader = cookieStore.toString();
+  
   // Server-side API calls to fetch users and workspaces
   const [usersResponse, workspacesResponse] = await Promise.all([
-    getUsers(),
-    getWorkspaces()
+    getUsers(cookieHeader),
+    getWorkspaces(cookieHeader)
   ]);
   
   const users = usersResponse.data;
