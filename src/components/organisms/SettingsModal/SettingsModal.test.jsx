@@ -26,14 +26,13 @@ describe('SettingsModal', () => {
       <SettingsModal 
         workspaces={mockWorkspaces}
         currentWorkspaceId="1"
-        userEmail="james@agilitee.com"
         onDismiss={mockOnDismiss}
       />
     );
     
     expect(screen.getByText('AEO')).toBeInTheDocument();
     expect(screen.getByText('3 Members')).toBeInTheDocument();
-    expect(screen.getByText('james@agilitee.com')).toBeInTheDocument();
+    // Email is now fetched from session, not passed as prop
   });
 
   it('renders all workspace items', () => {
