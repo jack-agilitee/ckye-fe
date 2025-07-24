@@ -1730,8 +1730,7 @@ const [searchValue, setSearchValue] = useState('');
                             <SettingsModal
                               workspaces={workspaces}
                               currentWorkspaceId="1"
-                              userEmail="james@agilitee.com"
-                              onDismiss={() => setShowModal(false)}
+                                                            onDismiss={() => setShowModal(false)}
                             />
                           </div>
                         )}
@@ -1768,8 +1767,7 @@ const [searchValue, setSearchValue] = useState('');
                             <SettingsModal
                               workspaces={workspaces}
                               currentWorkspaceId="2"
-                              userEmail="user@company.com"
-                              onDismiss={() => setShowModal(false)}
+                                                            onDismiss={() => setShowModal(false)}
                             />
                           </div>
                         )}
@@ -1790,8 +1788,7 @@ const [searchValue, setSearchValue] = useState('');
                         { id: '3', name: 'Agilitee', memberCount: 10 }
                       ]}
                       currentWorkspaceId="1"
-                      userEmail="james@agilitee.com"
-                      onDismiss={() => console.log('Dismiss')}
+                                            onDismiss={() => console.log('Dismiss')}
                     />
                   </div>
                 </div>
@@ -1823,8 +1820,7 @@ function App() {
         <SettingsModal
           workspaces={workspaces}
           currentWorkspaceId="1"
-          userEmail="james@agilitee.com"
-          onDismiss={() => setShowModal(false)}
+                    onDismiss={() => setShowModal(false)}
         />
       )}
     </>

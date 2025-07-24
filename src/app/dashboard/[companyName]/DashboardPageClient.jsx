@@ -51,7 +51,6 @@ export default function DashboardPageClient() {
       setLastSaved(new Date());
     } catch (error) {
       console.error('Failed to save content:', error);
-      // TODO: Show error notification to user
     } finally {
       setIsSaving(false);
     }

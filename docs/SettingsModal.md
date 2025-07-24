@@ -27,7 +27,6 @@ function App() {
         <SettingsModal
           workspaces={workspaces}
           currentWorkspaceId="1"
-          userEmail="james@agilitee.com"
           onDismiss={() => setShowModal(false)}
         />
       )}
@@ -42,7 +41,6 @@ function App() {
 |------|------|---------|-------------|
 | workspaces | Array | `[]` | Array of workspace objects with `id`, `name`, and `memberCount` properties |
 | currentWorkspaceId | String | `null` | ID of the currently selected workspace |
-| userEmail | String | `''` | Email address of the current user |
 | onDismiss | Function | - | Callback function called when modal should be dismissed |
 
 ## Workspace Object Structure
@@ -55,13 +53,17 @@ function App() {
 }
 ```
 
+## Authentication
+
+The component uses NextAuth.js to automatically fetch and display the current user's email from the session. No need to pass `userEmail` as a prop.
+
 ## Features
 
 ### Interactive Elements
 1. **Settings Button** - Logs "settings" to console (TODO: Navigate to settings page)
 2. **Invite Members Button** - Logs "invite members" to console (TODO: Navigate to invite members page)
 3. **Workspace Selection** - Click to select a different workspace (TODO: Navigate to workspace page)
-4. **Log Out Button** - Logs "log out" to console (TODO: Hook up logout API)
+4. **Log Out Button** - Signs out the user using NextAuth.js `signOut()` function
 
 ### Dismissal Behavior
 - Click outside the modal to dismiss
@@ -101,7 +103,7 @@ Comprehensive test coverage includes:
 
 ## Future Enhancements
 - Implement actual navigation for settings and invite members
-- Connect logout functionality to authentication API
 - Add workspace switching functionality
 - Add loading states for async operations
 - Add animation transitions for modal appearance/dismissal
+- Add error handling for authentication failures

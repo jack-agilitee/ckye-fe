@@ -82,7 +82,6 @@ export default function DashboardSidebar() {
             { id: '1', name: companyName, memberCount: 1 }
           ]}
           currentWorkspaceId="1"
-          userEmail="user@example.com"
           onDismiss={() => setShowSettingsModal(false)}
         />
       )}

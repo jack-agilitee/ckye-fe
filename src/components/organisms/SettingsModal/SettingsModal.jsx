@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import User from '@/components/molecules/User/User';
 import Avatar from '@/components/atoms/Avatar/Avatar';
@@ -10,11 +11,11 @@ import styles from './SettingsModal.module.scss';
 const SettingsModal = ({ 
   workspaces = [],
   currentWorkspaceId = null,
-  userEmail = '',
   onDismiss
 }) => {
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(currentWorkspaceId);
   const modalRef = useRef(null);
+  const { data: session } = useSession();
 
   // Get current workspace data
   const currentWorkspace = workspaces.find(w => w.id === selectedWorkspaceId) || workspaces[0];
@@ -53,13 +54,10 @@ const SettingsModal = ({
 
   const handleWorkspaceClick = (workspace) => {
     setSelectedWorkspaceId(workspace.id);
-    console.log('workspace selected:', workspace);
-    // TODO: Navigate to workspace page
   };
 
   const handleLogoutClick = () => {
-    console.log('log out');
-    // TODO: Hook up logout API call
+    signOut();
   };
 
   return (
@@ -96,7 +94,7 @@ const SettingsModal = ({
 
       {/* User Email */}
       <div className={styles['settings-modal__user-email']}>
-        {userEmail}
+        {session?.user?.email || ''}
       </div>
 
       {/* Workspace List */}
