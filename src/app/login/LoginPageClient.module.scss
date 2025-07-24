@@ -1,0 +1,196 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.login {
+  background-color: $background-dark;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 40px 20px;
+
+  &__wrapper {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  &__top {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__title {
+    @include heading-1;
+    color: $white-primary;
+    font-family: 'Overpass', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1;
+    margin: 0;
+  }
+
+  &__subtitle {
+    @include body-medium;
+    color: $white-primary;
+    font-weight: 600;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__label {
+    @include body-small;
+    color: $white-secondary;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  &__input {
+    background: transparent;
+    border: 1px solid #353535;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: $white-primary;
+    @include body-medium;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &::placeholder {
+      color: $white-secondary;
+    }
+
+    &:focus {
+      border-color: $code-blue;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__ctas {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  &__button {
+    background: transparent;
+    border: 1px solid $code-blue;
+    border-radius: 8px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: $code-blue;
+    @include body-medium;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: rgba($code-blue, 0.1);
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  &__definition {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__logo {
+    font-family: 'Overpass', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1;
+    color: $white-secondary;
+    margin: 0;
+  }
+
+  &__pronunciation {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-family: 'Overpass', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: $white-secondary;
+
+    span {
+      white-space: nowrap;
+    }
+  }
+
+  &__description {
+    font-family: 'EB Garamond', serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    color: $white-secondary;
+    margin: 0;
+  }
+
+  &__footer {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    @include body-small;
+    color: $white-secondary;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+    margin: 0;
+  }
+
+  &__loading {
+    color: $white-primary;
+    @include body-large;
+  }
+}

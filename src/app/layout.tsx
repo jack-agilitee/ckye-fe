@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NextAuthSessionProvider from "@/components/providers/SessionProvider";
 import "./globals.scss";
 
 export const metadata: Metadata = {
@@ -14,7 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <NextAuthSessionProvider>
+          {children}
+        </NextAuthSessionProvider>
       </body>
     </html>
   );
