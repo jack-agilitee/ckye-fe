@@ -5,23 +5,44 @@ import { Prisma } from '@/generated/prisma';
 // GET /api/users
 export async function GET() {
   try {
-    // Return all users without filtering or pagination
+    // Return all users with their workspaces through the join table
     const users = await prisma.user.findMany({
       select: {
         id: true,
         email: true,
         name: true,
         userType: true,
-        workspaces: true,
         avatar: true,
         createdAt: true,
-        updatedAt: true
+        updatedAt: true,
+        userWorkspaces: {
+          select: {
+            workspace: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        }
       },
       orderBy: { createdAt: 'desc' }
     });
 
+    // Transform the data to flatten workspaces array
+    const transformedUsers = users.map(user => ({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      userType: user.userType,
+      avatar: user.avatar,
+      workspaces: user.userWorkspaces.map(uw => uw.workspace.name),
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    }));
+
     return NextResponse.json({
-      data: users
+      data: transformedUsers
     });
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -52,7 +73,6 @@ export async function POST(request) {
         name: body.name,
         email: body.email,
         userType: body.userType || 'Member',
-        workspaces: body.workspaces || [],
         avatar: body.avatar || body.name.charAt(0).toUpperCase()
       },
       select: {
@@ -60,15 +80,61 @@ export async function POST(request) {
         email: true,
         name: true,
         userType: true,
-        workspaces: true,
         avatar: true,
         createdAt: true,
         updatedAt: true
       }
     });
     
+    // If workspace IDs are provided, create associations
+    if (body.workspaceIds && Array.isArray(body.workspaceIds) && body.workspaceIds.length > 0) {
+      await prisma.userWorkspace.createMany({
+        data: body.workspaceIds.map(workspaceId => ({
+          userId: user.id,
+          workspaceId: workspaceId,
+          role: body.userType === 'Admin' ? 'admin' : 'member'
+        }))
+      });
+    }
+    
+    // Fetch the user with workspaces
+    const userWithWorkspaces = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        userType: true,
+        avatar: true,
+        createdAt: true,
+        updatedAt: true,
+        userWorkspaces: {
+          select: {
+            workspace: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        }
+      }
+    });
+    
+    // Transform response
+    const responseData = {
+      id: userWithWorkspaces.id,
+      email: userWithWorkspaces.email,
+      name: userWithWorkspaces.name,
+      userType: userWithWorkspaces.userType,
+      avatar: userWithWorkspaces.avatar,
+      workspaces: userWithWorkspaces.userWorkspaces.map(uw => uw.workspace.name),
+      createdAt: userWithWorkspaces.createdAt,
+      updatedAt: userWithWorkspaces.updatedAt
+    };
+    
     // Return created resource
-    return NextResponse.json(user, { status: 201 });
+    return NextResponse.json(responseData, { status: 201 });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {

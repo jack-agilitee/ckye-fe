@@ -47,7 +47,7 @@ export default function WorkspacesPageClient({ initialWorkspaces, initialUsers }
             try {
               const createdWorkspace = await createWorkspace({
                 name: newWorkspace.name,
-                description: `Workspace for ${newWorkspace.name}`,
+                shortName: newWorkspace.shortName,
                 userIds: newWorkspace.selectedUsers?.map(user => user.id)
               });
               

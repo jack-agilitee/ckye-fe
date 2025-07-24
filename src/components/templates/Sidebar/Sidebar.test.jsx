@@ -171,7 +171,7 @@ describe('Sidebar', () => {
     const adminButton = screen.getByText('Ckye Admin');
     fireEvent.click(adminButton);
 
-    expect(mockPush).toHaveBeenCalledWith('/admin/workspace');
+    expect(mockPush).toHaveBeenCalledWith('/admin/workspaces');
   });
 
   it('should render admin mode when isAdminMode is true', () => {
@@ -196,7 +196,7 @@ describe('Sidebar', () => {
     const workspacesButton = screen.getByText('Workspaces');
     fireEvent.click(workspacesButton);
 
-    expect(mockPush).toHaveBeenCalledWith('/admin/workspace');
+    expect(mockPush).toHaveBeenCalledWith('/admin/workspaces');
 
     const usersButton = screen.getByText('Users');
     fireEvent.click(usersButton);

@@ -2,85 +2,107 @@ import { PrismaClient } from '../src/generated/prisma/index.js';
 
 const prisma = new PrismaClient();
 
+const workspaces = [
+  {
+    name: 'Americal Eagle',
+    shortName: 'AE',
+    status: 'active'
+  },
+  {
+    name: 'Dollar General',
+    shortName: 'DG',
+    status: 'active'
+  },
+  {
+    name: 'Agilitee',
+    shortName: 'AG',
+    status: 'active'
+  }
+];
+
 const users = [
   {
     name: 'Andrew Vonn',
     email: 'andrew@agilitee.com',
     userType: 'Member',
-    workspaces: ['Americal Eagle'],
     avatar: 'A'
   },
   {
     name: 'Eli Eljadi',
     email: 'eli@agilitee.com',
     userType: 'Member',
-    workspaces: ['Americal Eagle', 'Agilitee'],
     avatar: 'E'
   },
   {
     name: 'Erin Ramos',
     email: 'erin@agilitee.com',
     userType: 'Member',
-    workspaces: ['Americal Eagle'],
     avatar: 'E'
   },
   {
     name: 'Fadi',
     email: 'fadi@agilitee.com',
     userType: 'Member',
-    workspaces: ['Americal Eagle'],
     avatar: 'F'
   },
   {
     name: 'Holland Bohr',
     email: 'holland@agilitee.com',
     userType: 'Member',
-    workspaces: ['Dollar General'],
     avatar: 'H'
   },
   {
     name: 'Jack Nichols',
     email: 'jack@agilitee.com',
     userType: 'Admin',
-    workspaces: ['Americal Eagle', 'Dollar General', 'Agilitee'],
     avatar: 'J'
   },
   {
     name: 'James Otey',
     email: 'james@agilitee.com',
     userType: 'Admin',
-    workspaces: ['Americal Eagle'],
     avatar: 'J'
   },
   {
     name: 'JD McCulley',
     email: 'jd@agilitee.com',
     userType: 'Member',
-    workspaces: ['Americal Eagle'],
     avatar: 'J'
   },
   {
     name: 'John Elliot',
     email: 'john@agilitee.com',
     userType: 'Member',
-    workspaces: ['Americal Eagle'],
     avatar: 'J'
   },
   {
     name: 'Katelyn Thompson',
     email: 'katelyn@agilitee.com',
     userType: 'Member',
-    workspaces: ['Americal Eagle'],
     avatar: 'K'
   },
   {
     name: 'Phil Stephenson',
     email: 'phil@agilitee.com',
     userType: 'Member',
-    workspaces: ['Americal Eagle'],
     avatar: 'P'
   }
 ];
+
+// Mapping of user emails to workspace names
+const userWorkspaceMap = {
+  'andrew@agilitee.com': ['Americal Eagle'],
+  'eli@agilitee.com': ['Americal Eagle', 'Agilitee'],
+  'erin@agilitee.com': ['Americal Eagle'],
+  'fadi@agilitee.com': ['Americal Eagle'],
+  'holland@agilitee.com': ['Dollar General'],
+  'jack@agilitee.com': ['Americal Eagle', 'Dollar General', 'Agilitee'],
+  'james@agilitee.com': ['Americal Eagle'],
+  'jd@agilitee.com': ['Americal Eagle'],
+  'john@agilitee.com': ['Americal Eagle'],
+  'katelyn@agilitee.com': ['Americal Eagle'],
+  'phil@agilitee.com': ['Americal Eagle']
+};
 
 const pages = [
   {
@@ -108,15 +130,43 @@ async function main() {
   console.log('Seeding database...');
   
   // Delete existing data
+  await prisma.userWorkspace.deleteMany();
   await prisma.page.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.workspace.deleteMany();
   
-  // Create users
+  // Create workspaces
+  const createdWorkspaces = {};
+  for (const workspace of workspaces) {
+    const created = await prisma.workspace.create({
+      data: workspace
+    });
+    createdWorkspaces[workspace.name] = created.id;
+    console.log(`Created workspace: ${workspace.name}`);
+  }
+  
+  // Create users and their workspace associations
   for (const user of users) {
-    await prisma.user.create({
+    const createdUser = await prisma.user.create({
       data: user
     });
     console.log(`Created user: ${user.name}`);
+    
+    // Create user-workspace associations
+    const userWorkspaces = userWorkspaceMap[user.email] || [];
+    for (const workspaceName of userWorkspaces) {
+      const workspaceId = createdWorkspaces[workspaceName];
+      if (workspaceId) {
+        await prisma.userWorkspace.create({
+          data: {
+            userId: createdUser.id,
+            workspaceId: workspaceId,
+            role: user.userType === 'Admin' ? 'admin' : 'member'
+          }
+        });
+        console.log(`  - Added to workspace: ${workspaceName}`);
+      }
+    }
   }
   
   // Create pages
