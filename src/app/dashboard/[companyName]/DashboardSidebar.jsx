@@ -11,20 +11,27 @@ export default function DashboardSidebar() {
   const router = useRouter();
   const { pages, selectedPageId, companyName, selectPage, addPage } = useDashboard();
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [isAddingNewPage, setIsAddingNewPage] = useState(false);
 
   const handleContextItemClick = (item) => {
     selectPage(item.id);
   };
 
-  const handleAddNewClick = async () => {
-    try {
-      const newPageName = prompt('Enter page name:');
-      if (!newPageName) return;
+  const handleAddNewClick = () => {
+    setIsAddingNewPage(true);
+  };
 
+  const handleCreatePage = async (pageName) => {
+    if (!pageName || !pageName.trim()) {
+      setIsAddingNewPage(false);
+      return;
+    }
+
+    try {
       const newPage = await upsertPage({
-        name: newPageName.endsWith('.md') ? newPageName : `${newPageName}.md`,
+        name: pageName.endsWith('.md') ? pageName : `${pageName}.md`,
         company: companyName,
-        content: `# ${newPageName}\n\nStart writing your content here...`
+        content: `# ${pageName}\n\nStart writing your content here...`
       });
 
       // Update context state with new page
@@ -33,11 +40,19 @@ export default function DashboardSidebar() {
       // Select the newly created page
       selectPage(newPage.id);
       
+      // Reset the adding state
+      setIsAddingNewPage(false);
+      
       // Refresh the page to update server data
       router.refresh();
     } catch (err) {
       alert(`Failed to create page: ${err.message}`);
+      setIsAddingNewPage(false);
     }
+  };
+
+  const handleCancelCreate = () => {
+    setIsAddingNewPage(false);
   };
 
   const handleAccountClick = () => {
@@ -57,6 +72,9 @@ export default function DashboardSidebar() {
         onAddNewClick={handleAddNewClick}
         onAccountClick={handleAccountClick}
         onNotesClick={handleAddNewClick}
+        isAddingNew={isAddingNewPage}
+        onCreateNew={handleCreatePage}
+        onCancelNew={handleCancelCreate}
       />
       {showSettingsModal && (
         <SettingsModal

@@ -3,6 +3,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import ListItem from '@/components/molecules/ListItem/ListItem';
+import InlineInput from '@/components/atoms/InlineInput/InlineInput';
 import styles from './Sidebar.module.scss';
 
 const Sidebar = ({ 
@@ -16,7 +17,10 @@ const Sidebar = ({
   onAddNewClick,
   onAccountClick,
   onNotesClick,
-  onAdminBack
+  onAdminBack,
+  isAddingNew = false,
+  onCreateNew,
+  onCancelNew
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -115,12 +119,20 @@ const Sidebar = ({
                       onClick={() => handleContextItemClick(item)}
                     />
                   ))}
-                  <ListItem
-                    text="Add New"
-                    icon="/plus.svg"
-                    selected={false}
-                    onClick={handleAddNewClick}
-                  />
+                  {isAddingNew ? (
+                    <InlineInput
+                      placeholder="Enter page name..."
+                      onSubmit={onCreateNew}
+                      onCancel={onCancelNew}
+                    />
+                  ) : (
+                    <ListItem
+                      text="Add New"
+                      icon="/plus.svg"
+                      selected={false}
+                      onClick={handleAddNewClick}
+                    />
+                  )}
                 </div>
               </div>
 
