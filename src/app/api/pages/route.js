@@ -1,10 +1,20 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma';
 
 // GET /api/pages?company=companyName
 export async function GET(request) {
   try {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Please log in' },
+        { status: 401 }
+      );
+    }
     const { searchParams } = new URL(request.url);
     const company = searchParams.get('company');
     
@@ -51,6 +61,14 @@ export async function GET(request) {
 // POST /api/pages
 export async function POST(request) {
   try {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Please log in' },
+        { status: 401 }
+      );
+    }
     const body = await request.json();
     
     // Validate required fields
