@@ -24,7 +24,6 @@ const AddWorkspaceModal = ({
         selectedUsers
       })
     }
-    // TODO: Hook up API call for workspace creation
   };
 
   return (

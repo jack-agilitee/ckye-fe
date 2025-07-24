@@ -59,7 +59,6 @@ export default function UsersPageClient({ initialUsers, workspaces }) {
       console.log('User created successfully:', newUser);
     } catch (error) {
       console.error('Failed to create user:', error);
-      // TODO: Show error message to user
     }
   };
 

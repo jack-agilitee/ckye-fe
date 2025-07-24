@@ -54,8 +54,6 @@ const SettingsModal = ({
 
   const handleWorkspaceClick = (workspace) => {
     setSelectedWorkspaceId(workspace.id);
-    console.log('workspace selected:', workspace);
-    // TODO: Navigate to workspace page
   };
 
   const handleLogoutClick = () => {
