@@ -1,0 +1,130 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: $background-dark;
+  position: relative;
+  padding: 20px;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 100px;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__title {
+    @include heading-1;
+    color: $white-primary;
+    font-size: 32px;
+    margin: 0;
+  }
+
+  &__subtitle {
+    @include body-medium;
+    @include font-semibold;
+    color: $white-primary;
+    margin: 0;
+  }
+
+  &__button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  &__definition {
+    position: fixed;
+    bottom: 116px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 0 20px;
+  }
+
+  &__definitionTop {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__ckye {
+    font-family: 'Overpass', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1;
+    color: $white-secondary;
+    margin: 0;
+  }
+
+  &__pronunciation {
+    display: flex;
+    gap: 16px;
+    font-family: 'Overpass', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1;
+    color: $white-secondary;
+
+    span {
+      white-space: nowrap;
+    }
+  }
+
+  &__description {
+    font-family: 'EB Garamond', serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    color: $white-secondary;
+    margin: 0;
+  }
+
+  &__footer {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    @include body-small;
+    @include font-semibold;
+    color: $white-secondary;
+    text-align: center;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 480px) {
+  .login {
+    &__container {
+      margin-top: 60px;
+    }
+
+    &__definition {
+      position: static;
+      transform: none;
+      margin-top: 60px;
+      margin-bottom: 40px;
+    }
+
+    &__footer {
+      position: static;
+      transform: none;
+      margin-top: 40px;
+    }
+  }
+}
