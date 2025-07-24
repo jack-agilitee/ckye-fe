@@ -7,11 +7,11 @@ jest.mock('next-auth/react', () => ({
   signIn: jest.fn()
 }));
 
-// Mock Next.js Image component
-jest.mock('next/image', () => ({
+// Mock Button component
+jest.mock('@/components/atoms/Button/Button', () => ({
   __esModule: true,
-  default: ({ src, alt, ...props }) => (
-    <img src={src} alt={alt} {...props} />
+  default: ({ children, onClick, ...props }) => (
+    <button onClick={onClick} {...props}>{children}</button>
   ),
 }));
 
@@ -54,19 +54,11 @@ describe('LoginPage', () => {
     expect(signIn).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the sign in button with icon', () => {
+  it('renders the sign in button', () => {
     render(<LoginPage />);
     
     const button = screen.getByRole('button', { name: /Single Sign On/i });
     expect(button).toBeInTheDocument();
-    
-    // Check for icon
-    const icon = button.querySelector('img');
-    expect(icon).toBeInTheDocument();
-    expect(icon).toHaveAttribute('src', '/person-cards.svg');
-    expect(icon).toHaveAttribute('alt', '');
-    expect(icon).toHaveAttribute('width', '16');
-    expect(icon).toHaveAttribute('height', '16');
   });
 
   it('has proper accessibility attributes', () => {

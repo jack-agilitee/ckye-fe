@@ -1,7 +1,7 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
-import Image from 'next/image';
+import Button from '@/components/atoms/Button/Button';
 import styles from './page.module.scss';
 
 export default function LoginPage() {
@@ -21,19 +21,14 @@ export default function LoginPage() {
         </div>
 
         {/* Sign In Button */}
-        <button 
-          className={styles.login__button}
+        <Button
+          variant="secondary"
+          icon="/person.svg"
           onClick={handleSignIn}
+          className={styles.login__button}
         >
-          <Image
-            src="/person-cards.svg"
-            alt=""
-            width={16}
-            height={16}
-            className={styles.login__buttonIcon}
-          />
-          <span>Single Sign On</span>
-        </button>
+          Single Sign On
+        </Button>
       </div>
 
       {/* Ckye Definition Section */}
