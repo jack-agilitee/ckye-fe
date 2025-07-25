@@ -64,7 +64,6 @@ export default function DashboardSidebar() {
       <Sidebar
         contextItems={pages}
         selectedItemId={selectedPageId}
-        isAdmin={true}
         isAdminMode={false}
         accountName={companyName}
         accountInitial={companyName.charAt(0).toUpperCase()}

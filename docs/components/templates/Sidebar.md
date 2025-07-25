@@ -11,11 +11,12 @@ The Sidebar template component provides a complete left navigation layout for th
 - **Account Header**: Integrates with existing AccountChanger organism component
 - **Context Section**: Dynamic list of document/file items with selection state
 - **Workspace Section**: Static items (Settings, Invite Members) with console logging
-- **Admin Section**: Conditional section that appears only for admin users
+- **Admin Section**: Conditional section that appears automatically for admin users (determined by UserContext)
 - **Admin Mode**: Complete alternative layout for admin interface with Workspaces and Users navigation
 - **Navigation**: Routing to admin workspace page and console logging for interactions
 - **Selection State**: Visual feedback for selected context items
 - **Responsive Design**: Adapts to mobile screens
+- **User Context Integration**: Automatically determines admin status from UserContext
 
 ## Usage
 
@@ -24,7 +25,7 @@ import Sidebar from '@/components/templates/Sidebar/Sidebar';
 
 const MyApp = () => {
   const [selectedItem, setSelectedItem] = useState('1');
-  const [isUserAdmin, setIsUserAdmin] = useState(false);
+  // Admin status is now automatically determined from UserContext
 
   const contextItems = [
     { id: '1', name: 'Claude.md' },
@@ -47,7 +48,6 @@ const MyApp = () => {
       <Sidebar
         contextItems={contextItems}
         selectedItemId={selectedItem}
-        isAdmin={isUserAdmin}
         accountName="AEO"
         accountInitial="A"
         onContextItemClick={handleContextItemClick}
@@ -83,7 +83,6 @@ const AdminApp = () => {
 |------|------|----------|---------|-------------|
 | contextItems | array | No | [] | Array of context item objects with `id` and `name` properties |
 | selectedItemId | string | No | null | ID of the currently selected context item |
-| isAdmin | boolean | No | false | Whether to show the admin section in regular mode |
 | isAdminMode | boolean | No | false | Whether to render the admin mode layout with Workspaces/Users navigation |
 | accountName | string | No | 'AEO' | Account name displayed in header |
 | accountInitial | string | No | 'A' | Account initial displayed in avatar |
@@ -92,6 +91,8 @@ const AdminApp = () => {
 | onAccountClick | function | No | - | Callback when account changer is clicked |
 | onNotesClick | function | No | - | Callback when notes button is clicked |
 | onAdminBack | function | No | - | Callback when admin back button is clicked (defaults to home redirect) |
+
+**Note**: The admin section visibility is now determined automatically based on the user's `userType` from UserContext. When `userType === 'Admin'`, the admin section will be shown.
 
 ## Context Item Object Structure
 
@@ -118,13 +119,14 @@ const AdminApp = () => {
 - **Icons**: Uses `/settings.svg` and `/invite.svg` from public directory
 
 #### Admin Section
-- **Conditional Rendering**: Only appears when `isAdmin` is true
+- **Conditional Rendering**: Only appears when the user's `userType` in UserContext is 'Admin'
 - **Navigation**: Clicking "Ckye Admin" navigates to `/admin/workspace`
 - **Console Logging**: Logs "Ckye Admin" when clicked
+- **Automatic Detection**: No need to pass isAdmin prop - component reads from UserContext
 
 #### Account Header
 - **Integration**: Uses existing AccountChanger component
-- **Admin State**: Controlled by `isAdmin` prop
+- **Admin State**: Automatically determined from UserContext
 - **Props Passthrough**: Passes account-related props to AccountChanger
 
 ### Admin Mode (`isAdminMode={true}`)
@@ -215,4 +217,5 @@ The component includes comprehensive tests covering:
 - React (hooks: useRouter from Next.js)
 - Next.js (Image component, useRouter)
 - @/components/organisms/AccountChanger/AccountChanger
+- @/context/UserContext (for automatic admin detection)
 - SCSS modules with global variables and mixins

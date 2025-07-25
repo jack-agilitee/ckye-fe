@@ -2154,7 +2154,6 @@ const workspaces = [
                       <Sidebar
                         contextItems={contextItems}
                         selectedItemId="4"
-                        isAdmin={true}
                         accountName="Agilitee"
                         accountInitial="A"
                         onContextItemClick={(item) => console.log('Admin context item:', item.name)}

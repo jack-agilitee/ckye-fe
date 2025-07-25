@@ -1,11 +1,17 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/context/UserContext';
 import Sidebar from './Sidebar';
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+}));
+
+// Mock UserContext
+jest.mock('@/context/UserContext', () => ({
+  useUser: jest.fn(),
 }));
 
 // Mock AccountChanger component
@@ -50,6 +56,30 @@ describe('Sidebar', () => {
     { id: '2', name: 'Commands.md' },
     { id: '3', name: 'Integrations/MCP' }
   ];
+  
+  // Default mock for useUser - non-admin user
+  const mockUserDefault = {
+    user: {
+      userType: 'Member',
+      email: 'test@example.com',
+      name: 'Test User'
+    },
+    workspaces: [],
+    isLoading: false,
+    error: null
+  };
+  
+  // Admin user mock
+  const mockUserAdmin = {
+    user: {
+      userType: 'Admin',
+      email: 'admin@example.com',
+      name: 'Admin User'
+    },
+    workspaces: [],
+    isLoading: false,
+    error: null
+  };
 
   const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
 
@@ -57,6 +87,8 @@ describe('Sidebar', () => {
     useRouter.mockReturnValue({
       push: mockPush,
     });
+    // Set default non-admin user
+    useUser.mockReturnValue(mockUserDefault);
     jest.clearAllMocks();
   });
 
@@ -145,18 +177,22 @@ describe('Sidebar', () => {
     expect(consoleLogSpy).toHaveBeenCalledWith('Invite Members');
   });
 
-  it('should show admin section when isAdmin is true', () => {
+  it('should show admin section when user is admin', () => {
+    // Set admin user
+    useUser.mockReturnValue(mockUserAdmin);
+    
     render(
-      <Sidebar isAdmin={true} />
+      <Sidebar />
     );
 
     expect(screen.getByText('ADMIN')).toBeInTheDocument();
     expect(screen.getByText('Ckye Admin')).toBeInTheDocument();
   });
 
-  it('should hide admin section when isAdmin is false', () => {
+  it('should hide admin section when user is not admin', () => {
+    // useUser is already mocked with non-admin user by default
     render(
-      <Sidebar isAdmin={false} />
+      <Sidebar />
     );
 
     expect(screen.queryByText('ADMIN')).not.toBeInTheDocument();
@@ -164,8 +200,11 @@ describe('Sidebar', () => {
   });
 
   it('should navigate to admin page when admin item is clicked', () => {
+    // Set admin user
+    useUser.mockReturnValue(mockUserAdmin);
+    
     render(
-      <Sidebar isAdmin={true} />
+      <Sidebar />
     );
 
     const adminButton = screen.getByText('Ckye Admin');
