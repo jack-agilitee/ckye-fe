@@ -6,7 +6,7 @@ import styles from './page.module.scss';
 
 export default function LoginPage() {
   const handleSignIn = () => {
-    signIn();
+    signIn('azure-ad', { callbackUrl: '/' });
   };
 
   return (

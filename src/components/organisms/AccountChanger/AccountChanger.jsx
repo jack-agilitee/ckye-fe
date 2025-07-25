@@ -24,7 +24,6 @@ const AccountChanger = ({
   };
 
   const handleAdminBack = () => {
-    console.log('Admin back clicked - reverting to default view');
     if (onAdminBack) {
       onAdminBack();
     }
