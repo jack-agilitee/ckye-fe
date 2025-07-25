@@ -1711,11 +1711,6 @@ const [searchValue, setSearchValue] = useState('');
                 <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   {(() => {
                     const [showModal, setShowModal] = useState(false);
-                    const workspaces = [
-                      { id: '1', name: 'AEO', memberCount: 3 },
-                      { id: '2', name: 'Dollar General', memberCount: 5 },
-                      { id: '3', name: 'Agilitee', memberCount: 10 }
-                    ];
                     
                     return (
                       <>
@@ -1727,11 +1722,7 @@ const [searchValue, setSearchValue] = useState('');
                         </Button>
                         {showModal && (
                           <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-                            <SettingsModal
-                              workspaces={workspaces}
-                              currentWorkspaceId="1"
-                                                            onDismiss={() => setShowModal(false)}
-                            />
+                            <SettingsModal onDismiss={() => setShowModal(false)} />
                           </div>
                         )}
                       </>
@@ -1746,12 +1737,6 @@ const [searchValue, setSearchValue] = useState('');
                 <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   {(() => {
                     const [showModal, setShowModal] = useState(false);
-                    const workspaces = [
-                      { id: '1', name: 'Personal', memberCount: 1 },
-                      { id: '2', name: 'Work Team', memberCount: 25 },
-                      { id: '3', name: 'Client Project', memberCount: 8 },
-                      { id: '4', name: 'Open Source', memberCount: 150 }
-                    ];
                     
                     return (
                       <>
@@ -1764,11 +1749,7 @@ const [searchValue, setSearchValue] = useState('');
                         </Button>
                         {showModal && (
                           <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-                            <SettingsModal
-                              workspaces={workspaces}
-                              currentWorkspaceId="2"
-                                                            onDismiss={() => setShowModal(false)}
-                            />
+                            <SettingsModal onDismiss={() => setShowModal(false)} />
                           </div>
                         )}
                       </>
@@ -1781,15 +1762,7 @@ const [searchValue, setSearchValue] = useState('');
                 <h4 className={styles.showcase__exampleTitle}>Static Preview</h4>
                 <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', display: 'flex', justifyContent: 'center' }}>
                   <div style={{ position: 'relative' }}>
-                    <SettingsModal
-                      workspaces={[
-                        { id: '1', name: 'AEO', memberCount: 3 },
-                        { id: '2', name: 'Dollar General', memberCount: 5 },
-                        { id: '3', name: 'Agilitee', memberCount: 10 }
-                      ]}
-                      currentWorkspaceId="1"
-                                            onDismiss={() => console.log('Dismiss')}
-                    />
+                    <SettingsModal onDismiss={() => console.log('Dismiss')} />
                   </div>
                 </div>
                 <p className={styles.showcase__hint}>Static preview - interactions log to console</p>
@@ -1801,11 +1774,8 @@ const [searchValue, setSearchValue] = useState('');
               <pre className={styles.showcase__codeBlock}>
 {`import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
 
-const workspaces = [
-  { id: '1', name: 'AEO', memberCount: 3 },
-  { id: '2', name: 'Dollar General', memberCount: 5 },
-  { id: '3', name: 'Agilitee', memberCount: 10 }
-];
+// SettingsModal now gets workspaces from UserContext automatically
+// No need to pass workspaces or currentWorkspaceId props
 
 function App() {
   const [showModal, setShowModal] = useState(false);
@@ -1817,21 +1787,18 @@ function App() {
       </Button>
       
       {showModal && (
-        <SettingsModal
-          workspaces={workspaces}
-          currentWorkspaceId="1"
-                    onDismiss={() => setShowModal(false)}
-        />
+        <SettingsModal onDismiss={() => setShowModal(false)} />
       )}
     </>
   );
 }
 
-// Workspace object structure
+// Workspace object structure (from UserContext)
 {
   id: string,          // Unique identifier
   name: string,        // Display name
-  memberCount: number  // Number of members
+  shortName: string,   // URL-friendly name for navigation
+  userCount: number    // Number of users in workspace
 }`}
               </pre>
             </div>

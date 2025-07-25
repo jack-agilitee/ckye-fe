@@ -2,23 +2,25 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useUser } from '@/context/UserContext';
+import { usePathname } from 'next/navigation'
 import User from '@/components/molecules/User/User';
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import Button from '@/components/atoms/Button/Button';
 import styles from './SettingsModal.module.scss';
 
-const SettingsModal = ({ 
-  workspaces = [],
-  currentWorkspaceId = null,
-  onDismiss
-}) => {
-  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(currentWorkspaceId);
-  const modalRef = useRef(null);
-  const { data: session } = useSession();
+const SettingsModal = ({ onDismiss }) => {
 
-  // Get current workspace data
-  const currentWorkspace = workspaces.find(w => w.id === selectedWorkspaceId) || workspaces[0];
+  const modalRef = useRef(null);
+  const router = useRouter();
+  const { data: session } = useSession();
+  const { workspaces } = useUser();
+  const pathname = usePathname().split('/')?.pop()?.toLowerCase();
+
+  const [currentWorkspace, setCurrentWorkspace] = useState(workspaces.find(workspace => workspace.shortName.toLowerCase() === pathname) || workspaces[0]);
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -53,8 +55,17 @@ const SettingsModal = ({
   };
 
   const handleWorkspaceClick = (workspace) => {
-    setSelectedWorkspaceId(workspace.id);
+    setCurrentWorkspace(workspace);
   };
+
+  useEffect(() => {
+    if (currentWorkspace.shortName?.toLowerCase() !== pathname) {
+      if (currentWorkspace.shortName) {
+        router.push(`/dashboard/${currentWorkspace.shortName}`);
+        onDismiss?.(); // Close the modal after navigation
+      }
+    }
+  }, [currentWorkspace]);
 
   const handleLogoutClick = () => {
     signOut();
@@ -63,9 +74,9 @@ const SettingsModal = ({
   return (
     <div className={styles['settings-modal']} ref={modalRef}>
       {/* Current Workspace Header */}
-      <User 
+      <User
         name={currentWorkspace?.name || 'Workspace'}
-        email={`${currentWorkspace?.memberCount || 0} Members`}
+        email={`${currentWorkspace?.userCount || 0} Members`}
         initial={currentWorkspace?.name?.charAt(0) || 'A'}
         className={styles['settings-modal__workspace']}
       />
@@ -102,9 +113,8 @@ const SettingsModal = ({
         {workspaces.map((workspace) => (
           <div
             key={workspace.id}
-            className={`${styles['settings-modal__workspace-item']} ${
-              selectedWorkspaceId === workspace.id ? styles['settings-modal__workspace-item--selected'] : ''
-            }`}
+            className={`${styles['settings-modal__workspace-item']} ${currentWorkspace.id === workspace.id ? styles['settings-modal__workspace-item--selected'] : ''
+              }`}
             onClick={() => handleWorkspaceClick(workspace)}
           >
             <div className={styles['settings-modal__workspace-item-left']}>
@@ -116,7 +126,7 @@ const SettingsModal = ({
                 {workspace.name}
               </span>
             </div>
-            {selectedWorkspaceId === workspace.id && (
+            {currentWorkspace.id === workspace.id && (
               <Image
                 src="/check.svg"
                 alt=""
