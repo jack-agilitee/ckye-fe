@@ -1,6 +1,8 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
+import { useUser } from '@/context/UserContext';
+import { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType'
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import ListItem from '@/components/molecules/ListItem/ListItem';
 import InlineInput from '@/components/atoms/InlineInput/InlineInput';
@@ -9,7 +11,6 @@ import styles from './Sidebar.module.scss';
 const Sidebar = ({ 
   contextItems = [],
   selectedItemId = null,
-  isAdmin = false,
   isAdminMode = false,
   accountName = 'AEO',
   accountInitial = 'A',
@@ -24,6 +25,10 @@ const Sidebar = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const { user } = useUser();
+  
+  // Determine if user is admin based on userType from UserContext
+  const isAdmin = user?.userType === SEAT_TYPES.ADMIN;
 
   const handleContextItemClick = (item) => {
     if (onContextItemClick) {
