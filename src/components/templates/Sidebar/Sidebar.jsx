@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { useUser } from '@/context/UserContext';
+import { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType'
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import ListItem from '@/components/molecules/ListItem/ListItem';
 import InlineInput from '@/components/atoms/InlineInput/InlineInput';
@@ -27,7 +28,7 @@ const Sidebar = ({
   const { user } = useUser();
   
   // Determine if user is admin based on userType from UserContext
-  const isAdmin = user?.userType === 'Admin';
+  const isAdmin = user?.userType === SEAT_TYPES.ADMIN;
 
   const handleContextItemClick = (item) => {
     if (onContextItemClick) {

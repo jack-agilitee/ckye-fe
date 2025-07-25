@@ -3,9 +3,9 @@ import styles from './SeatType.module.scss';
 
 // Enum for seat types
 export const SEAT_TYPES = {
-  MEMBER: 'member',
-  EDITOR: 'editor',
-  ADMIN: 'admin'
+  MEMBER: 'Member',
+  EDITOR: 'Editor',
+  ADMIN: 'Admin'
 };
 
 const SeatType = ({ 
