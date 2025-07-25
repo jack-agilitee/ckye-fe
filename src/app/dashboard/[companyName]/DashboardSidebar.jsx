@@ -77,10 +77,7 @@ export default function DashboardSidebar() {
         onCancelNew={handleCancelCreate}
       />
       {showSettingsModal && (
-        <SettingsModal
-          currentWorkspaceId="1"
-          onDismiss={() => setShowSettingsModal(false)}
-        />
+        <SettingsModal onDismiss={() => setShowSettingsModal(false)} />
       )}
     </div>
   );

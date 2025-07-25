@@ -11,10 +11,7 @@ import Avatar from '@/components/atoms/Avatar/Avatar';
 import Button from '@/components/atoms/Button/Button';
 import styles from './SettingsModal.module.scss';
 
-const SettingsModal = ({
-  currentWorkspaceId = null,
-  onDismiss
-}) => {
+const SettingsModal = ({ onDismiss }) => {
 
   const modalRef = useRef(null);
   const router = useRouter();
