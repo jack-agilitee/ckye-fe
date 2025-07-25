@@ -78,9 +78,6 @@ export default function DashboardSidebar() {
       />
       {showSettingsModal && (
         <SettingsModal
-          workspaces={[
-            { id: '1', name: companyName, memberCount: 1 }
-          ]}
           currentWorkspaceId="1"
           onDismiss={() => setShowSettingsModal(false)}
         />

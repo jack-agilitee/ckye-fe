@@ -1728,9 +1728,8 @@ const [searchValue, setSearchValue] = useState('');
                         {showModal && (
                           <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
                             <SettingsModal
-                              workspaces={workspaces}
                               currentWorkspaceId="1"
-                                                            onDismiss={() => setShowModal(false)}
+                              onDismiss={() => setShowModal(false)}
                             />
                           </div>
                         )}
@@ -1765,9 +1764,8 @@ const [searchValue, setSearchValue] = useState('');
                         {showModal && (
                           <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
                             <SettingsModal
-                              workspaces={workspaces}
                               currentWorkspaceId="2"
-                                                            onDismiss={() => setShowModal(false)}
+                              onDismiss={() => setShowModal(false)}
                             />
                           </div>
                         )}
@@ -1782,13 +1780,8 @@ const [searchValue, setSearchValue] = useState('');
                 <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', display: 'flex', justifyContent: 'center' }}>
                   <div style={{ position: 'relative' }}>
                     <SettingsModal
-                      workspaces={[
-                        { id: '1', name: 'AEO', memberCount: 3 },
-                        { id: '2', name: 'Dollar General', memberCount: 5 },
-                        { id: '3', name: 'Agilitee', memberCount: 10 }
-                      ]}
                       currentWorkspaceId="1"
-                                            onDismiss={() => console.log('Dismiss')}
+                      onDismiss={() => console.log('Dismiss')}
                     />
                   </div>
                 </div>
