@@ -59,8 +59,8 @@ const SettingsModal = ({ onDismiss }) => {
   };
 
   useEffect(() => {
-    if (currentWorkspace.shortName?.toLowerCase() !== pathname) {
-      if (currentWorkspace.shortName) {
+    if (currentWorkspace?.shortName?.toLowerCase() !== pathname) {
+      if (currentWorkspace?.shortName) {
         router.push(`/dashboard/${currentWorkspace.shortName}`);
         onDismiss?.(); // Close the modal after navigation
       }
@@ -113,7 +113,7 @@ const SettingsModal = ({ onDismiss }) => {
         {workspaces.map((workspace) => (
           <div
             key={workspace.id}
-            className={`${styles['settings-modal__workspace-item']} ${currentWorkspace.id === workspace.id ? styles['settings-modal__workspace-item--selected'] : ''
+            className={`${styles['settings-modal__workspace-item']} ${currentWorkspace?.id === workspace.id ? styles['settings-modal__workspace-item--selected'] : ''
               }`}
             onClick={() => handleWorkspaceClick(workspace)}
           >
@@ -126,7 +126,7 @@ const SettingsModal = ({ onDismiss }) => {
                 {workspace.name}
               </span>
             </div>
-            {currentWorkspace.id === workspace.id && (
+            {currentWorkspace?.id === workspace.id && (
               <Image
                 src="/check.svg"
                 alt=""

@@ -396,6 +396,7 @@ const [chips, setChips] = useState(['Active', 'Pending', 'Completed']);
                   <TextField 
                     label="Name"
                     placeholder="Enter your name"
+                    name="showcase-1"
                   />
                 </div>
               </div>
@@ -412,6 +413,7 @@ const [chips, setChips] = useState(['Active', 'Pending', 'Completed']);
                           placeholder="Choose a username"
                           value={textValue}
                           onChange={(e) => setTextValue(e.target.value)}
+                          name="showcase-2"
                         />
                         <p className={styles.showcase__hint}>Current value: {textValue || '(empty)'}</p>
                       </>
@@ -428,6 +430,7 @@ const [chips, setChips] = useState(['Active', 'Pending', 'Completed']);
                     type="email"
                     placeholder="your@email.com"
                     required
+                    name="showcase-3"
                   />
                 </div>
               </div>
@@ -441,6 +444,7 @@ const [chips, setChips] = useState(['Active', 'Pending', 'Completed']);
                     placeholder="Enter password"
                     error
                     errorMessage="Password must be at least 8 characters"
+                    name="showcase-4"
                   />
                 </div>
               </div>
@@ -453,6 +457,7 @@ const [chips, setChips] = useState(['Active', 'Pending', 'Completed']);
                     placeholder="Cannot edit this"
                     value="Read-only value"
                     disabled
+                    name="showcase-5"
                   />
                 </div>
               </div>
@@ -495,6 +500,7 @@ const [chips, setChips] = useState(['Active', 'Pending', 'Completed']);
                           error={!!emailError}
                           errorMessage={emailError}
                           required
+                          name="showcase-6"
                         />
                         <div style={{ marginTop: '16px' }}>
                           <Button type="submit" icon="/check.svg">
@@ -515,19 +521,23 @@ const [chips, setChips] = useState(['Active', 'Pending', 'Completed']);
                       label="Text"
                       type="text"
                       placeholder="Regular text input"
+                      name="showcase-7"
                     />
                     <TextField 
                       label="Number"
                       type="number"
                       placeholder="123"
+                      name="showcase-8"
                     />
                     <TextField 
                       label="Date"
                       type="date"
+                      name="showcase-9"
                     />
                     <TextField 
                       label="Time"
                       type="time"
+                      name="showcase-10"
                     />
                   </div>
                 </div>
@@ -590,6 +600,7 @@ const inputRef = useRef();
                       { value: 'user3', label: 'Bob Johnson' },
                       { value: 'user4', label: 'Alice Williams' }
                     ]}
+                    name="showcase-1"
                   />
                 </div>
               </div>
@@ -604,6 +615,7 @@ const inputRef = useRef();
                         <Dropdown 
                           label="Assign To"
                           placeholder="Select a user"
+                          name="showcase-2"
                           value={selectedUser}
                           onChange={(e) => setSelectedUser(e.target.value)}
                           options={[
@@ -625,6 +637,7 @@ const inputRef = useRef();
                   <Dropdown 
                     label="Priority"
                     placeholder="Select priority"
+                    name="showcase-3"
                     required
                     options={[
                       { value: 'low', label: 'Low' },
@@ -643,6 +656,7 @@ const inputRef = useRef();
                     label="Category"
                     placeholder="Choose a category"
                     error
+                    name="showcase-4"
                     errorMessage="Please select a valid category"
                     options={[
                       { value: 'bug', label: 'Bug' },
@@ -660,6 +674,7 @@ const inputRef = useRef();
                   <Dropdown 
                     label="Disabled Dropdown"
                     placeholder="Cannot select"
+                    name="showcase-5"
                     disabled
                     options={[
                       { value: '1', label: 'Option 1' },
@@ -675,6 +690,7 @@ const inputRef = useRef();
                   <Dropdown 
                     label="Status"
                     value="active"
+                    name="showcase-6"
                     options={[
                       { value: 'active', label: 'Active' },
                       { value: 'inactive', label: 'Inactive' },
@@ -691,6 +707,7 @@ const inputRef = useRef();
                   <Dropdown 
                     label="Country"
                     placeholder="Select your country"
+                    name="showcase-7"
                     options={[
                       { value: 'us', label: 'United States' },
                       { value: 'uk', label: 'United Kingdom' },
@@ -758,6 +775,7 @@ const inputRef = useRef();
                             error={!!errors.category}
                             errorMessage={errors.category}
                             required
+                            name="showcase-8"
                           />
                         </div>
                         <div style={{ marginBottom: '16px' }}>
@@ -779,6 +797,7 @@ const inputRef = useRef();
                             error={!!errors.priority}
                             errorMessage={errors.priority}
                             required
+                            name="showcase-9"
                           />
                         </div>
                         <Button type="submit" icon="/check.svg">
