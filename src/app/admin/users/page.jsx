@@ -5,9 +5,6 @@ import { getUsers } from '@/lib/api/users';
 import { getWorkspaces } from '@/lib/api/workspaces';
 import { cookies } from 'next/headers';
 
-// Force dynamic rendering since this page requires authentication
-export const dynamic = 'force-dynamic';
-
 export const metadata = {
   title: 'Users | Ckye Admin',
   description: 'Manage system users and workspace assignments',
