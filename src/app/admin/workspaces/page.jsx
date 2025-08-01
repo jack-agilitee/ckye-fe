@@ -5,6 +5,9 @@ import { getWorkspaces } from '@/lib/api/workspaces';
 import { getUsers } from '@/lib/api/users';
 import { cookies } from 'next/headers';
 
+// Force dynamic rendering since this page requires authentication
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Workspaces | Ckye Admin',
   description: 'Manage workspaces and users in the Ckye platform',

@@ -2,6 +2,9 @@ import DashboardClient from './DashboardClient';
 import { getPages } from '@/lib/api/pages';
 import { cookies } from 'next/headers';
 
+// Force dynamic rendering since this page requires authentication
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }) {
   const { companyName } = params;
   
