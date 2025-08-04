@@ -21,7 +21,8 @@ const Sidebar = ({
   onAdminBack,
   isAddingNew = false,
   onCreateNew,
-  onCancelNew
+  onCancelNew,
+  onRenameItem
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -122,6 +123,7 @@ const Sidebar = ({
                       icon="/document.svg"
                       selected={item.id === selectedItemId}
                       onClick={() => handleContextItemClick(item)}
+                      onRename={onRenameItem ? (newName) => onRenameItem(item.id, newName) : undefined}
                     />
                   ))}
                   {isAddingNew ? (

@@ -35,6 +35,21 @@
     @include truncate;
   }
   
+  &__input {
+    @include nav-item;
+    background-color: $black-light;
+    color: $white-primary;
+    border: 1px solid $white-secondary;
+    border-radius: 4px;
+    padding: 2px 4px;
+    width: 100%;
+    outline: none;
+    
+    &:focus {
+      border-color: $white-primary;
+    }
+  }
+  
   // Hover state
   &:hover {
     background-color: $black-light-hover;

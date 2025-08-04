@@ -9,7 +9,7 @@ import { useDashboard } from '@/context/DashboardContext';
 
 export default function DashboardSidebar() {
   const router = useRouter();
-  const { pages, selectedPageId, companyName, selectPage, addPage } = useDashboard();
+  const { pages, selectedPageId, companyName, selectPage, addPage, updatePage } = useDashboard();
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [isAddingNewPage, setIsAddingNewPage] = useState(false);
 
@@ -59,6 +59,35 @@ export default function DashboardSidebar() {
     setShowSettingsModal(true);
   };
 
+  const handleRenameItem = async (pageId, newName) => {
+    try {
+      // Find the page to rename
+      const pageToRename = pages.find(p => p.id === pageId);
+      if (!pageToRename) return;
+
+      // Ensure the new name has .md extension
+      const formattedName = newName.endsWith('.md') ? newName : `${newName}.md`;
+
+      // Optimistically update the UI
+      updatePage(pageId, { name: formattedName });
+
+      // Update the page in the database
+      const updatedPage = await upsertPage({
+        id: pageId,
+        name: formattedName,
+        company: companyName,
+        content: pageToRename.content
+      });
+
+      // Refresh the page to ensure consistency with server data
+      router.refresh();
+    } catch (err) {
+      // Revert the optimistic update on error
+      updatePage(pageId, { name: pageToRename.name });
+      alert(`Failed to rename page: ${err.message}`);
+    }
+  };
+
   return (
     <div style={{ position: 'relative'}}>
       <Sidebar
@@ -74,6 +103,7 @@ export default function DashboardSidebar() {
         isAddingNew={isAddingNewPage}
         onCreateNew={handleCreatePage}
         onCancelNew={handleCancelCreate}
+        onRenameItem={handleRenameItem}
       />
       {showSettingsModal && (
         <SettingsModal onDismiss={() => setShowSettingsModal(false)} />
