@@ -6,7 +6,7 @@ const { Client } = pg;
 const handler = createMcpHandler(
     (server) => {
         server.tool(
-            'Fetch Pages by Company',
+            'fetch-pages-by-company',
             'Retrieve all pages for a specific company from the database',
             { company: z.string().describe("The company name to filter pages") },
             async ({ company }) => {
