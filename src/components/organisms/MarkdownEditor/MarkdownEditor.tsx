@@ -1,11 +1,10 @@
 "use client";
 
-import { 
-  MDXEditor, 
-  MDXEditorMethods, 
-  headingsPlugin, 
-  toolbarPlugin, 
-  UndoRedo, 
+import {
+  MDXEditor,
+  MDXEditorMethods,
+  headingsPlugin,
+  toolbarPlugin,
   BoldItalicUnderlineToggles,
   listsPlugin,
   quotePlugin,
@@ -26,8 +25,8 @@ import {
   InsertThematicBreak,
   ListsToggle,
   CodeToggle,
-  DiffSourceToggleWrapper,
-  Separator
+  Separator,
+  CodeMirrorEditor
 } from "@mdxeditor/editor";
 import { FC, RefObject } from "react";
 import "@mdxeditor/editor/style.css";
@@ -62,10 +61,10 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({ markdown = '', editorRef, onC
           linkDialogPlugin(),
           imagePlugin(),
           tablePlugin(),
-          codeBlockPlugin({ defaultCodeBlockLanguage: 'javascript' }),
-          codeMirrorPlugin({ 
-            codeBlockLanguages: { 
-              js: 'JavaScript', 
+          codeBlockPlugin({ codeBlockEditorDescriptors: [{ priority: -10, match: (_) => true, Editor: CodeMirrorEditor }] }),
+          codeMirrorPlugin({
+            codeBlockLanguages: {
+              js: 'JavaScript',
               ts: 'TypeScript',
               tsx: 'TypeScript React',
               jsx: 'JavaScript React',
@@ -77,7 +76,7 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({ markdown = '', editorRef, onC
               sql: 'SQL',
               bash: 'Bash',
               markdown: 'Markdown'
-            } 
+            }
           }),
           diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: markdown }),
           markdownShortcutPlugin(),
@@ -85,19 +84,19 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({ markdown = '', editorRef, onC
           toolbarPlugin({
             toolbarContents: () => (
               <>
-                  <Separator />
-                  <BoldItalicUnderlineToggles />
-                  <CodeToggle />
-                  <Separator />
-                  <BlockTypeSelect />
-                  <Separator />
-                  <ListsToggle />
-                  <Separator />
-                  <CreateLink />
-                  <InsertImage />
-                  <Separator />
-                  <InsertTable />
-                  <InsertThematicBreak />
+                <Separator />
+                <BoldItalicUnderlineToggles />
+                <CodeToggle />
+                <Separator />
+                <BlockTypeSelect />
+                <Separator />
+                <ListsToggle />
+                <Separator />
+                <CreateLink />
+                <InsertImage />
+                <Separator />
+                <InsertTable />
+                <InsertThematicBreak />
               </>
             )
           })
