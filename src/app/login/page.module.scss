@@ -3,12 +3,43 @@
 
 .login {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   min-height: 100vh;
-  background-color: $background-dark;
-  position: relative;
-  padding: 20px;
+
+  // Left column
+  &__left {
+    flex: 0 0 60%;
+    background-color: #1A1A1A;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+  }
+
+  &__logo {
+    width: 336.648px;
+    height: 59px;
+    flex-shrink: 0;
+  }
+
+  &__brandName {
+    font-family: 'Overpass', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: $white-primary;
+    margin: 0;
+  }
+
+  // Right column
+  &__right {
+    flex: 0 0 40%;
+    background-color: $background-dark;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding: 20px;
+  }
 
   &__container {
     display: flex;
@@ -45,16 +76,13 @@
   }
 
   &__definition {
-    position: fixed;
-    bottom: 116px;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-top: auto;
     width: 100%;
     max-width: 400px;
     display: flex;
     flex-direction: column;
     gap: 24px;
-    padding: 0 20px;
+    padding: 60px 20px;
   }
 
   &__definitionTop {
@@ -96,10 +124,10 @@
   }
 
   &__footer {
-    position: fixed;
+    position: absolute;
     bottom: 28px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 20px;
+    right: 20px;
     @include body-small;
     @include font-semibold;
     color: $white-secondary;
@@ -108,22 +136,29 @@
 }
 
 // Responsive adjustments
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .login {
+    &__left {
+      display: none;
+    }
+
+    &__right {
+      flex: 1;
+      width: 100%;
+    }
+
     &__container {
       margin-top: 60px;
     }
 
     &__definition {
       position: static;
-      transform: none;
       margin-top: 60px;
-      margin-bottom: 40px;
+      padding: 20px;
     }
 
     &__footer {
       position: static;
-      transform: none;
       margin-top: 40px;
     }
   }
