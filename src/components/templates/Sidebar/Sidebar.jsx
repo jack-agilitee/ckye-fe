@@ -161,22 +161,27 @@ const Sidebar = ({
                   />
                 </div>
               </div>
+
+              {/* Admin Section - Conditional */}
+              {isAdmin && (
+                <div className={styles.sidebar__section}>
+                  <h3 className={styles.sidebar__sectionTitle}>ADMIN</h3>
+                  <div className={styles.sidebar__sectionContent}>
+                    <ListItem
+                      text="Ckye Admin"
+                      icon="/person.svg"
+                      selected={false}
+                      onClick={handleAdminClick}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Admin Section - Conditional */}
-            {isAdmin && (
-              <div className={styles.sidebar__adminSection}>
-                <h3 className={styles.sidebar__sectionTitle}>ADMIN</h3>
-                <div className={styles.sidebar__sectionContent}>
-                  <ListItem
-                    text="Ckye Admin"
-                    icon="/person.svg"
-                    selected={false}
-                    onClick={handleAdminClick}
-                  />
-                </div>
-              </div>
-            )}
+            {/* Logo at bottom */}
+            <div className={styles.sidebar__logo}>
+              <img src="/logo.svg" alt="Ckye" />
+            </div>
           </>
         )}
       </div>
