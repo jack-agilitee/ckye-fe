@@ -1,0 +1,209 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.variant-card {
+  background-color: $black-bg-light;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 392px;
+  min-height: 400px;
+  position: relative;
+  transition: all 0.3s ease;
+  border: 1px solid $black-light;
+
+  // Interactive states
+  &[role="button"] {
+    cursor: pointer;
+
+    &:hover {
+      background-color: $black-light-hover;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    &:focus {
+      outline: 2px solid $code-blue;
+      outline-offset: 2px;
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  // Header section
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__name {
+    font-family: 'Overpass Mono', monospace;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    color: $white-primary;
+    margin: 0;
+  }
+
+  &__date {
+    @include body-small;
+    color: $white-secondary;
+  }
+
+  // Stats section
+  &__stats {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__stats-container {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  &__current-value {
+    font-family: $font-family-primary;
+    font-size: 28px;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    color: $code-blue;
+  }
+
+  &__total-value {
+    font-family: $font-family-primary;
+    font-size: 14px;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    color: $white-secondary;
+  }
+
+  &__metric-label {
+    font-family: $font-family-secondary;
+    font-size: 12px;
+    font-weight: $font-weight-semibold;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    color: $white-primary;
+    margin: 0;
+  }
+
+  // Gauge visualization
+  &__gauge {
+    position: relative;
+    width: 100%;
+    height: 244px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $black-bg-light;
+    border-radius: 8px;
+  }
+
+  &__gauge-svg {
+    width: 360px;
+    height: 200px;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__gauge-background {
+    opacity: 0.3;
+  }
+
+  &__gauge-progress {
+    transition: stroke-dasharray 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__gauge-mark {
+    &--minor {
+      opacity: 0.3;
+    }
+  }
+
+  &__needle {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform-origin: bottom center;
+    width: 16px;
+    height: 100px;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  &__needle-image {
+    width: 16px;
+    height: auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  }
+
+  &__center-dot {
+    position: absolute;
+    bottom: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background-color: $white-secondary;
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  &__percentage {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: $font-family-primary;
+    font-size: 28px;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    color: $white-primary;
+    z-index: 2;
+  }
+
+  // Responsive adjustments
+  @media (max-width: 480px) {
+    max-width: 100%;
+    padding: 12px;
+
+    &__gauge {
+      height: 200px;
+    }
+
+    &__gauge-svg {
+      width: 100%;
+      max-width: 300px;
+      height: 160px;
+    }
+
+    &__needle {
+      bottom: 50px;
+      height: 80px;
+    }
+
+    &__center-dot {
+      bottom: 45px;
+    }
+
+    &__percentage {
+      bottom: 15px;
+      font-size: 24px;
+    }
+  }
+}
