@@ -102,10 +102,10 @@
   }
 
   &__gauge-gradient {
-    width: 280px;
-    height: 160px;
+    width: 260px;
+    height: 150px;
     position: absolute;
-    top: 50%;
+    top: calc(50% - 4px);
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
@@ -159,8 +159,8 @@
 
     &__gauge-gradient {
       width: 100%;
-      max-width: 240px;
-      height: 140px;
+      max-width: 220px;
+      height: 130px;
     }
 
     &__gauge-background {

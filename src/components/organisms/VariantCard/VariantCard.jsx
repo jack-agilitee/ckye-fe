@@ -77,9 +77,9 @@ const VariantCard = ({
           priority
         />
 
-        {/* Static gradient arc on top of gauge */}
+        {/* Static gradient arc positioned above gauge */}
         <svg 
-          viewBox="0 0 280 160" 
+          viewBox="0 0 260 150" 
           className={styles['variant-card__gauge-gradient']}
           aria-hidden="true"
         >
@@ -90,12 +90,12 @@ const VariantCard = ({
             </linearGradient>
           </defs>
           
-          {/* Full gradient arc - always 100% */}
+          {/* Full gradient arc - positioned higher */}
           <path
-            d="M 46 140 A 94 94 0 0 1 234 140"
+            d="M 40 130 A 90 90 0 0 1 220 130"
             fill="none"
             stroke="url(#gaugeGradient)"
-            strokeWidth="20"
+            strokeWidth="16"
             strokeLinecap="round"
             className={styles['variant-card__gauge-gradient-path']}
           />
