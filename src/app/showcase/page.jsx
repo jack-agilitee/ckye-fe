@@ -11,6 +11,7 @@ import ListItem from '@/components/molecules/ListItem/ListItem';
 import SeatType, { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
 import WorkspaceSelector from '@/components/molecules/WorkspaceSelector/WorkspaceSelector';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
+import ChartSection from '@/components/molecules/ChartSection/ChartSection';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
@@ -1592,6 +1593,85 @@ const [searchValue, setSearchValue] = useState('');
   buttonText="Add Users"
   onButtonClick={handleButtonClick}
   className="custom-header"
+/>`}
+              </pre>
+            </div>
+          </div>
+
+          {/* ChartSection Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>ChartSection</h3>
+            <p className={styles.showcase__componentDescription}>
+              A section component for displaying results and findings with a title and descriptive text
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default ChartSection</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <ChartSection />
+                </div>
+              </div>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Title and Description</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <ChartSection
+                    title="Performance Analysis"
+                    description="The latest deployment improved response times by 35% across all endpoints. This improvement has been validated through comprehensive load testing."
+                  />
+                </div>
+              </div>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Multiple Sections</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <ChartSection
+                      title="User Engagement"
+                      description="Daily active users increased by 45% following the UI redesign. User session duration also improved by an average of 3 minutes."
+                    />
+                    <ChartSection
+                      title="Error Rates"
+                      description="Application error rates dropped to 0.02% after implementing enhanced error handling and recovery mechanisms."
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>A/B Test Results</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <ChartSection
+                    title="A/B Test Conclusion"
+                    description="Version B outperformed Version A with a 15% higher conversion rate. Statistical significance reached at p < 0.05."
+                  />
+                </div>
+              </div>
+            </div>
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import ChartSection from '@/components/molecules/ChartSection/ChartSection';
+
+// Default usage
+<ChartSection />
+
+// Custom title and description
+<ChartSection
+  title="Performance Analysis"
+  description="The latest deployment improved response times by 35% across all endpoints."
+/>
+
+// With custom className
+<ChartSection
+  title="Quarterly Results"
+  description="Revenue increased by 18% compared to the previous quarter."
+  className="quarterly-results"
+/>
+
+// All props
+<ChartSection
+  title="Results"
+  description="Your results description here"
+  className="custom-class"
 />`}
               </pre>
             </div>
