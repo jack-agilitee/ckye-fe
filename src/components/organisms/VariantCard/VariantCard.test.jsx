@@ -104,17 +104,13 @@ describe('VariantCard', () => {
   it('renders gauge elements correctly', () => {
     const { container } = render(<VariantCard {...defaultProps} />);
     
-    // Check for gradient SVG (aria-hidden)
-    const gradientSvg = container.querySelector('svg[aria-hidden="true"]');
-    expect(gradientSvg).toBeInTheDocument();
+    // Check for gauge background image
+    const gaugeBackground = container.querySelector('img[src="/gauge-background.png"]');
+    expect(gaugeBackground).toBeInTheDocument();
     
-    // Check for gradient path
-    const paths = gradientSvg.querySelectorAll('path');
-    expect(paths).toHaveLength(1);
-    
-    // Check for gradient definition
-    const gradient = gradientSvg.querySelector('linearGradient');
-    expect(gradient).toBeInTheDocument();
+    // Check for gauge container
+    const gauge = container.querySelector('[class*="gauge"]');
+    expect(gauge).toBeInTheDocument();
   });
 
   it('calculates needle rotation correctly', async () => {

@@ -67,31 +67,7 @@ const VariantCard = ({
 
       {/* Gauge Visualization */}
       <div className={styles['variant-card__gauge']}>
-        {/* Static gradient arc as outer ring - behind gauge */}
-        <svg 
-          viewBox="0 0 360 200" 
-          className={styles['variant-card__gauge-gradient']}
-          aria-hidden="true"
-        >
-          <defs>
-            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#202020" />
-              <stop offset="100%" stopColor="#8ED09C" />
-            </linearGradient>
-          </defs>
-          
-          {/* Full gradient arc - outer ring */}
-          <path
-            d="M 40 180 A 140 140 0 0 1 320 180"
-            fill="none"
-            stroke="url(#gaugeGradient)"
-            strokeWidth="40"
-            strokeLinecap="round"
-            className={styles['variant-card__gauge-gradient-path']}
-          />
-        </svg>
-
-        {/* Gauge background image */}
+        {/* Gauge background image with gradient included */}
         <Image 
           src="/gauge-background.png"
           alt=""

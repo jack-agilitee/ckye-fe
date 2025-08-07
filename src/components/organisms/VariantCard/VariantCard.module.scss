@@ -101,20 +101,6 @@
     z-index: 1;
   }
 
-  &__gauge-gradient {
-    width: 360px;
-    height: 200px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 0;
-  }
-
-  &__gauge-gradient-path {
-    opacity: 1;
-  }
-
   &__needle {
     position: absolute;
     bottom: 60px;
@@ -122,7 +108,7 @@
     transform-origin: bottom center;
     width: 16px;
     height: 100px;
-    z-index: 4;
+    z-index: 2;
     display: flex;
     align-items: flex-end;
     justify-content: center;
@@ -145,7 +131,7 @@
     line-height: 1;
     letter-spacing: 0.2px;
     color: $white-primary;
-    z-index: 3;
+    z-index: 2;
   }
 
   // Responsive adjustments
@@ -155,12 +141,6 @@
 
     &__gauge {
       height: 200px;
-    }
-
-    &__gauge-gradient {
-      width: 100%;
-      max-width: 300px;
-      height: 160px;
     }
 
     &__gauge-background {
