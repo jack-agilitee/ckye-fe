@@ -2154,21 +2154,6 @@ const workspaces = [
                 </div>
               </div>
 
-              <div className={styles.showcase__example}>
-                <h4 className={styles.showcase__exampleTitle}>Interactive Card</h4>
-                <div className={styles.showcase__exampleContent}>
-                  <VariantCard
-                    variantName="Clickable Variant"
-                    createdDate="Dec 1, 2024"
-                    currentValue={45}
-                    totalValue={100}
-                    percentage={45}
-                    metricLabel="2nd Shot Success Rate"
-                    onClick={() => alert('Variant card clicked!')}
-                  />
-                  <p className={styles.showcase__hint}>Click the card to see interaction</p>
-                </div>
-              </div>
 
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Low Performance (25%)</h4>
@@ -2214,18 +2199,7 @@ const workspaces = [
   metricLabel="1st Shot Acceptance Rate"
 />
 
-// Interactive card
-<VariantCard
-  variantName="Variant 3"
-  createdDate="Aug 25, 2025"
-  currentValue={126}
-  totalValue={168}
-  percentage={75}
-  metricLabel="1st Shot Acceptance Rate"
-  onClick={() => handleVariantClick('Variant 3')}
-/>
-
-// Custom styling
+// Different percentage variant
 <VariantCard
   variantName="Custom"
   createdDate="Dec 1, 2024"

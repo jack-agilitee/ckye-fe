@@ -73,46 +73,16 @@ describe('VariantCard', () => {
     }, { timeout: 1500 });
   });
 
-  it('handles click events when onClick is provided', () => {
-    const handleClick = jest.fn();
-    const { container } = render(
-      <VariantCard {...defaultProps} onClick={handleClick} />
-    );
-    
-    const card = container.firstChild;
-    fireEvent.click(card);
-    
-    expect(handleClick).toHaveBeenCalledTimes(1);
-  });
 
-  it('does not handle click when onClick is not provided', () => {
+  it('renders as a non-interactive card', () => {
     const { container } = render(<VariantCard {...defaultProps} />);
     const card = container.firstChild;
     
     expect(card).not.toHaveAttribute('role', 'button');
     expect(card).not.toHaveAttribute('tabIndex');
+    expect(card).not.toHaveAttribute('onClick');
   });
 
-  it('handles keyboard navigation when clickable', () => {
-    const handleClick = jest.fn();
-    const { container } = render(
-      <VariantCard {...defaultProps} onClick={handleClick} />
-    );
-    
-    const card = container.firstChild;
-    
-    // Test Enter key
-    fireEvent.keyDown(card, { key: 'Enter' });
-    expect(handleClick).toHaveBeenCalledTimes(1);
-    
-    // Test Space key
-    fireEvent.keyDown(card, { key: ' ' });
-    expect(handleClick).toHaveBeenCalledTimes(2);
-    
-    // Test other keys (should not trigger click)
-    fireEvent.keyDown(card, { key: 'Tab' });
-    expect(handleClick).toHaveBeenCalledTimes(2);
-  });
 
   it('applies custom className', () => {
     const { container } = render(
@@ -124,13 +94,7 @@ describe('VariantCard', () => {
   });
 
   it('renders accessibility attributes correctly', () => {
-    const { container } = render(
-      <VariantCard {...defaultProps} onClick={() => {}} />
-    );
-    
-    const card = container.firstChild;
-    expect(card).toHaveAttribute('role', 'button');
-    expect(card).toHaveAttribute('tabIndex', '0');
+    render(<VariantCard {...defaultProps} />);
     
     const svg = screen.getByLabelText('Gauge showing 50%');
     expect(svg).toBeInTheDocument();
@@ -229,18 +193,4 @@ describe('VariantCard', () => {
     });
   });
 
-  it('prevents default on Enter and Space keys when clickable', () => {
-    const handleClick = jest.fn();
-    const { container } = render(
-      <VariantCard {...defaultProps} onClick={handleClick} />
-    );
-    
-    const card = container.firstChild;
-    
-    const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
-    const preventDefault = jest.spyOn(enterEvent, 'preventDefault');
-    
-    fireEvent(card, enterEvent);
-    expect(preventDefault).toHaveBeenCalled();
-  });
 });

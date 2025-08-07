@@ -15,25 +15,6 @@
   transition: all 0.3s ease;
   border: 1px solid $black-light;
 
-  // Interactive states
-  &[role="button"] {
-    cursor: pointer;
-
-    &:hover {
-      background-color: $black-light-hover;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    &:focus {
-      outline: 2px solid $code-blue;
-      outline-offset: 2px;
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
 
   // Header section
   &__header {
@@ -111,8 +92,8 @@
   }
 
   &__gauge-background {
-    width: 360px;
-    height: 200px;
+    width: 280px;
+    height: 160px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -121,8 +102,8 @@
   }
 
   &__gauge-svg {
-    width: 360px;
-    height: 200px;
+    width: 280px;
+    height: 160px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -179,14 +160,14 @@
 
     &__gauge-background {
       width: 100%;
-      max-width: 300px;
-      height: 160px;
+      max-width: 240px;
+      height: 140px;
     }
 
     &__gauge-svg {
       width: 100%;
-      max-width: 300px;
-      height: 160px;
+      max-width: 240px;
+      height: 140px;
     }
 
     &__needle {

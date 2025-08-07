@@ -30,16 +30,11 @@ function Dashboard() {
 }
 ```
 
-### Interactive Card
+### Different Percentage Example
 ```jsx
 import VariantCard from '@/components/organisms/VariantCard/VariantCard';
 
 function VariantsList() {
-  const handleVariantClick = (variantName) => {
-    console.log(`Variant ${variantName} clicked`);
-    // Navigate to variant details or show modal
-  };
-
   return (
     <VariantCard
       variantName="Variant 3"
@@ -48,7 +43,6 @@ function VariantsList() {
       totalValue={168}
       percentage={75}
       metricLabel="1st Shot Acceptance Rate"
-      onClick={() => handleVariantClick('Variant 3')}
     />
   );
 }
@@ -104,7 +98,6 @@ function VariantsGrid() {
 | `totalValue` | number | 178 | The total/maximum metric value |
 | `percentage` | number | 50 | The percentage to display on the gauge (0-100) |
 | `metricLabel` | string | '1st Shot Acceptance Rate' | The label describing the metric |
-| `onClick` | function | undefined | Optional click handler for making the card interactive |
 | `className` | string | '' | Additional CSS classes to apply to the card |
 
 ## Features
@@ -114,11 +107,6 @@ function VariantsGrid() {
 - Smooth cubic-bezier easing for natural motion
 - Percentage counter animates simultaneously with the needle
 
-### Interactive States
-- When `onClick` prop is provided, the card becomes clickable
-- Hover effect with elevation and shadow
-- Keyboard accessible (Enter and Space keys trigger click)
-- Focus outline for accessibility
 
 ### Responsive Design
 - Adapts to container width
@@ -173,7 +161,6 @@ The component uses SCSS modules with BEM methodology:
 
 The component includes comprehensive tests covering:
 - Rendering with different props
-- Click and keyboard interactions
 - Animation behavior
 - Accessibility attributes
 - Responsive behavior

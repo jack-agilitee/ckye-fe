@@ -11,7 +11,6 @@ const VariantCard = ({
   totalValue = 178,
   percentage = 50,
   metricLabel = '1st Shot Acceptance Rate',
-  onClick,
   className = ''
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
@@ -50,18 +49,7 @@ const VariantCard = ({
   }, [percentage]);
 
   return (
-    <div 
-      className={`${styles['variant-card']} ${className}`}
-      onClick={onClick}
-      role={onClick ? 'button' : undefined}
-      tabIndex={onClick ? 0 : undefined}
-      onKeyDown={onClick ? (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      } : undefined}
-    >
+    <div className={`${styles['variant-card']} ${className}`}>
       {/* Header Section */}
       <div className={styles['variant-card__header']}>
         <h3 className={styles['variant-card__name']}>{variantName}</h3>
@@ -83,34 +71,33 @@ const VariantCard = ({
         <Image 
           src="/gauge-background.png"
           alt=""
-          width={360}
-          height={200}
+          width={280}
+          height={160}
           className={styles['variant-card__gauge-background']}
           priority
         />
 
         {/* Progress arc overlay */}
         <svg 
-          viewBox="0 0 360 200" 
+          viewBox="0 0 280 160" 
           className={styles['variant-card__gauge-svg']}
           aria-label={`Gauge showing ${percentage}%`}
         >
           <defs>
             <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#4CAF50" />
-              <stop offset="50%" stopColor="#74A0C8" />
-              <stop offset="100%" stopColor="#74A0C8" />
+              <stop offset="0%" stopColor="#202020" />
+              <stop offset="100%" stopColor="#8ED09C" />
             </linearGradient>
           </defs>
           
           {/* Progress arc */}
           <path
-            d="M 60 180 A 120 120 0 0 1 300 180"
+            d="M 46 140 A 94 94 0 0 1 234 140"
             fill="none"
             stroke="url(#gaugeGradient)"
-            strokeWidth="24"
+            strokeWidth="20"
             strokeLinecap="round"
-            strokeDasharray={`${(percentage / 100) * 377} 377`}
+            strokeDasharray={`${(percentage / 100) * 295} 295`}
             className={styles['variant-card__gauge-progress']}
           />
         </svg>
