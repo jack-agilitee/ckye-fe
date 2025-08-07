@@ -141,13 +141,13 @@ describe('VariantCard', () => {
     
     const svg = screen.getByLabelText('Gauge showing 50%');
     
-    // Check for paths (background and progress arcs)
+    // Check for progress arc path
     const paths = svg.querySelectorAll('path');
-    expect(paths).toHaveLength(2);
+    expect(paths).toHaveLength(1);
     
-    // Check for graduation marks (5 major + 16 minor)
-    const lines = svg.querySelectorAll('line');
-    expect(lines).toHaveLength(21);
+    // Check for gradient definition
+    const gradient = svg.querySelector('linearGradient');
+    expect(gradient).toBeInTheDocument();
   });
 
   it('calculates needle rotation correctly', async () => {

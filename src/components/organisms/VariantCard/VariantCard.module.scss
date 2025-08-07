@@ -110,25 +110,29 @@
     border-radius: 8px;
   }
 
-  &__gauge-svg {
+  &__gauge-background {
     width: 360px;
     height: 200px;
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 1;
   }
 
-  &__gauge-background {
-    opacity: 0.3;
+  &__gauge-svg {
+    width: 360px;
+    height: 200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
   }
 
   &__gauge-progress {
     transition: stroke-dasharray 1s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  &__gauge-mark {
-    &--minor {
-      opacity: 0.3;
-    }
+    opacity: 0.8;
   }
 
   &__needle {
@@ -138,7 +142,7 @@
     transform-origin: bottom center;
     width: 16px;
     height: 100px;
-    z-index: 2;
+    z-index: 3;
     display: flex;
     align-items: flex-end;
     justify-content: center;
@@ -148,19 +152,6 @@
     width: 16px;
     height: auto;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
-  }
-
-  &__center-dot {
-    position: absolute;
-    bottom: 55px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 8px;
-    height: 8px;
-    background-color: $white-secondary;
-    border-radius: 50%;
-    z-index: 3;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
   &__percentage {
@@ -186,6 +177,12 @@
       height: 200px;
     }
 
+    &__gauge-background {
+      width: 100%;
+      max-width: 300px;
+      height: 160px;
+    }
+
     &__gauge-svg {
       width: 100%;
       max-width: 300px;
@@ -195,10 +192,6 @@
     &__needle {
       bottom: 50px;
       height: 80px;
-    }
-
-    &__center-dot {
-      bottom: 45px;
     }
 
     &__percentage {

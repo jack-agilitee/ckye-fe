@@ -79,86 +79,48 @@ const VariantCard = ({
 
       {/* Gauge Visualization */}
       <div className={styles['variant-card__gauge']}>
+        {/* Gauge background image */}
+        <Image 
+          src="/gauge-background.png"
+          alt=""
+          width={360}
+          height={200}
+          className={styles['variant-card__gauge-background']}
+          priority
+        />
+
+        {/* Progress arc overlay */}
         <svg 
           viewBox="0 0 360 200" 
           className={styles['variant-card__gauge-svg']}
           aria-label={`Gauge showing ${percentage}%`}
         >
-          {/* Background arc */}
-          <path
-            d="M 60 180 A 120 120 0 0 1 300 180"
-            fill="none"
-            stroke="#353535"
-            strokeWidth="24"
-            strokeLinecap="round"
-            className={styles['variant-card__gauge-background']}
-          />
+          <defs>
+            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#4CAF50" />
+              <stop offset="50%" stopColor="#74A0C8" />
+              <stop offset="100%" stopColor="#74A0C8" />
+            </linearGradient>
+          </defs>
           
           {/* Progress arc */}
           <path
             d="M 60 180 A 120 120 0 0 1 300 180"
             fill="none"
-            stroke="#74A0C8"
+            stroke="url(#gaugeGradient)"
             strokeWidth="24"
             strokeLinecap="round"
             strokeDasharray={`${(percentage / 100) * 377} 377`}
             className={styles['variant-card__gauge-progress']}
           />
-
-          {/* Graduation marks */}
-          {[0, 25, 50, 75, 100].map((mark) => {
-            const angle = (mark / 100) * 180 - 90;
-            const radians = (angle * Math.PI) / 180;
-            const x1 = 180 + 105 * Math.cos(radians);
-            const y1 = 180 + 105 * Math.sin(radians);
-            const x2 = 180 + 95 * Math.cos(radians);
-            const y2 = 180 + 95 * Math.sin(radians);
-            
-            return (
-              <line
-                key={mark}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke="#9B9B9B"
-                strokeWidth="2"
-                className={styles['variant-card__gauge-mark']}
-              />
-            );
-          })}
-
-          {/* Minor graduation marks */}
-          {[5, 10, 15, 20, 30, 35, 40, 45, 55, 60, 65, 70, 80, 85, 90, 95].map((mark) => {
-            const angle = (mark / 100) * 180 - 90;
-            const radians = (angle * Math.PI) / 180;
-            const x1 = 180 + 105 * Math.cos(radians);
-            const y1 = 180 + 105 * Math.sin(radians);
-            const x2 = 180 + 100 * Math.cos(radians);
-            const y2 = 180 + 100 * Math.sin(radians);
-            
-            return (
-              <line
-                key={`minor-${mark}`}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke="#9B9B9B"
-                strokeWidth="1"
-                strokeOpacity="0.5"
-                className={styles['variant-card__gauge-mark--minor']}
-              />
-            );
-          })}
         </svg>
 
-        {/* Needle */}
+        {/* Needle - properly centered */}
         <div 
           ref={needleRef}
           className={styles['variant-card__needle']}
           style={{
-            transform: `rotate(${calculateNeedleRotation(displayPercentage)}deg)`,
+            transform: `translateX(-50%) rotate(${calculateNeedleRotation(displayPercentage)}deg)`,
             transition: isAnimating ? 'transform 1s cubic-bezier(0.4, 0, 0.2, 1)' : 'none'
           }}
         >
@@ -171,9 +133,6 @@ const VariantCard = ({
             priority
           />
         </div>
-
-        {/* Center dot */}
-        <div className={styles['variant-card__center-dot']} />
 
         {/* Percentage display */}
         <div className={styles['variant-card__percentage']}>
