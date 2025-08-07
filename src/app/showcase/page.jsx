@@ -16,6 +16,7 @@ import Avatar from '@/components/atoms/Avatar/Avatar';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
 import AddWorkspaceModal from '@/components/organisms/AddWorkspaceModal/AddWorkspaceModal';
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
+import VariantCard from '@/components/organisms/VariantCard/VariantCard';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
@@ -2113,6 +2114,101 @@ const workspaces = [
 // Name: [entered name]
 // Email: [entered email]
 // Selected Workspace: [selected workspace id]`}
+              </pre>
+            </div>
+          </div>
+
+          {/* VariantCard Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>VariantCard</h3>
+            <p className={styles.showcase__componentDescription}>
+              A performance metrics card with animated gauge visualization. Displays variant statistics with a speedometer-style gauge.
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Master Variant (50%)</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <VariantCard
+                    variantName="Master"
+                    createdDate="July 7, 2025"
+                    currentValue={89}
+                    totalValue={178}
+                    percentage={50}
+                    metricLabel="1st Shot Acceptance Rate"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Variant 3 (75%)</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <VariantCard
+                    variantName="Variant 3"
+                    createdDate="Aug 25, 2025"
+                    currentValue={126}
+                    totalValue={168}
+                    percentage={75}
+                    metricLabel="1st Shot Acceptance Rate"
+                  />
+                </div>
+              </div>
+
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Low Performance (25%)</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <VariantCard
+                    variantName="Experimental"
+                    createdDate="Jan 15, 2025"
+                    currentValue={25}
+                    totalValue={100}
+                    percentage={25}
+                    metricLabel="Overall Success Rate"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>High Performance (90%)</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <VariantCard
+                    variantName="Optimized"
+                    createdDate="Jan 20, 2025"
+                    currentValue={180}
+                    totalValue={200}
+                    percentage={90}
+                    metricLabel="Conversion Rate"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import VariantCard from '@/components/organisms/VariantCard/VariantCard';
+
+// Basic usage
+<VariantCard
+  variantName="Master"
+  createdDate="July 7, 2025"
+  currentValue={89}
+  totalValue={178}
+  percentage={50}
+  metricLabel="1st Shot Acceptance Rate"
+/>
+
+// Different percentage variant
+<VariantCard
+  variantName="Custom"
+  createdDate="Dec 1, 2024"
+  currentValue={45}
+  totalValue={100}
+  percentage={45}
+  metricLabel="Custom Metric"
+  className="custom-variant-card"
+/>`}
               </pre>
             </div>
           </div>
