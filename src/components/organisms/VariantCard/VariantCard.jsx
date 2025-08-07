@@ -67,19 +67,9 @@ const VariantCard = ({
 
       {/* Gauge Visualization */}
       <div className={styles['variant-card__gauge']}>
-        {/* Gauge background image */}
-        <Image 
-          src="/gauge-background.png"
-          alt=""
-          width={280}
-          height={160}
-          className={styles['variant-card__gauge-background']}
-          priority
-        />
-
-        {/* Static gradient arc positioned above gauge */}
+        {/* Static gradient arc as outer ring - behind gauge */}
         <svg 
-          viewBox="0 0 260 150" 
+          viewBox="0 0 360 200" 
           className={styles['variant-card__gauge-gradient']}
           aria-hidden="true"
         >
@@ -90,16 +80,26 @@ const VariantCard = ({
             </linearGradient>
           </defs>
           
-          {/* Full gradient arc - positioned higher */}
+          {/* Full gradient arc - outer ring */}
           <path
-            d="M 40 130 A 90 90 0 0 1 220 130"
+            d="M 40 180 A 140 140 0 0 1 320 180"
             fill="none"
             stroke="url(#gaugeGradient)"
-            strokeWidth="16"
+            strokeWidth="40"
             strokeLinecap="round"
             className={styles['variant-card__gauge-gradient-path']}
           />
         </svg>
+
+        {/* Gauge background image */}
+        <Image 
+          src="/gauge-background.png"
+          alt=""
+          width={280}
+          height={160}
+          className={styles['variant-card__gauge-background']}
+          priority
+        />
 
         {/* Needle - properly centered */}
         <div 

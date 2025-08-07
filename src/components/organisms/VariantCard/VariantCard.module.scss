@@ -102,17 +102,17 @@
   }
 
   &__gauge-gradient {
-    width: 260px;
-    height: 150px;
+    width: 360px;
+    height: 200px;
     position: absolute;
-    top: calc(50% - 4px);
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 2;
+    z-index: 0;
   }
 
   &__gauge-gradient-path {
-    opacity: 0.8;
+    opacity: 1;
   }
 
   &__needle {
@@ -159,8 +159,8 @@
 
     &__gauge-gradient {
       width: 100%;
-      max-width: 220px;
-      height: 130px;
+      max-width: 300px;
+      height: 160px;
     }
 
     &__gauge-background {
