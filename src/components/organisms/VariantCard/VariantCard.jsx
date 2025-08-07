@@ -67,7 +67,31 @@ const VariantCard = ({
 
       {/* Gauge Visualization */}
       <div className={styles['variant-card__gauge']}>
-        {/* Gauge background image */}
+        {/* Static gradient arc behind gauge */}
+        <svg 
+          viewBox="0 0 280 160" 
+          className={styles['variant-card__gauge-gradient']}
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#8ED09C" />
+              <stop offset="100%" stopColor="#202020" />
+            </linearGradient>
+          </defs>
+          
+          {/* Full gradient arc - always 100% */}
+          <path
+            d="M 46 140 A 94 94 0 0 1 234 140"
+            fill="none"
+            stroke="url(#gaugeGradient)"
+            strokeWidth="20"
+            strokeLinecap="round"
+            className={styles['variant-card__gauge-gradient-path']}
+          />
+        </svg>
+
+        {/* Gauge background image on top */}
         <Image 
           src="/gauge-background.png"
           alt=""
@@ -76,31 +100,6 @@ const VariantCard = ({
           className={styles['variant-card__gauge-background']}
           priority
         />
-
-        {/* Progress arc overlay */}
-        <svg 
-          viewBox="0 0 280 160" 
-          className={styles['variant-card__gauge-svg']}
-          aria-label={`Gauge showing ${percentage}%`}
-        >
-          <defs>
-            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#202020" />
-              <stop offset="100%" stopColor="#8ED09C" />
-            </linearGradient>
-          </defs>
-          
-          {/* Progress arc */}
-          <path
-            d="M 46 140 A 94 94 0 0 1 234 140"
-            fill="none"
-            stroke="url(#gaugeGradient)"
-            strokeWidth="20"
-            strokeLinecap="round"
-            strokeDasharray={`${(percentage / 100) * 295} 295`}
-            className={styles['variant-card__gauge-progress']}
-          />
-        </svg>
 
         {/* Needle - properly centered */}
         <div 
