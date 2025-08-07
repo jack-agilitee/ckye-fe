@@ -91,7 +91,7 @@
     border-radius: 8px;
   }
 
-  &__gauge-gradient {
+  &__gauge-background {
     width: 280px;
     height: 160px;
     position: absolute;
@@ -101,11 +101,7 @@
     z-index: 1;
   }
 
-  &__gauge-gradient-path {
-    opacity: 1;
-  }
-
-  &__gauge-background {
+  &__gauge-gradient {
     width: 280px;
     height: 160px;
     position: absolute;
@@ -113,6 +109,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
+  }
+
+  &__gauge-gradient-path {
+    opacity: 0.8;
   }
 
   &__needle {
