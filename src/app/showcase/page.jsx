@@ -21,6 +21,7 @@ import VariantCard from '@/components/organisms/VariantCard/VariantCard';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
+import SuggestionsTable from '@/components/templates/SuggestionsTable/SuggestionsTable';
 import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import styles from './page.module.scss';
 
@@ -2749,6 +2750,125 @@ const workspaces = [
 {
   id: string | number,  // Optional unique identifier
   name: string         // Workspace name to display
+}`}
+              </pre>
+            </div>
+          </div>
+
+          {/* SuggestionsTable Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>SuggestionsTable</h3>
+            <p className={styles.showcase__componentDescription}>
+              A table template displaying suggestions with file information, creation details, and summaries
+            </p>
+            
+            <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default SuggestionsTable</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                  {(() => {
+                    const suggestions = [
+                      {
+                        id: 1,
+                        fileName: 'Clade.md',
+                        variant: 'Variant 2',
+                        createdDate: '2025-08-07',
+                        createdBy: {
+                          name: 'Claude Code',
+                          email: 'agent@agilitee.com',
+                          initial: 'C'
+                        },
+                        summary: 'Updated examples to use React function components with hooks instead of class components, following current React best practices and community standards.'
+                      },
+                      {
+                        id: 2,
+                        fileName: 'Commands.md',
+                        variant: 'Variant 3',
+                        createdDate: '2025-08-13',
+                        createdBy: {
+                          name: 'Jack Nichols',
+                          email: 'jack@agilitee.com',
+                          initial: 'J'
+                        },
+                        summary: 'Changed data fetching examples from useEffect + fetch to Next.js server actions and React Query for better performance.'
+                      },
+                      {
+                        id: 3,
+                        fileName: 'Claude.md',
+                        variant: 'Variant 4',
+                        createdDate: '2025-08-10',
+                        createdBy: {
+                          name: 'Claude Code',
+                          email: 'agent@agilitee.com',
+                          initial: 'C'
+                        },
+                        summary: 'Replaced prop drilling examples with Context API and custom hooks pattern for better state management across components.'
+                      }
+                    ];
+                    
+                    return <SuggestionsTable 
+                      suggestions={suggestions} 
+                      onRowClick={(suggestion) => console.log('Suggestion clicked:', suggestion)}
+                    />;
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Loading State</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                  <SuggestionsTable loading={true} />
+                </div>
+                <p className={styles.showcase__hint}>Shows loading indicator while fetching data</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Empty State</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                  <SuggestionsTable suggestions={[]} />
+                </div>
+                <p className={styles.showcase__hint}>Shows empty message when no suggestions available</p>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import SuggestionsTable from '@/components/templates/SuggestionsTable/SuggestionsTable';
+
+const suggestions = [
+  {
+    id: 1,
+    fileName: 'Clade.md',
+    variant: 'Variant 2',
+    createdDate: '2025-08-07',
+    createdBy: {
+      name: 'Claude Code',
+      email: 'agent@agilitee.com',
+      initial: 'C'
+    },
+    summary: 'Updated examples to use React function components...'
+  }
+];
+
+<SuggestionsTable 
+  suggestions={suggestions}
+  onRowClick={(suggestion) => openModal(suggestion)}
+  loading={false}
+/>
+
+// Suggestion object structure
+{
+  id: string | number,       // Unique identifier
+  fileName: string,           // File name to display
+  variant: string,            // Variant information
+  createdDate: string | Date, // Creation date
+  createdBy: {
+    name: string,             // Creator's name
+    email: string,            // Creator's email
+    initial: string           // Initial for avatar
+  },
+  summary: string             // Suggestion summary text
 }`}
               </pre>
             </div>
