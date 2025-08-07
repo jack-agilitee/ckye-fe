@@ -112,39 +112,8 @@
   }
 
   &__user {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    // User component will handle its own internal layout
     width: 100%;
-  }
-
-  &__avatar {
-    flex-shrink: 0;
-  }
-
-  &__user-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-    flex: 1;
-  }
-
-  &__user-name {
-    @include body-medium;
-    color: $white-primary;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__user-email {
-    @include body-small;
-    color: $white-secondary;
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   &__summary {

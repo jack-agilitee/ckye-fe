@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import Avatar from '@/components/atoms/Avatar/Avatar';
+import User from '@/components/molecules/User/User';
 import styles from './SuggestionsTable.module.scss';
 
 const SuggestionsTable = ({ 
@@ -100,23 +100,12 @@ const SuggestionsTable = ({
             </div>
             
             <div className={styles['suggestions-table__cell']}>
-              <div className={styles['suggestions-table__user']}>
-                <Avatar 
-                  initial={suggestion.createdBy?.initial || suggestion.createdBy?.name?.charAt(0) || 'U'}
-                  size="small"
-                  className={styles['suggestions-table__avatar']}
-                />
-                <div className={styles['suggestions-table__user-info']}>
-                  <div className={styles['suggestions-table__user-name']}>
-                    {suggestion.createdBy?.name || 'Unknown User'}
-                  </div>
-                  {suggestion.createdBy?.email && (
-                    <div className={styles['suggestions-table__user-email']}>
-                      {suggestion.createdBy?.email}
-                    </div>
-                  )}
-                </div>
-              </div>
+              <User 
+                name={suggestion.createdBy?.name || 'Unknown User'}
+                email={suggestion.createdBy?.email || ''}
+                initial={suggestion.createdBy?.initial}
+                className={styles['suggestions-table__user']}
+              />
             </div>
             
             <div className={styles['suggestions-table__cell']}>

@@ -135,7 +135,7 @@ Test coverage target: >90%
 ## Dependencies
 - React (hooks: useState)
 - Next.js Image component
-- Avatar component from atoms
+- User component from molecules
 - SCSS modules
 
 ## Best Practices

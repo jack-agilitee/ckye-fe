@@ -11,12 +11,14 @@ jest.mock('next/image', () => ({
   },
 }));
 
-// Mock Avatar component
-jest.mock('@/components/atoms/Avatar/Avatar', () => ({
+// Mock User component
+jest.mock('@/components/molecules/User/User', () => ({
   __esModule: true,
-  default: ({ initial, size, className }) => (
-    <div data-testid="avatar" className={className}>
-      {initial}
+  default: ({ name, email, initial, className }) => (
+    <div data-testid="user" className={className}>
+      <span data-testid="user-name">{name}</span>
+      {email && <span data-testid="user-email">{email}</span>}
+      {initial && <span data-testid="user-initial">{initial}</span>}
     </div>
   ),
 }));
@@ -193,28 +195,22 @@ describe('SuggestionsTable', () => {
     expect(firstRow).not.toHaveClass('suggestions-table__row--hovered');
   });
 
-  it('renders avatars with correct initials', () => {
+  it('renders users with correct names and emails', () => {
     render(
       <SuggestionsTable 
         suggestions={mockSuggestions}
       />
     );
 
-    const avatars = screen.getAllByTestId('avatar');
-    expect(avatars[0]).toHaveTextContent('C');
-    expect(avatars[1]).toHaveTextContent('J');
+    const userNames = screen.getAllByTestId('user-name');
+    expect(userNames[0]).toHaveTextContent('Claude Code');
+    expect(userNames[1]).toHaveTextContent('Jack Nichols');
+
+    const userEmails = screen.getAllByTestId('user-email');
+    expect(userEmails[0]).toHaveTextContent('agent@agilitee.com');
+    expect(userEmails[1]).toHaveTextContent('jack@agilitee.com');
   });
 
-  it('renders user emails when available', () => {
-    render(
-      <SuggestionsTable 
-        suggestions={mockSuggestions}
-      />
-    );
-
-    expect(screen.getByText('agent@agilitee.com')).toBeInTheDocument();
-    expect(screen.getByText('jack@agilitee.com')).toBeInTheDocument();
-  });
 
   it('renders action buttons with proper accessibility', () => {
     render(
