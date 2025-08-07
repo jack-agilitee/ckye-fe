@@ -72,7 +72,7 @@ const VariantCard = ({
           src="/gauge-background.png"
           alt=""
           width={280}
-          height="auto"
+          height={160}
           className={styles['variant-card__gauge-background']}
           priority
         />
