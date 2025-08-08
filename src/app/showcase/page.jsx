@@ -22,6 +22,7 @@ import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
 import SuggestionsTable from '@/components/templates/SuggestionsTable/SuggestionsTable';
+import ExperimentsTable from '@/components/templates/ExperimentsTable/ExperimentsTable';
 import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import styles from './page.module.scss';
 
@@ -2869,6 +2870,165 @@ const suggestions = [
     initial: string           // Initial for avatar
   },
   summary: string             // Suggestion summary text
+}`}
+              </pre>
+            </div>
+          </div>
+
+          {/* ExperimentsTable Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>ExperimentsTable</h3>
+            <p className={styles.showcase__componentDescription}>
+              A table template displaying experiments with status, creation details, and report actions
+            </p>
+            
+            <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default ExperimentsTable</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                  {(() => {
+                    const experiments = [
+                      {
+                        id: 1,
+                        name: 'Clade.md version 2',
+                        comparison: 'master vs. version 2',
+                        status: 'Active',
+                        createdDate: '2025-08-26',
+                        createdBy: {
+                          name: 'Jack Nichols',
+                          email: 'jack@agilitee.com',
+                          initial: 'J'
+                        }
+                      },
+                      {
+                        id: 2,
+                        name: 'Commands.md version 3',
+                        comparison: 'master vs. version 3',
+                        status: 'Closed',
+                        createdDate: '2025-08-26',
+                        createdBy: {
+                          name: 'Sarah Williams',
+                          email: 'sarah@agilitee.com',
+                          initial: 'S'
+                        }
+                      },
+                      {
+                        id: 3,
+                        name: 'Claude.md version 5',
+                        comparison: 'master vs. version 5',
+                        status: 'Closed',
+                        createdDate: '2025-08-27',
+                        createdBy: {
+                          name: 'Jack Nichols',
+                          email: 'jack@agilitee.com',
+                          initial: 'J'
+                        }
+                      }
+                    ];
+                    
+                    return <ExperimentsTable 
+                      experiments={experiments} 
+                      onViewReport={(experiment) => console.log('View report clicked:', experiment)}
+                    />;
+                  })()}
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Loading State</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                  <ExperimentsTable loading={true} />
+                </div>
+                <p className={styles.showcase__hint}>Shows loading indicator while fetching data</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Empty State</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                  <ExperimentsTable experiments={[]} />
+                </div>
+                <p className={styles.showcase__hint}>Shows empty message when no experiments available</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Mixed Status Examples</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
+                  {(() => {
+                    const mixedExperiments = [
+                      {
+                        id: 1,
+                        name: 'Feature A/B Test',
+                        comparison: 'control vs. variant',
+                        status: 'Active',
+                        createdDate: '2025-08-25',
+                        createdBy: { name: 'Alice Johnson', email: 'alice@example.com', initial: 'A' }
+                      },
+                      {
+                        id: 2,
+                        name: 'Performance Test v1',
+                        comparison: 'baseline vs. optimized',
+                        status: 'Active',
+                        createdDate: '2025-08-24',
+                        createdBy: { name: 'Bob Smith', email: 'bob@example.com', initial: 'B' }
+                      },
+                      {
+                        id: 3,
+                        name: 'UI Experiment',
+                        comparison: 'old vs. new',
+                        status: 'Closed',
+                        createdDate: '2025-08-20',
+                        createdBy: { name: 'Carol Davis', email: 'carol@example.com', initial: 'C' }
+                      }
+                    ];
+                    
+                    return <ExperimentsTable 
+                      experiments={mixedExperiments} 
+                      onViewReport={(experiment) => alert(`Opening report for: ${experiment.name}`)}
+                    />;
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Shows different status styles and multiple active experiments</p>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import ExperimentsTable from '@/components/templates/ExperimentsTable/ExperimentsTable';
+
+const experiments = [
+  {
+    id: 1,
+    name: 'Clade.md version 2',
+    comparison: 'master vs. version 2',
+    status: 'Active',
+    createdDate: '2025-08-26',
+    createdBy: {
+      name: 'Jack Nichols',
+      email: 'jack@agilitee.com',
+      initial: 'J'
+    }
+  }
+];
+
+<ExperimentsTable 
+  experiments={experiments}
+  onViewReport={(experiment) => handleViewReport(experiment)}
+  loading={false}
+/>
+
+// Experiment object structure
+{
+  id: string | number,         // Unique identifier
+  name: string,                // Experiment name
+  comparison: string,          // Comparison info (e.g., "master vs. version 2")
+  status: string,              // Status: "Active" or "Closed"
+  createdDate: string | Date,  // Creation date
+  createdBy: {
+    name: string,              // Creator's name
+    email: string,             // Creator's email
+    initial: string            // Initial for avatar
+  }
 }`}
               </pre>
             </div>
