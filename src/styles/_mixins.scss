@@ -51,6 +51,15 @@
   @include typography($typography-nav-item);
 }
 
+// Monospace Typography
+@mixin text-mono {
+  font-family: $font-family-mono;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.2px;
+}
+
 // Font Weight Helpers
 @mixin font-medium {
   font-weight: $font-weight-medium;
