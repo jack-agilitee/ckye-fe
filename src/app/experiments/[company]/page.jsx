@@ -161,8 +161,8 @@ const ExperimentsPage = ({ params }) => {
         <ExperimentsModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          experimentName={selectedExperiment.name}
-          version={selectedExperiment.comparison}
+          experimentTitle={selectedExperiment.name}
+          comparisonText={selectedExperiment.comparison}
         />
       )}
       
