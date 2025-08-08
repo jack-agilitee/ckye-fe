@@ -12,7 +12,7 @@ import styles from './page.module.scss';
 // Transform API data to match component expectations
 const transformVariantData = (apiVariant, index) => {
   // Extract variant number from summary or use index
-  const variantNumber = index + 2; // Start from Variant 2
+  const variantNumber = index + 1; // Start from Variant 2
   
   return {
     id: apiVariant.id,
