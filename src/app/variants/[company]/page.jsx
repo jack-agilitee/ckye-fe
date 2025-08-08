@@ -1,113 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import VariantsTable from '@/components/templates/VariantsTable/VariantsTable';
 import VariantsModal from '@/components/organisms/VariantsModal/VariantsModal';
+import { getVariants } from '@/lib/api/variants';
 import styles from './page.module.scss';
 
-// Hardcoded variants data based on Figma design
-const mockVariants = [
-  {
-    id: '1',
-    fileName: 'Claude.md',
-    variant: 'Variant 2',
-    createdDate: '2025-08-07',
-    createdBy: {
-      initial: 'C',
-      name: 'Claude Code',
-      email: 'Agent of: andrew@agilitee.com'
-    },
-    summary: 'Updated examples to use React function components with hooks instead of class components, following current React best practices and community standards.',
-    content: `# Claude.md - Variant 2
-
-## Updated React Examples
-
-This variant updates all React examples to use modern function components with hooks.
-
-### Example Component
-
-\`\`\`jsx
-import { useState, useEffect } from 'react';
-
-function ExampleComponent() {
-  const [count, setCount] = useState(0);
+// Transform API data to match component expectations
+const transformVariantData = (apiVariant, index) => {
+  // Extract variant number from summary or use index
+  const variantNumber = index + 2; // Start from Variant 2
   
-  useEffect(() => {
-    console.log('Component mounted or count changed:', count);
-  }, [count]);
-  
-  return (
-    <div>
-      <p>Count: {count}</p>
-      <button onClick={() => setCount(count + 1)}>Increment</button>
-    </div>
-  );
-}
-
-export default ExampleComponent;
-\`\`\`
-
-## Benefits
-- Cleaner syntax
-- Better performance with hooks
-- Easier to test and maintain`
-  },
-  {
-    id: '2',
-    fileName: 'Claude.md',
-    variant: 'Variant 3',
-    createdDate: '2025-08-08',
+  return {
+    id: apiVariant.id,
+    fileName: 'Claude.md', // Default filename, could be extracted from content
+    variant: `Variant ${variantNumber}`,
+    createdDate: new Date(apiVariant.createdAt).toISOString().split('T')[0],
     createdBy: {
       initial: 'C',
       name: 'Claude Code',
-      email: 'Agent of: dave@agilitee.com'
+      email: 'Agent of: system@agilitee.com'
     },
-    summary: 'Migrated from Pages Router to App Router examples, showcasing server components and new file-based routing conventions.',
-    content: `# Claude.md - Variant 3\n\n## App Router Migration\n\nThis variant migrates all examples to use Next.js App Router.`
-  },
-  {
-    id: '3',
-    fileName: 'Claude.md',
-    variant: 'Variant 4',
-    createdDate: '2025-08-10',
-    createdBy: {
-      initial: 'C',
-      name: 'Claude Code',
-      email: 'Agent of: jack@agilitee.com'
-    },
-    summary: 'Replaced prop drilling examples with Context API and custom hooks pattern for better state management across components.',
-    content: 'Content for Variant 4'
-  },
-  {
-    id: '4',
-    fileName: 'Commands.md',
-    variant: 'Variant 2',
-    createdDate: '2025-08-13',
-    createdBy: {
-      initial: 'C',
-      name: 'Claude Code',
-      email: 'Agent of: james@agilitee.com'
-    },
-    summary: 'Changed data fetching examples from useEffect + fetch to Next.js server actions and React Query for better performance.',
-    content: 'Content for Commands.md Variant 2'
-  },
-  {
-    id: '5',
-    fileName: 'Claude.md',
-    variant: 'Variant 5',
-    createdDate: '2025-08-17',
-    createdBy: {
-      initial: 'J',
-      name: 'Jack Nichols',
-      email: 'jack@agilitee.com'
-    },
-    summary: 'Updated import statements to use absolute imports with path mapping (@/components, @/utils) instead of relative imports for cleaner code organization.',
-    content: 'Content for Variant 5'
-  }
-];
+    summary: apiVariant.summary || 'No summary available',
+    content: apiVariant.content || ''
+  };
+};
 
 // Sidebar context items - matching Figma design
 const contextItems = [
@@ -120,13 +40,48 @@ const contextItems = [
 export default function VariantsPage({ params }) {
   const { company } = params;
   const [searchValue, setSearchValue] = useState('');
-  const [filteredVariants, setFilteredVariants] = useState(mockVariants);
+  const [variants, setVariants] = useState([]);
+  const [filteredVariants, setFilteredVariants] = useState([]);
   const [selectedContextItem, setSelectedContextItem] = useState('suggested-variants');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch variants from API on component mount
+  useEffect(() => {
+    const fetchVariants = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Fetch all variants (you can filter by workspaceId if needed)
+        const response = await getVariants({ 
+          limit: 50,
+          sortBy: 'createdAt',
+          sortOrder: 'desc'
+        });
+        
+        // Transform API data to match component structure
+        const transformedVariants = response.data.map((variant, index) => 
+          transformVariantData(variant, index)
+        );
+        
+        setVariants(transformedVariants);
+        setFilteredVariants(transformedVariants);
+      } catch (err) {
+        console.error('Error fetching variants:', err);
+        setError(err.message || 'Failed to fetch variants');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVariants();
+  }, []);
 
   const handleSearch = (value) => {
-    const filtered = mockVariants.filter(variant => 
+    const filtered = variants.filter(variant => 
       variant.fileName.toLowerCase().includes(value.toLowerCase()) ||
       variant.variant.toLowerCase().includes(value.toLowerCase()) ||
       variant.summary.toLowerCase().includes(value.toLowerCase())
@@ -197,11 +152,21 @@ export default function VariantsPage({ params }) {
         className={styles['variants-page__header']}
       />
       
-      <VariantsTable 
-        variants={filteredVariants}
-        onRowClick={handleRowClick}
-        className={styles['variants-page__table']}
-      />
+      {loading ? (
+        <div className={styles['variants-page__loading']}>
+          Loading variants...
+        </div>
+      ) : error ? (
+        <div className={styles['variants-page__error']}>
+          Error: {error}
+        </div>
+      ) : (
+        <VariantsTable 
+          variants={filteredVariants}
+          onRowClick={handleRowClick}
+          className={styles['variants-page__table']}
+        />
+      )}
     </div>
   );
 
