@@ -19,6 +19,7 @@ import AddWorkspaceModal from '@/components/organisms/AddWorkspaceModal/AddWorks
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
 import CreateExperimentModal from '@/components/organisms/CreateExperimentModal/CreateExperimentModal';
 import VariantCard from '@/components/organisms/VariantCard/VariantCard';
+import VariantsModal from '@/components/organisms/VariantsModal/VariantsModal';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
@@ -29,6 +30,7 @@ import styles from './page.module.scss';
 
 export default function ShowcasePage() {
   const [searchValue, setSearchValue] = useState('');
+  const [isVariantsModalOpen, setIsVariantsModalOpen] = useState(false);
 
   const handleSearch = (value) => {
     console.log('Search submitted:', value);
@@ -2428,6 +2430,110 @@ const handleCreate = (formData) => {
               </pre>
             </div>
           </div>
+
+          {/* VariantsModal Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>VariantsModal</h3>
+            <p className={styles.showcase__componentDescription}>
+              A modal component for displaying code variants with syntax highlighting and action buttons.
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Click to Open Modal</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <Button 
+                    variant="primary"
+                    onClick={() => setIsVariantsModalOpen(true)}
+                  >
+                    Open Variants Modal
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import VariantsModal from '@/components/organisms/VariantsModal/VariantsModal';
+
+// Basic usage
+const [isModalOpen, setIsModalOpen] = useState(false);
+
+const codeContent = \`
+\\\`\\\`\\\`typescript
+@Component({
+  selector: 'app-example',
+  templateUrl: './example.component.html'
+})
+export class ExampleComponent implements OnInit {
+  public data: any[] = [];
+  
+  ngOnInit() {}
+  
+  public handleAction() {}
+}
+\\\`\\\`\\\`
+\`;
+
+<VariantsModal
+  isOpen={isModalOpen}
+  onClose={() => setIsModalOpen(false)}
+  title="Component.ts"
+  version="Version 3"
+  codeContent={codeContent}
+  onSetToMaster={() => {
+    console.log('Setting to master');
+    setIsModalOpen(false);
+  }}
+  onCreateExperiment={() => {
+    console.log('Creating experiment');
+    setIsModalOpen(false);
+  }}
+/>`}
+              </pre>
+            </div>
+          </div>
+
+          {/* VariantsModal Instance */}
+          <VariantsModal
+            isOpen={isVariantsModalOpen}
+            onClose={() => setIsVariantsModalOpen(false)}
+            title="Clade.md"
+            version="Version 2"
+            codeContent={`\`\`\`typescript
+// Standard component template
+@Component({
+  selector: 'app-example',
+  templateUrl: './example.component.html',
+  styleUrls: ['./example.component.scss']
+})
+export class ExampleComponent implements OnInit {
+  // Properties first
+  public data: any[] = [];
+
+  // Constructor
+  constructor(private service: ExampleService) {}
+
+  // Lifecycle hooks
+  ngOnInit() {}
+
+  // Public methods
+  public handleAction() {}
+
+  // Private methods
+  private helperMethod() {}
+}
+\`\`\``}
+            onSetToMaster={() => {
+              alert('Set to Master clicked');
+              setIsVariantsModalOpen(false);
+            }}
+            onCreateExperiment={() => {
+              alert('Create Experiment with Variant clicked');
+              setIsVariantsModalOpen(false);
+            }}
+          />
 
         </section>
 
