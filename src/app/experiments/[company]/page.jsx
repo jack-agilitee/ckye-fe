@@ -6,14 +6,16 @@ import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import ExperimentsTable from '@/components/templates/ExperimentsTable/ExperimentsTable';
 import ExperimentsModal from '@/components/organisms/ExperimentsModal/ExperimentsModal';
+import CreateExperimentModal from '@/components/organisms/CreateExperimentModal/CreateExperimentModal';
 import styles from './page.module.scss';
 
 // Hardcoded experiments data based on Figma design
+// Updated to match the prop names expected by ExperimentsTable
 const mockExperiments = [
   {
     id: '1',
-    experimentName: 'Claude.md version 2',
-    version: 'master vs. version 2',
+    name: 'Claude.md version 2',
+    comparison: 'master vs. version 2',
     status: 'Active',
     createdDate: '2025-08-28',
     createdBy: {
@@ -24,8 +26,8 @@ const mockExperiments = [
   },
   {
     id: '2',
-    experimentName: 'Claude.md version 3',
-    version: 'master vs. version 3',
+    name: 'Claude.md version 3',
+    comparison: 'master vs. version 3',
     status: 'Closed',
     createdDate: '2025-08-26',
     createdBy: {
@@ -36,8 +38,8 @@ const mockExperiments = [
   },
   {
     id: '3',
-    experimentName: 'Claude.md version 4',
-    version: 'master vs. version 4',
+    name: 'Claude.md version 4',
+    comparison: 'master vs. version 4',
     status: 'Closed',
     createdDate: '2025-08-26',
     createdBy: {
@@ -48,8 +50,8 @@ const mockExperiments = [
   },
   {
     id: '4',
-    experimentName: 'Commands.md version 2',
-    version: 'master vs. version 2',
+    name: 'Commands.md version 2',
+    comparison: 'master vs. version 2',
     status: 'Closed',
     createdDate: '2025-08-26',
     createdBy: {
@@ -60,8 +62,8 @@ const mockExperiments = [
   },
   {
     id: '5',
-    experimentName: 'Claude.md version 5',
-    version: 'master vs. version 5',
+    name: 'Claude.md version 5',
+    comparison: 'master vs. version 5',
     status: 'Closed',
     createdDate: '2025-08-26',
     createdBy: {
@@ -77,13 +79,14 @@ const ExperimentsPage = ({ params }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedExperiment, setSelectedExperiment] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // Filter experiments based on search query
   const filteredExperiments = mockExperiments.filter(experiment => {
     const query = searchQuery.toLowerCase();
     return (
-      experiment.experimentName.toLowerCase().includes(query) ||
-      experiment.version.toLowerCase().includes(query) ||
+      experiment.name.toLowerCase().includes(query) ||
+      experiment.comparison.toLowerCase().includes(query) ||
       experiment.status.toLowerCase().includes(query)
     );
   });
@@ -93,11 +96,10 @@ const ExperimentsPage = ({ params }) => {
   };
 
   const handleNewExperiment = () => {
-    console.log('New Experiment clicked');
-    // TODO: Implement new experiment modal/flow
+    setIsCreateModalOpen(true);
   };
 
-  const handleRowClick = (experiment) => {
+  const handleViewReport = (experiment) => {
     setSelectedExperiment(experiment);
     setIsModalOpen(true);
   };
@@ -105,6 +107,16 @@ const ExperimentsPage = ({ params }) => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedExperiment(null);
+  };
+
+  const handleCloseCreateModal = () => {
+    setIsCreateModalOpen(false);
+  };
+
+  const handleCreateExperiment = (experimentData) => {
+    console.log('Creating experiment:', experimentData);
+    // TODO: Implement API call to create experiment
+    setIsCreateModalOpen(false);
   };
 
   const handleContextItemClick = (item) => {
@@ -132,8 +144,7 @@ const ExperimentsPage = ({ params }) => {
       />
       <ExperimentsTable 
         experiments={filteredExperiments}
-        company={company}
-        onRowClick={handleRowClick}
+        onViewReport={handleViewReport}
       />
     </>
   );
@@ -150,8 +161,16 @@ const ExperimentsPage = ({ params }) => {
         <ExperimentsModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          experimentName={selectedExperiment.experimentName}
-          version={selectedExperiment.version}
+          experimentName={selectedExperiment.name}
+          version={selectedExperiment.comparison}
+        />
+      )}
+      
+      {isCreateModalOpen && (
+        <CreateExperimentModal
+          isOpen={isCreateModalOpen}
+          onClose={handleCloseCreateModal}
+          onCreateExperiment={handleCreateExperiment}
         />
       )}
     </>
