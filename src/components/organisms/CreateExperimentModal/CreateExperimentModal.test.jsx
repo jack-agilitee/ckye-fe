@@ -117,7 +117,7 @@ describe('CreateExperimentModal', () => {
   it('calls onClose when Cancel button is clicked', () => {
     render(<CreateExperimentModal {...defaultProps} />);
     
-    const cancelButton = screen.getByTestId('button-secondary');
+    const cancelButton = screen.getByTestId('button-primary');
     fireEvent.click(cancelButton);
     
     expect(mockOnClose).toHaveBeenCalledTimes(1);
@@ -168,7 +168,7 @@ describe('CreateExperimentModal', () => {
     fireEvent.change(masterFileSelect, { target: { value: 'commands' } });
     fireEvent.change(variantSelect, { target: { value: 'v2' } });
     
-    const createButton = screen.getByTestId('button-primary');
+    const createButton = screen.getByTestId('button-secondary');
     fireEvent.click(createButton);
     
     expect(mockOnCreate).toHaveBeenCalledWith({
@@ -259,7 +259,7 @@ describe('CreateExperimentModal', () => {
       />
     );
     
-    const createButton = screen.getByTestId('button-primary');
+    const createButton = screen.getByTestId('button-secondary');
     fireEvent.click(createButton);
     
     expect(mockOnClose).toHaveBeenCalledTimes(1);

@@ -164,16 +164,18 @@ const CreateExperimentModal = ({
 
         <div className={styles['create-experiment-modal__footer']}>
           <Button
-            variant="secondary"
+            variant="primary"
             onClick={onClose}
             className={styles['create-experiment-modal__button']}
+            icon={null}
           >
             Cancel
           </Button>
           <Button
-            variant="primary"
+            variant="secondary"
             onClick={handleCreate}
             className={styles['create-experiment-modal__button']}
+            icon={null}
           >
             Create Experiment
           </Button>
