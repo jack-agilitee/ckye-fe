@@ -54,7 +54,7 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background: $black-hover;
+      background: $black-light-hover;
       border-radius: 4px;
 
       &:hover {
@@ -112,7 +112,7 @@
     padding: 0;
 
     &:hover {
-      background-color: $black-hover;
+      background-color: $black-light-hover;
     }
 
     &:focus-visible {
@@ -129,8 +129,8 @@
     height: 1px;
     background: linear-gradient(90deg, 
       transparent 0%, 
-      $black-hover 20%, 
-      $black-hover 80%, 
+      $black-hover-light 20%, 
+      $black-hover-light 80%, 
       transparent 100%
     );
     margin: 4px 0;

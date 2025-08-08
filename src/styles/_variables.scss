@@ -25,8 +25,12 @@ $background-hover: $black-light-hover;
 $primary-color: #0066CC;  // Primary action color for focus states and interactive elements
 $secondary-color: #74A0C8;  // Secondary color for button variants
 $code-blue: #74A0C8;  // Code/Blue - Used for Settings modal CTAs
-$code-red: #EB5757;
+$code-red: #EB5757;  // Action/Warning - Used for warning and destructive actions
+$accent-green-light: #8ED09C;  // Accent/Green Light - Used for success states and positive values
 $border-color: rgba($white-primary, 0.1);  // Border color for subtle dividers
+
+// Semantic aliases
+$action-warning: $code-red;  // Alias for warning/destructive actions
 
 // Code Block Colors (from VariantsModal design)
 $black-code: #202020;  // Black/Code - Code block background color
