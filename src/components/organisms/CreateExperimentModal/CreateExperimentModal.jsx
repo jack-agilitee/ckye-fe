@@ -124,7 +124,7 @@ const CreateExperimentModal = ({
             type="button"
           >
             <Image 
-              src="/close.svg"
+              src="/cross.svg"
               alt=""
               width={16}
               height={16}
