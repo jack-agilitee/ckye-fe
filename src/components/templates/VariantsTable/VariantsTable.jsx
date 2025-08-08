@@ -1,84 +1,131 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import Avatar from '@/components/atoms/Avatar/Avatar';
+import { useState } from 'react';
+import Image from 'next/image';
+import User from '@/components/molecules/User/User';
 import styles from './VariantsTable.module.scss';
 
-const VariantsTable = ({ variants = [], company = '' }) => {
-  const router = useRouter();
+const VariantsTable = ({ 
+  variants = [],
+  onRowClick,
+  loading = false
+}) => {
+  const [hoveredRow, setHoveredRow] = useState(null);
 
   const handleRowClick = (variant) => {
-    console.log('Variant clicked:', variant);
-    // TODO: Navigate to variant detail or open modal
+    if (onRowClick) {
+      onRowClick(variant);
+    } else {
+      // TODO: Open modal with variant details
+      console.log('TODO: Open modal for variant:', variant);
+    }
   };
+
+  const truncateText = (text, maxLength = 150) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
+
+  const formatDate = (date) => {
+    if (!date) return '';
+    const dateObj = new Date(date);
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return dateObj.toLocaleDateString('en-US', options);
+  };
+
+  if (loading) {
+    return (
+      <div className={styles['variants-table']}>
+        <div className={styles['variants-table__loading']}>
+          Loading variants...
+        </div>
+      </div>
+    );
+  }
+
+  if (!variants || variants.length === 0) {
+    return (
+      <div className={styles['variants-table']}>
+        <div className={styles['variants-table__empty']}>
+          No variants found
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles['variants-table']}>
-      {/* Table Header */}
       <div className={styles['variants-table__header']}>
         <div className={styles['variants-table__header-cell']}>
-          <span className={styles['variants-table__header-text']}>Name</span>
+          Name
         </div>
         <div className={styles['variants-table__header-cell']}>
-          <span className={styles['variants-table__header-text']}>Created Date</span>
+          Created Date
         </div>
         <div className={styles['variants-table__header-cell']}>
-          <span className={styles['variants-table__header-text']}>Created By</span>
+          Created By
         </div>
         <div className={styles['variants-table__header-cell']}>
-          <span className={styles['variants-table__header-text']}>Suggestion Summary</span>
+          Suggestion Summary
         </div>
-        <div className={styles['variants-table__header-cell--action']}>
-          <span className={styles['variants-table__header-text']}>&nbsp;</span>
-        </div>
+        <div className={styles['variants-table__header-cell']}></div>
       </div>
-
-      {/* Table Body */}
+      
       <div className={styles['variants-table__body']}>
         {variants.map((variant, index) => (
           <div 
-            key={variant.id || index} 
-            className={styles['variants-table__row']}
+            key={variant.id || index}
+            className={`${styles['variants-table__row']} ${
+              hoveredRow === index ? styles['variants-table__row--hovered'] : ''
+            }`}
+            onMouseEnter={() => setHoveredRow(index)}
+            onMouseLeave={() => setHoveredRow(null)}
             onClick={() => handleRowClick(variant)}
           >
-            {/* Name Column */}
             <div className={styles['variants-table__cell']}>
-              <div className={styles['variants-table__name-group']}>
-                <span className={styles['variants-table__name']}>{variant.name}</span>
-                <span className={styles['variants-table__variant-label']}>{variant.variantLabel}</span>
-              </div>
-            </div>
-
-            {/* Created Date Column */}
-            <div className={styles['variants-table__cell']}>
-              <span className={styles['variants-table__date']}>{variant.createdDate}</span>
-            </div>
-
-            {/* Created By Column */}
-            <div className={styles['variants-table__cell']}>
-              <div className={styles['variants-table__user']}>
-                <Avatar 
-                  initial={variant.createdBy.initial} 
-                  className={styles['variants-table__avatar']}
-                />
-                <div className={styles['variants-table__user-info']}>
-                  <span className={styles['variants-table__user-name']}>{variant.createdBy.name}</span>
-                  <span className={styles['variants-table__user-email']}>{variant.createdBy.email}</span>
+              <div className={styles['variants-table__file-info']}>
+                <div className={styles['variants-table__file-name']}>
+                  {variant.fileName || 'Unnamed'}
+                </div>
+                <div className={styles['variants-table__file-variant']}>
+                  {variant.variant || ''}
                 </div>
               </div>
             </div>
-
-            {/* Suggestion Summary Column */}
+            
             <div className={styles['variants-table__cell']}>
-              <span className={styles['variants-table__summary']}>{variant.summary}</span>
+              <span className={styles['variants-table__date']}>
+                {formatDate(variant.createdDate)}
+              </span>
             </div>
-
-            {/* Action Column */}
-            <div className={styles['variants-table__cell--action']}>
-              <button className={styles['variants-table__action-button']}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+            
+            <div className={styles['variants-table__cell']}>
+              <User 
+                name={variant.createdBy?.name || 'Unknown User'}
+                email={variant.createdBy?.email || ''}
+                initial={variant.createdBy?.initial}
+                className={styles['variants-table__user']}
+              />
+            </div>
+            
+            <div className={styles['variants-table__cell']}>
+              <div className={styles['variants-table__summary']}>
+                {truncateText(variant.summary || 'No summary available')}
+              </div>
+            </div>
+            
+            <div className={styles['variants-table__cell']}>
+              <button 
+                className={styles['variants-table__action']}
+                aria-label={`View details for ${variant.fileName}`}
+              >
+                <Image 
+                  src="/chevron-right.svg"
+                  alt=""
+                  width={24}
+                  height={24}
+                  className={styles['variants-table__icon']}
+                />
               </button>
             </div>
           </div>

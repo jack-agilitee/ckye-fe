@@ -11,9 +11,9 @@ import styles from './page.module.scss';
 const mockVariants = [
   {
     id: '1',
-    name: 'Claude.md',
-    variantLabel: 'Variant 2',
-    createdDate: 'Aug 7, 2025',
+    fileName: 'Claude.md',
+    variant: 'Variant 2',
+    createdDate: '2025-08-07',
     createdBy: {
       initial: 'C',
       name: 'Claude Code',
@@ -23,9 +23,9 @@ const mockVariants = [
   },
   {
     id: '2',
-    name: 'Claude.md',
-    variantLabel: 'Variant 3',
-    createdDate: 'Aug 8, 2025',
+    fileName: 'Claude.md',
+    variant: 'Variant 3',
+    createdDate: '2025-08-08',
     createdBy: {
       initial: 'C',
       name: 'Claude Code',
@@ -35,9 +35,9 @@ const mockVariants = [
   },
   {
     id: '3',
-    name: 'Claude.md',
-    variantLabel: 'Variant 4',
-    createdDate: 'Aug 10, 2025',
+    fileName: 'Claude.md',
+    variant: 'Variant 4',
+    createdDate: '2025-08-10',
     createdBy: {
       initial: 'C',
       name: 'Claude Code',
@@ -47,9 +47,9 @@ const mockVariants = [
   },
   {
     id: '4',
-    name: 'Commands.md',
-    variantLabel: 'Variant 2',
-    createdDate: 'Aug 13, 2025',
+    fileName: 'Commands.md',
+    variant: 'Variant 2',
+    createdDate: '2025-08-13',
     createdBy: {
       initial: 'C',
       name: 'Claude Code',
@@ -59,9 +59,9 @@ const mockVariants = [
   },
   {
     id: '5',
-    name: 'Claude.md',
-    variantLabel: 'Variant 5',
-    createdDate: 'Aug 17, 2025',
+    fileName: 'Claude.md',
+    variant: 'Variant 5',
+    createdDate: '2025-08-17',
     createdBy: {
       initial: 'J',
       name: 'Jack Nichols',
@@ -87,8 +87,8 @@ export default function VariantsPage({ params }) {
 
   const handleSearch = (value) => {
     const filtered = mockVariants.filter(variant => 
-      variant.name.toLowerCase().includes(value.toLowerCase()) ||
-      variant.variantLabel.toLowerCase().includes(value.toLowerCase()) ||
+      variant.fileName.toLowerCase().includes(value.toLowerCase()) ||
+      variant.variant.toLowerCase().includes(value.toLowerCase()) ||
       variant.summary.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredVariants(filtered);

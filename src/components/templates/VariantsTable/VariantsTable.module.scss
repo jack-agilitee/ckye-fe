@@ -2,32 +2,42 @@
 @import '../../../styles/mixins';
 
 .variants-table {
-  display: flex;
-  flex-direction: column;
+  background-color: $background-dark;
+  border-radius: 8px;
+  overflow: hidden;
   width: 100%;
+
+  &__loading,
+  &__empty {
+    padding: 40px;
+    text-align: center;
+    @include body-medium;
+    color: $white-secondary;
+  }
 
   &__header {
     display: grid;
-    grid-template-columns: 200px 150px 250px 1fr 60px;
-    gap: 16px;
-    padding: 12px 0;
-    border-bottom: 1px solid $border-color;
+    grid-template-columns: 186px 1fr 1fr 2fr 40px;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba($white-secondary, 0.1);
   }
 
   &__header-cell {
+    @include heading-3;
+    color: $white-primary;
+    padding: 0 12px;
     display: flex;
     align-items: center;
-    
-    &--action {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-    }
-  }
+    min-height: 40px;
 
-  &__header-text {
-    @include heading-2;
-    color: $white-primary;
+    &:first-child {
+      padding-left: 16px;
+    }
+
+    &:last-child {
+      padding-right: 16px;
+    }
   }
 
   &__body {
@@ -37,15 +47,19 @@
 
   &__row {
     display: grid;
-    grid-template-columns: 200px 150px 250px 1fr 60px;
-    gap: 16px;
-    padding: 16px 0;
-    border-bottom: 1px solid rgba($border-color, 0.3);
+    grid-template-columns: 186px 1fr 1fr 2fr 40px;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba($white-secondary, 0.05);
     cursor: pointer;
     transition: background-color 0.2s ease;
 
     &:hover {
-      background-color: rgba($white, 0.02);
+      background-color: rgba($white-primary, 0.02);
+    }
+
+    &--hovered {
+      background-color: rgba($white-primary, 0.02);
     }
 
     &:last-child {
@@ -56,29 +70,39 @@
   &__cell {
     display: flex;
     align-items: center;
-    
-    &--action {
-      display: flex;
+    padding: 0 12px;
+    min-height: 40px;
+
+    &:first-child {
+      padding-left: 16px;
+    }
+
+    &:last-child {
+      padding-right: 16px;
       justify-content: flex-end;
-      align-items: center;
     }
   }
 
-  &__name-group {
+  &__file-info {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    width: 100%;
   }
 
-  &__name {
+  &__file-name {
     @include body-medium;
     color: $white-primary;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  &__variant-label {
+  &__file-variant {
     @include body-small;
     color: $white-secondary;
     font-family: 'Overpass Mono', monospace;
+    font-weight: 500;
   }
 
   &__date {
@@ -88,67 +112,48 @@
   }
 
   &__user {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  &__avatar {
-    flex-shrink: 0;
-  }
-
-  &__user-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-  }
-
-  &__user-name {
-    @include body-medium;
-    color: $white-primary;
-  }
-
-  &__user-email {
-    @include body-small;
-    color: $white-secondary;
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    // User component will handle its own internal layout
+    width: 100%;
   }
 
   &__summary {
     @include body-small;
     color: $white-primary;
+    line-height: 1.4;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.4;
   }
 
-  &__action-button {
+  &__action {
     background: transparent;
     border: none;
-    color: $white-secondary;
     cursor: pointer;
     padding: 8px;
     border-radius: 8px;
-    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background-color 0.2s ease;
 
     &:hover {
-      background-color: rgba($white, 0.05);
-      color: $white-primary;
+      background-color: rgba($white-primary, 0.05);
     }
 
-    svg {
-      width: 24px;
-      height: 24px;
+    &:focus {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+    }
+  }
+
+  &__icon {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+
+    .variants-table__row:hover & {
+      opacity: 1;
     }
   }
 }
