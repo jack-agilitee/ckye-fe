@@ -1,0 +1,179 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.experiments-table {
+  background-color: $background-dark;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+
+  &__loading,
+  &__empty {
+    padding: 40px;
+    text-align: center;
+    @include body-medium;
+    color: $white-secondary;
+  }
+
+  &__header {
+    display: grid;
+    grid-template-columns: 200px 100px 120px 1fr auto;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba($white-secondary, 0.1);
+  }
+
+  &__header-cell {
+    @include heading-3;
+    color: $white-primary;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+
+    &:first-child {
+      padding-left: 16px;
+    }
+
+    &:last-child {
+      padding-right: 16px;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 200px 100px 120px 1fr auto;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba($white-secondary, 0.05);
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba($white-primary, 0.02);
+    }
+
+    &--hovered {
+      background-color: rgba($white-primary, 0.02);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__cell {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    min-height: 40px;
+
+    &:first-child {
+      padding-left: 16px;
+    }
+
+    &:last-child {
+      padding-right: 16px;
+      justify-content: flex-end;
+    }
+  }
+
+  &__experiment-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  &__experiment-name {
+    @include body-medium;
+    color: $white-primary;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__experiment-comparison {
+    @include body-small;
+    color: $white-secondary;
+    font-family: 'Overpass Mono', monospace;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__status {
+    @include body-medium;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+
+    &--active {
+      color: $editor-green;
+      background-color: rgba($editor-green, 0.1);
+    }
+
+    &--closed {
+      color: $white-secondary;
+      background-color: rgba($white-secondary, 0.1);
+    }
+  }
+
+  &__date {
+    @include body-medium;
+    color: $white-primary;
+    font-weight: 600;
+  }
+
+  &__user {
+    // User component will handle its own internal layout
+    width: 100%;
+  }
+
+  &__action {
+    background: transparent;
+    border: 1px solid $code-blue;
+    color: $code-blue;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    @include body-medium;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: rgba($code-blue, 0.1);
+      border-color: lighten($code-blue, 10%);
+    }
+
+    &:focus {
+      outline: 2px solid $code-blue;
+      outline-offset: 2px;
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+
+  &__action-icon {
+    flex-shrink: 0;
+  }
+
+  &__action-text {
+    @include body-medium;
+    font-weight: 600;
+    color: $code-blue;
+  }
+}
