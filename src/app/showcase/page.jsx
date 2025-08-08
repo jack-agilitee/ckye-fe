@@ -17,6 +17,7 @@ import Avatar from '@/components/atoms/Avatar/Avatar';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
 import AddWorkspaceModal from '@/components/organisms/AddWorkspaceModal/AddWorkspaceModal';
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
+import CreateExperimentModal from '@/components/organisms/CreateExperimentModal/CreateExperimentModal';
 import VariantCard from '@/components/organisms/VariantCard/VariantCard';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
@@ -2196,6 +2197,139 @@ const workspaces = [
 // Name: [entered name]
 // Email: [entered email]
 // Selected Workspace: [selected workspace id]`}
+              </pre>
+            </div>
+          </div>
+
+          {/* CreateExperimentModal Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>CreateExperimentModal</h3>
+            <p className={styles.showcase__componentDescription}>
+              A modal dialog for creating new experiments with name input, master file selection, and variant selection. 
+              Supports backdrop click-to-close and keyboard navigation.
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default CreateExperimentModal</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', minHeight: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {(() => {
+                    const [showModal, setShowModal] = useState(false);
+                    const masterFiles = [
+                      { value: 'claude', label: 'Claude.md' },
+                      { value: 'commands', label: 'Commands.md' },
+                      { value: 'readme', label: 'README.md' },
+                      { value: 'config', label: 'Config.md' }
+                    ];
+                    const variants = [
+                      { value: 'v1', label: 'Variant 1' },
+                      { value: 'v2', label: 'Variant 2' },
+                      { value: 'v3', label: 'Variant 3' },
+                      { value: 'v4', label: 'Variant 4' }
+                    ];
+                    
+                    return (
+                      <>
+                        <Button 
+                          onClick={() => setShowModal(true)}
+                          variant="primary"
+                        >
+                          Create Experiment
+                        </Button>
+                        <CreateExperimentModal
+                          isOpen={showModal}
+                          onClose={() => setShowModal(false)}
+                          onCreate={(data) => {
+                            console.log('Creating experiment:', data);
+                            alert(`Creating experiment: ${data.name}\nMaster File: ${data.masterFile}\nVariant: ${data.variant}`);
+                          }}
+                          masterFiles={masterFiles}
+                          variants={variants}
+                        />
+                      </>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Click button to open modal. Try closing with X, Cancel, backdrop click, or Escape key.</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>With Limited Options</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', minHeight: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {(() => {
+                    const [showModal, setShowModal] = useState(false);
+                    const masterFiles = [
+                      { value: 'main', label: 'Main.md' },
+                      { value: 'test', label: 'Test.md' }
+                    ];
+                    const variants = [
+                      { value: 'a', label: 'Variant A' },
+                      { value: 'b', label: 'Variant B' }
+                    ];
+                    
+                    return (
+                      <>
+                        <Button 
+                          onClick={() => setShowModal(true)}
+                          variant="secondary"
+                        >
+                          New Experiment
+                        </Button>
+                        <CreateExperimentModal
+                          isOpen={showModal}
+                          onClose={() => setShowModal(false)}
+                          onCreate={(data) => {
+                            console.log('Creating experiment with limited options:', data);
+                          }}
+                          masterFiles={masterFiles}
+                          variants={variants}
+                        />
+                      </>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Modal with fewer dropdown options</p>
+              </div>
+            </div>
+
+            <div className={styles.showcase__usage}>
+              <h4 className={styles.showcase__usageTitle}>Usage</h4>
+              <pre className={styles.showcase__code}>
+{`// Import
+import CreateExperimentModal from '@/components/organisms/CreateExperimentModal/CreateExperimentModal';
+
+// Usage
+const [isModalOpen, setIsModalOpen] = useState(false);
+
+const masterFiles = [
+  { value: 'claude', label: 'Claude.md' },
+  { value: 'commands', label: 'Commands.md' }
+];
+
+const variants = [
+  { value: 'v1', label: 'Variant 1' },
+  { value: 'v2', label: 'Variant 2' }
+];
+
+const handleCreate = (formData) => {
+  console.log('Form data:', formData);
+  // formData = { name: string, masterFile: string, variant: string }
+};
+
+<CreateExperimentModal
+  isOpen={isModalOpen}
+  onClose={() => setIsModalOpen(false)}
+  onCreate={handleCreate}
+  masterFiles={masterFiles}
+  variants={variants}
+/>
+
+// The component supports:
+// - Backdrop click to close
+// - Escape key to close
+// - X button and Cancel button to close
+// - Form reset on modal open
+// - Body scroll prevention when open`}
               </pre>
             </div>
           </div>
