@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import VariantCard from '@/components/organisms/VariantCard/VariantCard';
+import ChartSection from '@/components/molecules/ChartSection/ChartSection';
 import styles from './ExperimentsModal.module.scss';
 
 const ExperimentsModal = ({ 
@@ -82,16 +83,6 @@ const ExperimentsModal = ({
     onClose?.();
   };
 
-  // Format the results description with highlighted percentages
-  const formatResultsDescription = () => {
-    const parts = resultsData.description.split(/(\d+%)/g);
-    return parts.map((part, index) => {
-      if (part.match(/\d+%/)) {
-        return <span key={index} className={styles['experiments-modal__highlight']}>{part}</span>;
-      }
-      return part;
-    });
-  };
 
   return (
     <div className={styles['experiments-modal']}>
@@ -121,16 +112,28 @@ const ExperimentsModal = ({
           <div className={styles['experiments-modal__divider']} />
 
           {/* Results Section */}
-          <div className={styles['experiments-modal__section']}>
-            <h3 className={styles['experiments-modal__section-title']}>Results</h3>
+          <ChartSection 
+            title="Results"
+            className={styles['experiments-modal__section']}
+          >
             <p className={styles['experiments-modal__section-description']}>
-              {formatResultsDescription()}
+              {(() => {
+                const parts = resultsData.description.split(/(\d+%)/g);
+                return parts.map((part, index) => {
+                  if (part.match(/\d+%/)) {
+                    return <span key={index} className={styles['experiments-modal__highlight']}>{part}</span>;
+                  }
+                  return part;
+                });
+              })()}
             </p>
-          </div>
+          </ChartSection>
 
           {/* Stats for Nerds Section */}
-          <div className={styles['experiments-modal__section']}>
-            <h3 className={styles['experiments-modal__section-title']}>Stats for Nerds</h3>
+          <ChartSection 
+            title="Stats for Nerds"
+            className={styles['experiments-modal__section']}
+          >
             <div className={styles['experiments-modal__stats']}>
               <p className={styles['experiments-modal__stat']}>
                 A two-proportion Z-Test resulted in a one-tailed p-value of{' '}
@@ -151,15 +154,14 @@ const ExperimentsModal = ({
                 </span>
               </p>
             </div>
-          </div>
+          </ChartSection>
 
           {/* Potential Impact Section */}
-          <div className={styles['experiments-modal__section']}>
-            <h3 className={styles['experiments-modal__section-title']}>Potential Impact</h3>
-            <p className={styles['experiments-modal__section-description']}>
-              {impactDescription}
-            </p>
-          </div>
+          <ChartSection 
+            title="Potential Impact"
+            description={impactDescription}
+            className={styles['experiments-modal__section']}
+          />
 
           {/* Charts Section with Variant Cards */}
           <div className={styles['experiments-modal__charts']}>

@@ -15,6 +15,18 @@ jest.mock('@/components/organisms/VariantCard/VariantCard', () => {
   };
 });
 
+// Mock the ChartSection component
+jest.mock('@/components/molecules/ChartSection/ChartSection', () => {
+  return function MockChartSection(props) {
+    return (
+      <div className={props.className}>
+        <h2>{props.title}</h2>
+        {props.children || <p>{props.description}</p>}
+      </div>
+    );
+  };
+});
+
 // Mock Next.js Image component
 jest.mock('next/image', () => ({
   __esModule: true,
