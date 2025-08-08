@@ -132,6 +132,8 @@ async function main() {
   // Delete existing data
   await prisma.userWorkspace.deleteMany();
   await prisma.page.deleteMany();
+  await prisma.variant.deleteMany();
+  await prisma.suggestion.deleteMany();
   await prisma.user.deleteMany();
   await prisma.workspace.deleteMany();
   
@@ -175,6 +177,146 @@ async function main() {
       data: page
     });
     console.log(`Created page: ${page.name}`);
+  }
+  
+  // Create sample variants for each workspace
+  const variants = [
+    {
+      content: `# Project Guidelines for American Eagle
+
+## Code Style
+- Use functional components with React hooks
+- Follow atomic design principles  
+- Use SCSS modules with BEM methodology
+- Implement proper error handling
+
+## Best Practices
+- Keep components small and reusable
+- Use proper TypeScript types
+- Write comprehensive tests
+- Document all API endpoints
+
+## Development Standards
+- Follow ESLint rules
+- Use Prettier for formatting
+- Commit messages should follow conventional commits`,
+      summary: 'Initial project guidelines with code style and best practices for AE',
+      workspaceId: createdWorkspaces['Americal Eagle']
+    },
+    {
+      content: `# Development Workflow for American Eagle
+
+## Git Workflow
+1. Create feature branches from main
+2. Write descriptive commit messages
+3. Create pull requests for review
+4. Run tests before merging
+
+## Code Review Process
+- Check for code quality
+- Verify test coverage
+- Ensure documentation is updated
+- Validate performance impact
+
+## Deployment Process
+- Stage changes in development
+- Test in staging environment
+- Deploy to production with approval`,
+      summary: 'Development workflow including Git practices and deployment process for AE',
+      workspaceId: createdWorkspaces['Americal Eagle']
+    },
+    {
+      content: `# API Documentation for Dollar General
+
+## RESTful Endpoints
+- GET /api/products - List all products
+- GET /api/products/:id - Get single product
+- POST /api/products - Create new product
+- PUT /api/products/:id - Update product
+- DELETE /api/products/:id - Delete product
+
+## Authentication
+All endpoints require Bearer token authentication
+
+## Rate Limiting
+- 100 requests per minute per IP
+- 1000 requests per hour per user`,
+      summary: 'API documentation with RESTful endpoints and authentication for DG',
+      workspaceId: createdWorkspaces['Dollar General']
+    },
+    {
+      content: `# Testing Strategy for Dollar General
+
+## Unit Testing
+- Test individual components
+- Mock external dependencies
+- Achieve 80% code coverage
+
+## Integration Testing
+- Test API endpoints
+- Verify database operations
+- Test user workflows
+
+## E2E Testing
+- Test critical user journeys
+- Verify cross-browser compatibility
+- Mobile responsiveness testing`,
+      summary: 'Comprehensive testing strategy covering unit, integration, and E2E tests for DG',
+      workspaceId: createdWorkspaces['Dollar General']
+    },
+    {
+      content: `# Performance Optimization for Agilitee
+
+## Frontend Optimization
+- Use React.memo for expensive components
+- Implement lazy loading
+- Optimize bundle size
+- Use proper caching strategies
+
+## Backend Optimization
+- Implement database indexing
+- Use query optimization
+- Add response caching
+- Monitor API performance
+
+## CDN Strategy
+- Static assets on CDN
+- Image optimization
+- Compression enabled`,
+      summary: 'Performance optimization guidelines for frontend and backend at Agilitee',
+      workspaceId: createdWorkspaces['Agilitee']
+    },
+    {
+      content: `# Security Best Practices for Agilitee
+
+## Input Validation
+- Sanitize all user inputs
+- Validate data types and formats
+- Implement rate limiting
+- Use parameterized queries
+
+## Authentication & Authorization
+- Use secure token storage
+- Implement proper session management
+- Apply principle of least privilege
+- Regular security audits
+
+## Data Protection
+- Encrypt sensitive data
+- HTTPS everywhere
+- Regular backups`,
+      summary: 'Security best practices for input validation and data protection at Agilitee',
+      workspaceId: createdWorkspaces['Agilitee']
+    }
+  ];
+
+  for (const variant of variants) {
+    if (variant.workspaceId) {
+      await prisma.variant.create({
+        data: variant
+      });
+      console.log(`Created variant: ${variant.summary}`);
+    }
   }
   
   console.log('Seeding completed!');
