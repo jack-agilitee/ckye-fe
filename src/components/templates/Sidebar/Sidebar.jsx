@@ -148,6 +148,18 @@ const Sidebar = ({
                 <h3 className={styles.sidebar__sectionTitle}>WORKSPACE</h3>
                 <div className={styles.sidebar__sectionContent}>
                   <ListItem
+                    text="Suggested Variants"
+                    icon="/sparkle.svg"
+                    selected={pathname?.includes('/variants')}
+                    onClick={() => router.push(`/variants/${accountName.toLowerCase()}`)}
+                  />
+                  <ListItem
+                    text="Experiments"
+                    icon="/shuffle.svg"
+                    selected={pathname?.includes('/experiments')}
+                    onClick={() => router.push(`/experiments/${accountName.toLowerCase()}`)}
+                  />
+                  <ListItem
                     text="Settings"
                     icon="/settings.svg"
                     selected={false}

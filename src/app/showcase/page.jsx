@@ -24,7 +24,7 @@ import VariantsModal from '@/components/organisms/VariantsModal/VariantsModal';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
-import SuggestionsTable from '@/components/templates/SuggestionsTable/SuggestionsTable';
+import VariantsTable from '@/components/templates/VariantsTable/VariantsTable';
 import ExperimentsTable from '@/components/templates/ExperimentsTable/ExperimentsTable';
 import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import styles from './page.module.scss';
@@ -3193,16 +3193,16 @@ const workspaces = [
             </div>
           </div>
 
-          {/* SuggestionsTable Component */}
+          {/* VariantsTable Component */}
           <div className={styles.showcase__component}>
-            <h3 className={styles.showcase__componentTitle}>SuggestionsTable</h3>
+            <h3 className={styles.showcase__componentTitle}>VariantsTable</h3>
             <p className={styles.showcase__componentDescription}>
               A table template displaying suggestions with file information, creation details, and summaries
             </p>
             
             <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
               <div className={styles.showcase__example}>
-                <h4 className={styles.showcase__exampleTitle}>Default SuggestionsTable</h4>
+                <h4 className={styles.showcase__exampleTitle}>Default VariantsTable</h4>
                 <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
                   {(() => {
                     const suggestions = [
@@ -3244,9 +3244,9 @@ const workspaces = [
                       }
                     ];
                     
-                    return <SuggestionsTable 
-                      suggestions={suggestions} 
-                      onRowClick={(suggestion) => console.log('Suggestion clicked:', suggestion)}
+                    return <VariantsTable 
+                      variants={suggestions} 
+                      onRowClick={(variant) => console.log('Variant clicked:', suggestion)}
                     />;
                   })()}
                 </div>
@@ -3255,7 +3255,7 @@ const workspaces = [
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Loading State</h4>
                 <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
-                  <SuggestionsTable loading={true} />
+                  <VariantsTable loading={true} />
                 </div>
                 <p className={styles.showcase__hint}>Shows loading indicator while fetching data</p>
               </div>
@@ -3263,7 +3263,7 @@ const workspaces = [
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Empty State</h4>
                 <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', borderRadius: '4px', overflow: 'hidden' }}>
-                  <SuggestionsTable suggestions={[]} />
+                  <VariantsTable variants={[]} />
                 </div>
                 <p className={styles.showcase__hint}>Shows empty message when no suggestions available</p>
               </div>
@@ -3272,7 +3272,7 @@ const workspaces = [
             <div className={styles.showcase__code}>
               <h4 className={styles.showcase__codeTitle}>Usage</h4>
               <pre className={styles.showcase__codeBlock}>
-{`import SuggestionsTable from '@/components/templates/SuggestionsTable/SuggestionsTable';
+{`import VariantsTable from '@/components/templates/VariantsTable/VariantsTable';
 
 const suggestions = [
   {
@@ -3289,9 +3289,9 @@ const suggestions = [
   }
 ];
 
-<SuggestionsTable 
-  suggestions={suggestions}
-  onRowClick={(suggestion) => openModal(suggestion)}
+<VariantsTable 
+  variants={suggestions}
+  onRowClick={(variant) => openModal(variant)}
   loading={false}
 />
 

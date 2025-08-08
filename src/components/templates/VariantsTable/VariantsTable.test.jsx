@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import SuggestionsTable from './SuggestionsTable';
+import VariantsTable from './VariantsTable';
 
 // Mock Next.js Image component
 jest.mock('next/image', () => ({
@@ -23,8 +23,8 @@ jest.mock('@/components/molecules/User/User', () => ({
   ),
 }));
 
-describe('SuggestionsTable', () => {
-  const mockSuggestions = [
+describe('VariantsTable', () => {
+  const mockVariants = [
     {
       id: 1,
       fileName: 'Clade.md',
@@ -59,8 +59,8 @@ describe('SuggestionsTable', () => {
 
   it('renders table with suggestions', () => {
     render(
-      <SuggestionsTable 
-        suggestions={mockSuggestions}
+      <VariantsTable 
+        variants={mockVariants}
         onRowClick={mockOnRowClick}
       />
     );
@@ -80,8 +80,8 @@ describe('SuggestionsTable', () => {
 
   it('displays loading state', () => {
     render(
-      <SuggestionsTable 
-        suggestions={[]}
+      <VariantsTable 
+        variants={[]}
         loading={true}
       />
     );
@@ -91,8 +91,8 @@ describe('SuggestionsTable', () => {
 
   it('displays empty state when no suggestions', () => {
     render(
-      <SuggestionsTable 
-        suggestions={[]}
+      <VariantsTable 
+        variants={[]}
         loading={false}
       />
     );
@@ -102,31 +102,31 @@ describe('SuggestionsTable', () => {
 
   it('handles row click with callback', () => {
     render(
-      <SuggestionsTable 
-        suggestions={mockSuggestions}
+      <VariantsTable 
+        variants={mockVariants}
         onRowClick={mockOnRowClick}
       />
     );
 
-    const firstRow = screen.getByText('Clade.md').closest('[class*="suggestions-table__row"]');
+    const firstRow = screen.getByText('Clade.md').closest('[class*="variants-table__row"]');
     fireEvent.click(firstRow);
 
-    expect(mockOnRowClick).toHaveBeenCalledWith(mockSuggestions[0]);
+    expect(mockOnRowClick).toHaveBeenCalledWith(mockVariants[0]);
   });
 
   it('logs TODO when no callback provided', () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
     
     render(
-      <SuggestionsTable 
-        suggestions={mockSuggestions}
+      <VariantsTable 
+        variants={mockVariants}
       />
     );
 
-    const firstRow = screen.getByText('Clade.md').closest('[class*="suggestions-table__row"]');
+    const firstRow = screen.getByText('Clade.md').closest('[class*="variants-table__row"]');
     fireEvent.click(firstRow);
 
-    expect(consoleSpy).toHaveBeenCalledWith('TODO: Open modal for suggestion:', mockSuggestions[0]);
+    expect(consoleSpy).toHaveBeenCalledWith('TODO: Open modal for suggestion:', mockVariants[0]);
     
     consoleSpy.mockRestore();
   });
@@ -135,13 +135,13 @@ describe('SuggestionsTable', () => {
     const longSummary = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
     
     const suggestionWithLongSummary = {
-      ...mockSuggestions[0],
+      ...mockVariants[0],
       summary: longSummary
     };
 
     render(
-      <SuggestionsTable 
-        suggestions={[suggestionWithLongSummary]}
+      <VariantsTable 
+        variants={[suggestionWithLongSummary]}
       />
     );
 
@@ -155,8 +155,8 @@ describe('SuggestionsTable', () => {
 
   it('formats dates correctly', () => {
     render(
-      <SuggestionsTable 
-        suggestions={mockSuggestions}
+      <VariantsTable 
+        variants={mockVariants}
       />
     );
 
@@ -166,13 +166,13 @@ describe('SuggestionsTable', () => {
 
   it('handles missing user data gracefully', () => {
     const suggestionWithoutUser = {
-      ...mockSuggestions[0],
+      ...mockVariants[0],
       createdBy: null
     };
 
     render(
-      <SuggestionsTable 
-        suggestions={[suggestionWithoutUser]}
+      <VariantsTable 
+        variants={[suggestionWithoutUser]}
       />
     );
 
@@ -181,24 +181,24 @@ describe('SuggestionsTable', () => {
 
   it('applies hover state on mouse enter', () => {
     render(
-      <SuggestionsTable 
-        suggestions={mockSuggestions}
+      <VariantsTable 
+        variants={mockVariants}
       />
     );
 
-    const firstRow = screen.getByText('Clade.md').closest('[class*="suggestions-table__row"]');
+    const firstRow = screen.getByText('Clade.md').closest('[class*="variants-table__row"]');
     
     fireEvent.mouseEnter(firstRow);
-    expect(firstRow).toHaveClass('suggestions-table__row--hovered');
+    expect(firstRow).toHaveClass('variants-table__row--hovered');
     
     fireEvent.mouseLeave(firstRow);
-    expect(firstRow).not.toHaveClass('suggestions-table__row--hovered');
+    expect(firstRow).not.toHaveClass('variants-table__row--hovered');
   });
 
   it('renders users with correct names and emails', () => {
     render(
-      <SuggestionsTable 
-        suggestions={mockSuggestions}
+      <VariantsTable 
+        variants={mockVariants}
       />
     );
 
@@ -214,8 +214,8 @@ describe('SuggestionsTable', () => {
 
   it('renders action buttons with proper accessibility', () => {
     render(
-      <SuggestionsTable 
-        suggestions={mockSuggestions}
+      <VariantsTable 
+        variants={mockVariants}
       />
     );
 
@@ -225,11 +225,11 @@ describe('SuggestionsTable', () => {
   });
 
   it('handles suggestions without IDs', () => {
-    const suggestionsWithoutIds = mockSuggestions.map(({ id, ...rest }) => rest);
+    const suggestionsWithoutIds = mockVariants.map(({ id, ...rest }) => rest);
     
     render(
-      <SuggestionsTable 
-        suggestions={suggestionsWithoutIds}
+      <VariantsTable 
+        variants={suggestionsWithoutIds}
       />
     );
 
@@ -239,13 +239,13 @@ describe('SuggestionsTable', () => {
 
   it('handles missing variant gracefully', () => {
     const suggestionWithoutVariant = {
-      ...mockSuggestions[0],
+      ...mockVariants[0],
       variant: null
     };
 
     render(
-      <SuggestionsTable 
-        suggestions={[suggestionWithoutVariant]}
+      <VariantsTable 
+        variants={[suggestionWithoutVariant]}
       />
     );
 
@@ -254,13 +254,13 @@ describe('SuggestionsTable', () => {
 
   it('handles missing summary gracefully', () => {
     const suggestionWithoutSummary = {
-      ...mockSuggestions[0],
+      ...mockVariants[0],
       summary: null
     };
 
     render(
-      <SuggestionsTable 
-        suggestions={[suggestionWithoutSummary]}
+      <VariantsTable 
+        variants={[suggestionWithoutSummary]}
       />
     );
 
