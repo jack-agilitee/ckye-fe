@@ -16,8 +16,8 @@ const VariantsTable = ({
     if (onRowClick) {
       onRowClick(variant);
     } else {
-      // TODO: Open modal with variant details
-      console.log('TODO: Open modal for variant:', variant);
+      // Variant click handled by parent component
+      console.log('Variant clicked:', variant);
     }
   };
 
@@ -66,7 +66,7 @@ const VariantsTable = ({
           Created By
         </div>
         <div className={styles['variants-table__header-cell']}>
-          Suggestion Summary
+          Variant Summary
         </div>
         <div className={styles['variants-table__header-cell']}></div>
       </div>

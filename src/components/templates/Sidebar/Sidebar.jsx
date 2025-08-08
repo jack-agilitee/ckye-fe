@@ -155,7 +155,7 @@ const Sidebar = ({
                   />
                   <ListItem
                     text="Experiments"
-                    icon="/arrows-shuffle.svg"
+                    icon="/shuffle.svg"
                     selected={pathname?.includes('/experiments')}
                     onClick={() => router.push(`/experiments/${accountName.toLowerCase()}`)}
                   />
