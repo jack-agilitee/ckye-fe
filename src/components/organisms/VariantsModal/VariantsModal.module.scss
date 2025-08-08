@@ -1,0 +1,262 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.variants-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba($black, 0.5);
+  z-index: 1000;
+  padding: 20px;
+
+  &__container {
+    width: 100%;
+    max-width: 742px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  &__content {
+    background-color: $black-bg-dark;
+    border: 1px solid $black-light;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  &__header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+
+  &__title {
+    @include heading-2;
+    color: $white-primary;
+    margin: 0;
+  }
+
+  &__version {
+    @include body-medium;
+    @include font-medium;
+    color: $white-secondary;
+    letter-spacing: 0.2px;
+  }
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+
+  &__divider {
+    height: 1px;
+    background-color: $black-light;
+    width: 100%;
+  }
+
+  &__code-block {
+    background-color: $black-code;
+    border-radius: 8px;
+    padding: 16px;
+    min-height: 400px;
+    overflow: auto;
+    position: relative;
+
+    // Custom scrollbar styling
+    &::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $black-hover-light;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: lighten($black-hover-light, 10%);
+    }
+
+    // Override MDXEditor styles for read-only mode
+    :global {
+      .mdxeditor {
+        background-color: transparent;
+        font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+        color: $white-primary;
+      }
+
+      .cm-editor {
+        background-color: transparent !important;
+      }
+
+      .cm-content {
+        padding: 0;
+        caret-color: transparent;
+      }
+
+      .cm-line {
+        padding: 0;
+      }
+
+      // Syntax highlighting colors matching Figma design
+      .cm-keyword {
+        color: $code-blue;
+      }
+
+      .cm-string {
+        color: #9bdf68;
+      }
+
+      .cm-comment {
+        color: #958169;
+      }
+
+      .cm-variable {
+        color: $white-primary;
+      }
+
+      .cm-variableName {
+        color: #ecec9e;
+      }
+
+      .cm-typeName {
+        color: #ecec9e;
+      }
+
+      .cm-propertyName {
+        color: $white-primary;
+      }
+
+      .cm-operator {
+        color: #ecba56;
+      }
+
+      .cm-punctuation {
+        color: $white-primary;
+      }
+
+      .cm-bracket {
+        color: $white-primary;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin-top: auto;
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    @include body-large;
+    @include font-semibold;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    width: 100%;
+
+    &--secondary {
+      border: 1px solid $white-secondary;
+      color: $white-secondary;
+
+      &:hover {
+        background-color: rgba($white-secondary, 0.1);
+        border-color: lighten($white-secondary, 10%);
+      }
+
+      &:focus-visible {
+        outline: 2px solid $white-secondary;
+        outline-offset: 2px;
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+
+    &--primary {
+      border: 1px solid $code-blue;
+      color: $code-blue;
+
+      &:hover {
+        background-color: rgba($code-blue, 0.1);
+        border-color: lighten($code-blue, 10%);
+      }
+
+      &:focus-visible {
+        outline: 2px solid $code-blue;
+        outline-offset: 2px;
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    padding: 10px;
+
+    &__container {
+      max-width: 100%;
+    }
+
+    &__code-block {
+      min-height: 300px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__code-block {
+      min-height: 200px;
+      padding: 12px;
+    }
+  }
+}
