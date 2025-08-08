@@ -27,6 +27,13 @@
     line-height: 1.5;
   }
 
+  &__content {
+    @include body-medium;
+    color: $white-primary;
+    margin: 0;
+    line-height: 1.5;
+  }
+
   // Responsive adjustments
   @media (max-width: 768px) {
     padding: 12px;

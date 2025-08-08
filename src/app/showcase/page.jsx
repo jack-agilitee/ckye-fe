@@ -18,6 +18,7 @@ import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
 import AddWorkspaceModal from '@/components/organisms/AddWorkspaceModal/AddWorkspaceModal';
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
 import CreateExperimentModal from '@/components/organisms/CreateExperimentModal/CreateExperimentModal';
+import ExperimentsModal from '@/components/organisms/ExperimentsModal/ExperimentsModal';
 import VariantCard from '@/components/organisms/VariantCard/VariantCard';
 import VariantsModal from '@/components/organisms/VariantsModal/VariantsModal';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
@@ -2332,6 +2333,202 @@ const handleCreate = (formData) => {
 // - X button and Cancel button to close
 // - Form reset on modal open
 // - Body scroll prevention when open`}
+              </pre>
+            </div>
+          </div>
+
+          {/* ExperimentsModal Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>ExperimentsModal</h3>
+            <p className={styles.showcase__componentDescription}>
+              A comprehensive modal for displaying experiment results with statistical analysis, gauge visualizations, 
+              and comparison metrics. Shows results between master and variant with confidence intervals and impact analysis.
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default ExperimentsModal</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', minHeight: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {(() => {
+                    const [showModal, setShowModal] = useState(false);
+                    
+                    return (
+                      <>
+                        <Button 
+                          onClick={() => setShowModal(true)}
+                          variant="primary"
+                        >
+                          View Experiment Results
+                        </Button>
+                        <ExperimentsModal
+                          isOpen={showModal}
+                          onClose={() => setShowModal(false)}
+                          onEndExperiment={() => {
+                            alert('Ending experiment...');
+                            console.log('Experiment ended');
+                          }}
+                        />
+                      </>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Click to see experiment results with gauge visualizations</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Experiment Data</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', minHeight: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {(() => {
+                    const [showModal, setShowModal] = useState(false);
+                    
+                    return (
+                      <>
+                        <Button 
+                          onClick={() => setShowModal(true)}
+                          variant="primary"
+                        >
+                          View Custom Results
+                        </Button>
+                        <ExperimentsModal
+                          isOpen={showModal}
+                          onClose={() => setShowModal(false)}
+                          onEndExperiment={() => {
+                            alert('Ending custom experiment...');
+                          }}
+                          experimentTitle="Performance Test v5"
+                          comparisonText="baseline vs. variant 5"
+                          resultsData={{
+                            improvementPercentage: 35,
+                            confidenceLevel: 99,
+                            description: 'Variant 5 improved the code completion rate by 35% compared to Baseline. Based on the data collected, we can be 99% confident that this improvement is real and not just due to random chance.'
+                          }}
+                          statsData={{
+                            pValue: '0.00000021',
+                            masterConfidenceInterval: '38% – 48%',
+                            variantConfidenceInterval: '70% – 80%'
+                          }}
+                          impactDescription="For every 100 code completions, approximately 35 more would be accepted on the first try."
+                          masterData={{
+                            variantName: 'Baseline',
+                            createdDate: 'May 10, 2025',
+                            currentValue: 65,
+                            totalValue: 150,
+                            percentage: 43,
+                            metricLabel: 'Completion Rate'
+                          }}
+                          variantData={{
+                            variantName: 'Variant 5',
+                            createdDate: 'Aug 30, 2025',
+                            currentValue: 113,
+                            totalValue: 150,
+                            percentage: 75,
+                            metricLabel: 'Completion Rate'
+                          }}
+                        />
+                      </>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Custom data with different metrics and values</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Interactive Demo</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', minHeight: '200px' }}>
+                  {(() => {
+                    const [showModal, setShowModal] = useState(false);
+                    const [experimentCount, setExperimentCount] = useState(0);
+                    
+                    return (
+                      <>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
+                          <Button 
+                            onClick={() => setShowModal(true)}
+                            variant="primary"
+                          >
+                            Open Experiment Results
+                          </Button>
+                          <p style={{ color: '#9b9b9b', fontSize: '14px' }}>
+                            Experiments ended: {experimentCount}
+                          </p>
+                        </div>
+                        <ExperimentsModal
+                          isOpen={showModal}
+                          onClose={() => {
+                            setShowModal(false);
+                            console.log('Modal closed');
+                          }}
+                          onEndExperiment={() => {
+                            setExperimentCount(count => count + 1);
+                            console.log('Experiment ended');
+                          }}
+                          experimentTitle={`Experiment #${experimentCount + 1}`}
+                        />
+                      </>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Track how many times experiments are ended</p>
+              </div>
+            </div>
+
+            <div className={styles.showcase__usage}>
+              <h4 className={styles.showcase__usageTitle}>Usage</h4>
+              <pre className={styles.showcase__code}>
+{`import { useState } from 'react';
+import ExperimentsModal from '@/components/organisms/ExperimentsModal/ExperimentsModal';
+
+function MyComponent() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleEndExperiment = () => {
+    console.log('Ending experiment...');
+    // Handle experiment ending logic
+  };
+
+  return (
+    <>
+      <button onClick={() => setIsModalOpen(true)}>
+        View Results
+      </button>
+      
+      <ExperimentsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onEndExperiment={handleEndExperiment}
+        experimentTitle="Clade.md version 3"
+        comparisonText="master vs. version 3"
+        resultsData={{
+          improvementPercentage: 25,
+          confidenceLevel: 95,
+          description: 'Detailed results description...'
+        }}
+        statsData={{
+          pValue: '0.00000083',
+          masterConfidenceInterval: '42.7% – 57.3%',
+          variantConfidenceInterval: '68.5% – 81.5%'
+        }}
+        impactDescription="Impact description..."
+        masterData={{
+          variantName: 'Master',
+          createdDate: 'July 7, 2025',
+          currentValue: 89,
+          totalValue: 178,
+          percentage: 50,
+          metricLabel: '1st Shot Acceptance Rate'
+        }}
+        variantData={{
+          variantName: 'Variant 3',
+          createdDate: 'Aug 25, 2025',
+          currentValue: 126,
+          totalValue: 168,
+          percentage: 75,
+          metricLabel: '1st Shot Acceptance Rate'
+        }}
+      />
+    </>
+  );
+}`}
               </pre>
             </div>
           </div>
