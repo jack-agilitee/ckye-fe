@@ -52,8 +52,10 @@
   }
 
   &__version {
-    @include body-medium;
-    @include font-medium;
+    font-family: 'Overpass Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
     color: $white-secondary;
     letter-spacing: 0.2px;
   }
