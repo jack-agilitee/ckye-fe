@@ -4,8 +4,10 @@
 .variants-table {
   background-color: $background-dark;
   border-radius: 8px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   width: 100%;
+  min-width: 960px;
 
   &__loading,
   &__empty {
@@ -17,8 +19,8 @@
 
   &__header {
     display: grid;
-    grid-template-columns: 186px 1fr 1fr 2fr 40px;
-    gap: 12px;
+    grid-template-columns: 200px 150px 250px minmax(300px, 1fr) 60px;
+    gap: 16px;
     padding: 8px 0;
     border-bottom: 1px solid rgba($white-secondary, 0.1);
   }
@@ -47,8 +49,8 @@
 
   &__row {
     display: grid;
-    grid-template-columns: 186px 1fr 1fr 2fr 40px;
-    gap: 12px;
+    grid-template-columns: 200px 150px 250px minmax(300px, 1fr) 60px;
+    gap: 16px;
     padding: 14px 0;
     border-bottom: 1px solid rgba($white-secondary, 0.05);
     cursor: pointer;
@@ -72,6 +74,7 @@
     align-items: center;
     padding: 0 12px;
     min-height: 40px;
+    overflow: hidden;
 
     &:first-child {
       padding-left: 16px;
