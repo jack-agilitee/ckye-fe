@@ -203,9 +203,10 @@ const handler = createMcpHandler(
             'Write meshed CLAUDE.md variant to variants table',
             {
                 content: z.string().describe("The meshed CLAUDE.md content"),
+                summary: z.string().describe("A one-sentence summary of the changes"),
                 workspaceId: z.string().describe("The workspace ID")
             },
-            async ({ content, workspaceId }) => {
+            async ({ content, summary, workspaceId }) => {
                 const client = new Client({
                     connectionString: process.env.DATABASE_URL,
                 });
@@ -215,18 +216,18 @@ const handler = createMcpHandler(
 
                     // Insert variant
                     const insertQuery = `
-        INSERT INTO variants (id, content, "workspaceId", "createdAt", "updatedAt")
-        VALUES (gen_random_uuid(), $1, $2, NOW(), NOW())
-        RETURNING id, "workspaceId", "createdAt"
+        INSERT INTO variants (id, content, summary, "workspaceId", "createdAt", "updatedAt")
+        VALUES (gen_random_uuid(), $1, $2, $3, NOW(), NOW())
+        RETURNING id, summary, "workspaceId", "createdAt"
       `;
                     
-                    const result = await client.query(insertQuery, [content, workspaceId]);
+                    const result = await client.query(insertQuery, [content, summary, workspaceId]);
                     const variant = result.rows[0];
 
                     return {
                         content: [{
                             type: "text",
-                            text: `Variant saved successfully\nID: ${variant.id}\nWorkspace: ${workspaceId}\nCreated: ${variant.createdAt.toISOString()}`
+                            text: `Variant saved successfully\nID: ${variant.id}\nSummary: ${variant.summary}\nWorkspace: ${workspaceId}\nCreated: ${variant.createdAt.toISOString()}`
                         }]
                     };
                 } catch (error) {
