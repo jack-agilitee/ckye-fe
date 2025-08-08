@@ -2,7 +2,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 /**
  * Fetch experiments for a specific workspace
- * @param {string} workspaceId - The workspace ID (required)
+ * @param {string} workspaceName - The workspace name (required)
  * @param {Object} params - Additional query parameters
  * @param {string} params.status - Filter by status (active, inactive, completed)
  * @param {number} params.page - Page number
@@ -11,14 +11,14 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
  * @param {string} params.sortOrder - Sort order (asc/desc)
  * @returns {Promise<{data: Array, meta: Object}>}
  */
-export async function getExperimentsByWorkspace(workspaceId, params = {}) {
+export async function getExperimentsByWorkspace(workspaceName, params = {}) {
   try {
-    if (!workspaceId) {
-      throw new Error('workspaceId is required');
+    if (!workspaceName) {
+      throw new Error('workspaceName is required');
     }
 
     const queryParams = {
-      workspaceId,
+      workspaceName,
       ...params
     };
     
@@ -44,22 +44,23 @@ export async function getExperimentsByWorkspace(workspaceId, params = {}) {
 
 /**
  * Get active experiments for a workspace
- * @param {string} workspaceId - The workspace ID
+ * @param {string} workspaceName - The workspace name
  * @returns {Promise<{data: Array, meta: Object}>}
  */
-export async function getActiveExperiments(workspaceId) {
-  return getExperimentsByWorkspace(workspaceId, { 
-    status: 'active',
-    sortBy: 'startDate',
-    sortOrder: 'desc'
-  });
+export async function getActiveExperiments(workspaceName) {
+  // Since the API doesn't support status filtering anymore,
+  // we'll need to filter client-side
+  const response = await getExperimentsByWorkspace(workspaceName);
+  return {
+    data: response.data.filter(exp => exp.status === 'active')
+  };
 }
 
 /**
  * Create a new experiment
  * @param {Object} data - The experiment data
  * @param {string} data.name - Experiment name (required)
- * @param {string} data.workspaceId - Workspace ID (required)
+ * @param {string} data.workspaceName - Workspace name (required)
  * @param {string} data.description - Experiment description
  * @param {string} data.variantId - Associated variant ID
  * @param {string} data.status - Initial status (default: inactive)
@@ -71,8 +72,8 @@ export async function getActiveExperiments(workspaceId) {
  */
 export async function createExperiment(data) {
   try {
-    if (!data.name || !data.workspaceId) {
-      throw new Error('name and workspaceId are required');
+    if (!data.name || !data.workspaceName) {
+      throw new Error('name and workspaceName are required');
     }
 
     const response = await fetch(`${API_BASE}/api/experiments`, {

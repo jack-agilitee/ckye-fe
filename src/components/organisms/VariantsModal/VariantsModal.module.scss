@@ -254,58 +254,8 @@
     margin-top: auto;
   }
 
-  &__button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    border-radius: 8px;
-    background-color: transparent;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    @include body-large;
-    @include font-semibold;
-    letter-spacing: 0.2px;
-    white-space: nowrap;
+  &__action-button {
     width: 100%;
-
-    &--secondary {
-      border: 1px solid $white-secondary;
-      color: $white-secondary;
-
-      &:hover {
-        background-color: rgba($white-secondary, 0.1);
-        border-color: lighten($white-secondary, 10%);
-      }
-
-      &:focus-visible {
-        outline: 2px solid $white-secondary;
-        outline-offset: 2px;
-      }
-
-      &:active {
-        transform: scale(0.98);
-      }
-    }
-
-    &--primary {
-      border: 1px solid $code-blue;
-      color: $code-blue;
-
-      &:hover {
-        background-color: rgba($code-blue, 0.1);
-        border-color: lighten($code-blue, 10%);
-      }
-
-      &:focus-visible {
-        outline: 2px solid $code-blue;
-        outline-offset: 2px;
-      }
-
-      &:active {
-        transform: scale(0.98);
-      }
-    }
   }
 
   // Responsive adjustments

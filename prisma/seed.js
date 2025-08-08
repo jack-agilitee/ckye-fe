@@ -202,7 +202,7 @@ async function main() {
 - Use Prettier for formatting
 - Commit messages should follow conventional commits`,
       summary: 'Initial project guidelines with code style and best practices for AE',
-      workspaceId: createdWorkspaces['Americal Eagle']
+      workspaceName: 'AE'
     },
     {
       content: `# Development Workflow for American Eagle
@@ -224,7 +224,7 @@ async function main() {
 - Test in staging environment
 - Deploy to production with approval`,
       summary: 'Development workflow including Git practices and deployment process for AE',
-      workspaceId: createdWorkspaces['Americal Eagle']
+      workspaceName: 'AE'
     },
     {
       content: `# API Documentation for Dollar General
@@ -243,7 +243,7 @@ All endpoints require Bearer token authentication
 - 100 requests per minute per IP
 - 1000 requests per hour per user`,
       summary: 'API documentation with RESTful endpoints and authentication for DG',
-      workspaceId: createdWorkspaces['Dollar General']
+      workspaceName: 'DG'
     },
     {
       content: `# Testing Strategy for Dollar General
@@ -263,7 +263,7 @@ All endpoints require Bearer token authentication
 - Verify cross-browser compatibility
 - Mobile responsiveness testing`,
       summary: 'Comprehensive testing strategy covering unit, integration, and E2E tests for DG',
-      workspaceId: createdWorkspaces['Dollar General']
+      workspaceName: 'DG'
     },
     {
       content: `# Performance Optimization for Agilitee
@@ -285,7 +285,7 @@ All endpoints require Bearer token authentication
 - Image optimization
 - Compression enabled`,
       summary: 'Performance optimization guidelines for frontend and backend at Agilitee',
-      workspaceId: createdWorkspaces['Agilitee']
+      workspaceName: 'AG'
     },
     {
       content: `# Security Best Practices for Agilitee
@@ -307,12 +307,12 @@ All endpoints require Bearer token authentication
 - HTTPS everywhere
 - Regular backups`,
       summary: 'Security best practices for input validation and data protection at Agilitee',
-      workspaceId: createdWorkspaces['Agilitee']
+      workspaceName: 'AG'
     }
   ];
 
   for (const variant of variants) {
-    if (variant.workspaceId) {
+    if (variant.workspaceName) {
       await prisma.variant.create({
         data: variant
       });
@@ -325,7 +325,7 @@ All endpoints require Bearer token authentication
     {
       name: 'Homepage Redesign A/B Test',
       description: 'Testing new homepage layout with improved CTA placement',
-      workspaceId: createdWorkspaces['Americal Eagle'],
+      workspaceName: 'AE',
       status: 'active',
       startDate: new Date('2025-08-01'),
       metrics: {
@@ -337,7 +337,7 @@ All endpoints require Bearer token authentication
     {
       name: 'Checkout Flow Optimization',
       description: 'Testing simplified checkout process',
-      workspaceId: createdWorkspaces['Americal Eagle'],
+      workspaceName: 'AE',
       status: 'completed',
       startDate: new Date('2025-07-01'),
       endDate: new Date('2025-07-31'),
@@ -351,7 +351,7 @@ All endpoints require Bearer token authentication
     {
       name: 'Product Grid Layout Test',
       description: 'Testing different product grid layouts for better engagement',
-      workspaceId: createdWorkspaces['Dollar General'],
+      workspaceName: 'DG',
       status: 'active',
       startDate: new Date('2025-08-05'),
       metrics: {
@@ -363,7 +363,7 @@ All endpoints require Bearer token authentication
     {
       name: 'Mobile Navigation Experiment',
       description: 'Testing hamburger menu vs bottom navigation',
-      workspaceId: createdWorkspaces['Agilitee'],
+      workspaceName: 'AG',
       status: 'inactive',
       metrics: {
         targetMetric: 'user_engagement',
@@ -374,7 +374,7 @@ All endpoints require Bearer token authentication
   ];
 
   for (const experiment of experiments) {
-    if (experiment.workspaceId) {
+    if (experiment.workspaceName) {
       await prisma.experiment.create({
         data: experiment
       });

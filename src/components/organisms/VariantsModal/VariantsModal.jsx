@@ -3,11 +3,21 @@
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Button from '@/components/atoms/Button/Button';
-import { MDXEditor, headingsPlugin, codeBlockPlugin, codeMirrorPlugin, CodeMirrorEditor } from '@mdxeditor/editor';
+import { MDXEditor, headingsPlugin, CodeMirrorEditor,
+  listsPlugin,
+  quotePlugin,
+  thematicBreakPlugin,
+  linkPlugin,
+  linkDialogPlugin,
+  imagePlugin,
+  tablePlugin,
+  codeBlockPlugin,
+  codeMirrorPlugin,
+ } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
 import styles from './VariantsModal.module.scss';
 
-const VariantsModal = ({ 
+const VariantsModal = ({
   isOpen = false,
   onClose,
   title = 'Clade.md',
@@ -51,12 +61,12 @@ const VariantsModal = ({
               <h2 className={styles['variants-modal__title']}>{title}</h2>
               <span className={styles['variants-modal__version']}>{version}</span>
             </div>
-            <button 
+            <button
               className={styles['variants-modal__close']}
               onClick={onClose}
               aria-label="Close modal"
             >
-              <Image 
+              <Image
                 src="/cross.svg"
                 alt=""
                 width={16}
@@ -75,14 +85,21 @@ const VariantsModal = ({
               readOnly
               plugins={[
                 headingsPlugin(),
-                codeBlockPlugin({ 
+                listsPlugin(),
+                quotePlugin(),
+                thematicBreakPlugin(),
+                linkPlugin(),
+                linkDialogPlugin(),
+                imagePlugin(),
+                tablePlugin(),
+                codeBlockPlugin({
                   codeBlockEditorDescriptors: [
-                    { 
-                      priority: -10, 
-                      match: (_) => true, 
-                      Editor: CodeMirrorEditor 
+                    {
+                      priority: -10,
+                      match: (_) => true,
+                      Editor: CodeMirrorEditor
                     }
-                  ] 
+                  ]
                 }),
                 codeMirrorPlugin({
                   codeBlockLanguages: {
@@ -106,18 +123,22 @@ const VariantsModal = ({
 
           {/* Action Buttons */}
           <div className={styles['variants-modal__actions']}>
-            <button
-              className={`${styles['variants-modal__button']} ${styles['variants-modal__button--secondary']}`}
+            <Button
+              variant="primary"
+              icon={null}
               onClick={onSetToMaster}
+              className={styles['variants-modal__action-button']}
             >
               Set to Master
-            </button>
-            <button
-              className={`${styles['variants-modal__button']} ${styles['variants-modal__button--primary']}`}
+            </Button>
+            <Button
+              variant="secondary"
+              icon={null}
               onClick={onCreateExperiment}
+              className={styles['variants-modal__action-button']}
             >
               Create Experiment with Variant
-            </button>
+            </Button>
           </div>
         </div>
       </div>

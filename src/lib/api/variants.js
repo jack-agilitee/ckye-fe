@@ -5,7 +5,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
  * @param {Object} params - Query parameters
  * @param {number} params.page - Page number
  * @param {number} params.limit - Items per page
- * @param {string} params.workspaceId - Filter by workspace ID
+ * @param {string} params.workspaceName - Filter by workspace name
  * @param {string} params.search - Search term for content/summary
  * @param {string} params.sortBy - Sort field
  * @param {string} params.sortOrder - Sort order (asc/desc)
@@ -61,34 +61,32 @@ export async function getVariantById(id) {
 
 /**
  * Fetch all variants for a specific workspace
- * @param {string} workspaceId - The workspace ID
+ * @param {string} workspaceName - The workspace name
  * @param {Object} options - Additional query options
  * @returns {Promise<{data: Array, meta: Object}>}
  */
-export async function getVariantsByWorkspace(workspaceId, options = {}) {
+export async function getVariantsByWorkspace(workspaceName, options = {}) {
   return getVariants({
-    workspaceId,
+    workspaceName,
     ...options
   });
 }
 
 /**
  * Fetch the most recent variant for a workspace
- * @param {string} workspaceId - The workspace ID
+ * @param {string} workspaceName - The workspace name
  * @returns {Promise<Object|null>}
  */
-export async function getLatestVariantForWorkspace(workspaceId) {
+export async function getLatestVariantForWorkspace(workspaceName) {
   try {
     const response = await getVariants({
-      workspaceId,
-      limit: 1,
-      sortBy: 'createdAt',
-      sortOrder: 'desc'
+      workspaceName
     });
     
+    // Since results are already sorted by createdAt desc in the API
     return response.data[0] || null;
   } catch (error) {
-    console.error(`Error fetching latest variant for workspace ${workspaceId}:`, error);
+    console.error(`Error fetching latest variant for workspace ${workspaceName}:`, error);
     throw error;
   }
 }

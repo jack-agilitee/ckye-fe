@@ -2,69 +2,48 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma';
 
-// GET /api/experiments - Get experiments filtered by workspaceId
+// GET /api/experiments - Get experiments filtered by workspaceName
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const workspaceId = searchParams.get('workspaceId');
-    const status = searchParams.get('status');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const sortBy = searchParams.get('sortBy') || 'createdAt';
-    const sortOrder = searchParams.get('sortOrder') || 'desc';
+    const workspaceName = searchParams.get('workspaceName');
 
-    // Require workspaceId for filtering
-    if (!workspaceId) {
+    // Require workspaceName for filtering
+    if (!workspaceName) {
       return NextResponse.json(
-        { error: 'workspaceId is required' },
+        { error: 'workspaceName is required' },
         { status: 400 }
       );
     }
 
     // Build where clause
     const where = {
-      workspaceId
+      workspaceName
     };
 
-    // Filter by status if provided
-    if (status) {
-      where.status = status;
-    }
-
-    // Execute query with pagination
-    const [experiments, total] = await prisma.$transaction([
-      prisma.experiment.findMany({
-        where,
-        skip: (page - 1) * limit,
-        take: limit,
-        orderBy: { [sortBy]: sortOrder },
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          pageId: true,
-          variantId: true,
-          workspaceId: true,
-          status: true,
-          startDate: true,
-          endDate: true,
-          metrics: true,
-          createdBy: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      }),
-      prisma.experiment.count({ where })
-    ]);
+    // Execute query - get all experiments, no pagination
+    const experiments = await prisma.experiment.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        pageId: true,
+        variantId: true,
+        workspaceName: true,
+        status: true,
+        startDate: true,
+        endDate: true,
+        metrics: true,
+        createdBy: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
 
     return NextResponse.json({
-      data: experiments,
-      meta: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit)
-      }
+      data: experiments
     });
   } catch (error) {
     console.error('Error fetching experiments:', error);
@@ -81,9 +60,9 @@ export async function POST(request) {
     const body = await request.json();
     
     // Validate required fields
-    if (!body.name || !body.workspaceId) {
+    if (!body.name || !body.workspaceName) {
       return NextResponse.json(
-        { error: 'name and workspaceId are required' },
+        { error: 'name and workspaceName are required' },
         { status: 400 }
       );
     }
@@ -104,7 +83,7 @@ export async function POST(request) {
         description: body.description || null,
         pageId: body.pageId || null,
         variantId: body.variantId || null,
-        workspaceId: body.workspaceId,
+        workspaceName: body.workspaceName,
         status: body.status || 'inactive',
         startDate: body.startDate ? new Date(body.startDate) : null,
         endDate: body.endDate ? new Date(body.endDate) : null,
@@ -117,7 +96,7 @@ export async function POST(request) {
         description: true,
         pageId: true,
         variantId: true,
-        workspaceId: true,
+        workspaceName: true,
         status: true,
         startDate: true,
         endDate: true,
@@ -227,7 +206,7 @@ export async function PATCH(request) {
         description: true,
         pageId: true,
         variantId: true,
-        workspaceId: true,
+        workspaceName: true,
         status: true,
         startDate: true,
         endDate: true,
