@@ -63,7 +63,7 @@ model Page {
   @@map("pages")
 }
 
-model Experiment {
+model Suggestion {
   id          String   @id @default(cuid())
   content     String   @db.Text
   workspaceId String
@@ -71,7 +71,7 @@ model Experiment {
   updatedAt   DateTime @updatedAt
 
   @@index([workspaceId])
-  @@map("experiments")
+  @@map("suggestions")
 }
 
 model Variant {

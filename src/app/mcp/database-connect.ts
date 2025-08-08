@@ -81,12 +81,12 @@ server.registerTool(
   }
 );
 
-// Tool to write experiment to database
+// Tool to write suggestion to database
 server.registerTool(
-  "write-experiment",
+  "write-suggestion",
   {
-    title: "Write Experiment",
-    description: "Write improved CLAUDE.md content to experiments table",
+    title: "Write Suggestion",
+    description: "Write improved CLAUDE.md content to suggestions table",
     inputSchema: {
       content: z.string().describe("The improved CLAUDE.md content"),
       workspaceId: z.string().describe("The workspace ID")
@@ -100,20 +100,20 @@ server.registerTool(
     try {
       await client.connect();
 
-      // Insert experiment
+      // Insert suggestion
       const insertQuery = `
-        INSERT INTO experiments (id, content, "workspaceId", "createdAt", "updatedAt")
+        INSERT INTO suggestions (id, content, "workspaceId", "createdAt", "updatedAt")
         VALUES (gen_random_uuid(), $1, $2, NOW(), NOW())
         RETURNING id, "workspaceId", "createdAt"
       `;
       
       const result = await client.query(insertQuery, [content, workspaceId]);
-      const experiment = result.rows[0];
+      const suggestion = result.rows[0];
 
-      // Check count of experiments for this workspace
+      // Check count of suggestions for this workspace
       const countQuery = `
         SELECT COUNT(*) as count
-        FROM experiments
+        FROM suggestions
         WHERE "workspaceId" = $1
       `;
       
@@ -123,15 +123,15 @@ server.registerTool(
       return {
         content: [{
           type: "text",
-          text: `Experiment saved successfully\nID: ${experiment.id}\nWorkspace: ${workspaceId}\nTotal experiments for workspace: ${count}`
+          text: `Suggestion saved successfully\nID: ${suggestion.id}\nWorkspace: ${workspaceId}\nTotal suggestions for workspace: ${count}`
         }]
       };
     } catch (error) {
-      console.error("Error writing experiment:", error);
+      console.error("Error writing suggestion:", error);
       return {
         content: [{
           type: "text",
-          text: `Error writing experiment: ${error instanceof Error ? error.message : "Unknown error"}`
+          text: `Error writing suggestion: ${error instanceof Error ? error.message : "Unknown error"}`
         }]
       };
     } finally {
@@ -140,12 +140,12 @@ server.registerTool(
   }
 );
 
-// Tool to check and return experiments for meshing
+// Tool to check and return suggestions for meshing
 server.registerTool(
-  "check-and-mesh-experiments",
+  "check-and-mesh-suggestions",
   {
-    title: "Check and Return Experiments for Meshing",
-    description: "Check if workspace has 50+ experiments and return all their contents for Claude to mesh",
+    title: "Check and Return Suggestions for Meshing",
+    description: "Check if workspace has 50+ suggestions and return all their contents for Claude to mesh",
     inputSchema: {
       workspaceId: z.string().describe("The workspace ID to check")
     }
@@ -158,10 +158,10 @@ server.registerTool(
     try {
       await client.connect();
 
-      // Count experiments for workspace
+      // Count suggestions for workspace
       const countQuery = `
         SELECT COUNT(*) as count
-        FROM experiments
+        FROM suggestions
         WHERE "workspaceId" = $1
       `;
       
@@ -172,32 +172,32 @@ server.registerTool(
         return {
           content: [{
             type: "text",
-            text: `Workspace has ${count} experiments. Need ${50 - count} more to create a variant.`
+            text: `Workspace has ${count} suggestions. Need ${50 - count} more to create a variant.`
           }]
         };
       }
 
-      // Fetch last 50 experiments with full content
-      const experimentsQuery = `
+      // Fetch last 50 suggestions with full content
+      const suggestionsQuery = `
         SELECT id, content, "createdAt"
-        FROM experiments
+        FROM suggestions
         WHERE "workspaceId" = $1
         ORDER BY "createdAt" DESC
         LIMIT 50
       `;
       
-      const experimentsResult = await client.query(experimentsQuery, [workspaceId]);
-      const experiments = experimentsResult.rows;
+      const suggestionsResult = await client.query(suggestionsQuery, [workspaceId]);
+      const suggestions = suggestionsResult.rows;
 
-      // Return all experiment contents for Claude to mesh
-      const experimentsData = experiments.map((exp: {
+      // Return all suggestion contents for Claude to mesh
+      const suggestionsData = suggestions.map((sug: {
         id: string;
         content: string;
         createdAt: Date;
       }) => ({
-        id: exp.id,
-        content: exp.content,
-        createdAt: exp.createdAt.toISOString()
+        id: sug.id,
+        content: sug.content,
+        createdAt: sug.createdAt.toISOString()
       }));
 
       return {
@@ -206,13 +206,13 @@ server.registerTool(
           text: JSON.stringify({
             status: "ready_to_mesh",
             workspaceId: workspaceId,
-            experimentCount: experiments.length,
-            experiments: experimentsData
+            suggestionCount: suggestions.length,
+            suggestions: suggestionsData
           })
         }]
       };
     } catch (error) {
-      console.error("Error checking experiments:", error);
+      console.error("Error checking suggestions:", error);
       return {
         content: [{
           type: "text",
@@ -266,6 +266,54 @@ server.registerTool(
         content: [{
           type: "text",
           text: `Error writing variant: ${error instanceof Error ? error.message : "Unknown error"}`
+        }]
+      };
+    } finally {
+      await client.end();
+    }
+  }
+);
+
+// Tool to delete all suggestions for a workspace
+server.registerTool(
+  "delete-suggestions",
+  {
+    title: "Delete Suggestions",
+    description: "Delete all suggestions for a specific workspace",
+    inputSchema: {
+      workspaceId: z.string().describe("The workspace ID to delete suggestions for")
+    }
+  },
+  async ({ workspaceId }) => {
+    const client = new Client({
+      connectionString: DATABASE_URL,
+    });
+
+    try {
+      await client.connect();
+
+      // Delete all suggestions for the workspace
+      const deleteQuery = `
+        DELETE FROM suggestions
+        WHERE "workspaceId" = $1
+        RETURNING id
+      `;
+      
+      const result = await client.query(deleteQuery, [workspaceId]);
+      const deletedCount = result.rowCount;
+
+      return {
+        content: [{
+          type: "text",
+          text: `Successfully deleted ${deletedCount} suggestions for workspace: ${workspaceId}`
+        }]
+      };
+    } catch (error) {
+      console.error("Error deleting suggestions:", error);
+      return {
+        content: [{
+          type: "text",
+          text: `Error deleting suggestions: ${error instanceof Error ? error.message : "Unknown error"}`
         }]
       };
     } finally {
