@@ -85,3 +85,25 @@ model Variant {
   @@index([workspaceId])
   @@map("variants")
 }
+
+model Experiment {
+  id          String    @id @default(cuid())
+  name        String
+  description String?   @db.Text
+  pageId      String?   // Page ID associated with the experiment
+  variantId   String?
+  workspaceId String
+  status      String    @default("inactive") // active, inactive, completed
+  startDate   DateTime?
+  endDate     DateTime?
+  metrics     Json? // Store experiment metrics as JSON
+  createdBy   String? // User ID who created the experiment
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([workspaceId])
+  @@index([status])
+  @@index([variantId])
+  @@index([pageId])
+  @@map("experiments")
+}

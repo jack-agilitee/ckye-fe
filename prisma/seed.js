@@ -131,6 +131,7 @@ async function main() {
   
   // Delete existing data
   await prisma.userWorkspace.deleteMany();
+  await prisma.experiment.deleteMany();
   await prisma.page.deleteMany();
   await prisma.variant.deleteMany();
   await prisma.suggestion.deleteMany();
@@ -316,6 +317,68 @@ All endpoints require Bearer token authentication
         data: variant
       });
       console.log(`Created variant: ${variant.summary}`);
+    }
+  }
+
+  // Create sample experiments
+  const experiments = [
+    {
+      name: 'Homepage Redesign A/B Test',
+      description: 'Testing new homepage layout with improved CTA placement',
+      workspaceId: createdWorkspaces['Americal Eagle'],
+      status: 'active',
+      startDate: new Date('2025-08-01'),
+      metrics: {
+        targetMetric: 'conversion_rate',
+        baseline: 3.5,
+        target: 5.0
+      }
+    },
+    {
+      name: 'Checkout Flow Optimization',
+      description: 'Testing simplified checkout process',
+      workspaceId: createdWorkspaces['Americal Eagle'],
+      status: 'completed',
+      startDate: new Date('2025-07-01'),
+      endDate: new Date('2025-07-31'),
+      metrics: {
+        targetMetric: 'checkout_completion',
+        baseline: 65,
+        target: 75,
+        result: 72
+      }
+    },
+    {
+      name: 'Product Grid Layout Test',
+      description: 'Testing different product grid layouts for better engagement',
+      workspaceId: createdWorkspaces['Dollar General'],
+      status: 'active',
+      startDate: new Date('2025-08-05'),
+      metrics: {
+        targetMetric: 'click_through_rate',
+        baseline: 12,
+        target: 15
+      }
+    },
+    {
+      name: 'Mobile Navigation Experiment',
+      description: 'Testing hamburger menu vs bottom navigation',
+      workspaceId: createdWorkspaces['Agilitee'],
+      status: 'inactive',
+      metrics: {
+        targetMetric: 'user_engagement',
+        baseline: 45,
+        target: 55
+      }
+    }
+  ];
+
+  for (const experiment of experiments) {
+    if (experiment.workspaceId) {
+      await prisma.experiment.create({
+        data: experiment
+      });
+      console.log(`Created experiment: ${experiment.name}`);
     }
   }
   
