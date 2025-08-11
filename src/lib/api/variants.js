@@ -90,3 +90,36 @@ export async function getLatestVariantForWorkspace(workspaceName) {
     throw error;
   }
 }
+
+/**
+ * Set a variant as master (update/create page and delete variant)
+ * @param {string} variantId - The variant ID
+ * @param {string} company - The company name
+ * @param {string} pageName - Optional page name to use
+ * @returns {Promise<Object>}
+ */
+export async function setVariantToMaster(variantId, company, pageName = null) {
+  try {
+    const response = await fetch(`${API_BASE}/api/variants/set-to-master`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        variantId,
+        company,
+        pageName
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to set variant to master');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error setting variant to master:', error);
+    throw error;
+  }
+}

@@ -6,7 +6,7 @@ import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import VariantsTable from '@/components/templates/VariantsTable/VariantsTable';
 import VariantsModal from '@/components/organisms/VariantsModal/VariantsModal';
-import { getVariants } from '@/lib/api/variants';
+import { getVariants, setVariantToMaster } from '@/lib/api/variants';
 import styles from './page.module.scss';
 
 // Transform API data to match component expectations
@@ -116,10 +116,43 @@ export default function VariantsPage({ params }) {
     setSelectedVariant(null);
   };
 
-  const handleSetToMaster = () => {
-    console.log('Setting variant to master:', selectedVariant);
-    // TODO: Implement API call to set variant as master
-    handleCloseModal();
+  const handleSetToMaster = async () => {
+    if (!selectedVariant) return;
+    
+    try {
+      // Use the company param directly as the company name
+      const companyName = company?.toUpperCase() || 'AE';
+      
+      // Find the original variant data to get the ID
+      const originalVariant = variants.find(v => v.id === selectedVariant.id);
+      if (!originalVariant || !originalVariant.id) {
+        console.error('Could not find variant ID');
+        return;
+      }
+      
+      // Call API to set variant to master
+      // Use the fileName from selectedVariant as the page name
+      const pageName = selectedVariant.fileName || 'Claude.md';
+      const result = await setVariantToMaster(originalVariant.id, companyName, pageName);
+      console.log('Variant set to master:', result);
+      
+      // Refresh variants list after successful update
+      const workspaceName = companyName;
+      const response = await getVariants({ workspaceName });
+      
+      // Transform and update variants
+      const transformedVariants = response.data.map((variant, index) => 
+        transformVariantData(variant, index)
+      );
+      setVariants(transformedVariants);
+      setFilteredVariants(transformedVariants);
+      
+      // Close modal
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error setting variant to master:', error);
+      // TODO: Show error message to user
+    }
   };
 
 

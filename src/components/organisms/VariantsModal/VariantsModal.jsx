@@ -123,7 +123,7 @@ const VariantsModal = ({
           {/* Action Button */}
           <div className={styles['variants-modal__actions']}>
             <Button
-              variant="primary"
+              variant="secondary"
               icon={null}
               onClick={onSetToMaster}
               className={styles['variants-modal__action-button']}
