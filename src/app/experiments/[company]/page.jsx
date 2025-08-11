@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
@@ -48,12 +48,17 @@ const transformExperimentData = (apiExperiment) => {
     status: apiExperiment.status === 'active' ? 'Active' : 
             apiExperiment.status === 'completed' ? 'Closed' : 'Inactive',
     createdDate: new Date(apiExperiment.createdAt).toISOString().split('T')[0],
-    createdBy: createdBy
+    createdBy: createdBy,
+    pageName: apiExperiment.pageName,
+    variantName: apiExperiment.variantName,
+    pageStats: apiExperiment.pageStats,
+    variantStats: apiExperiment.variantStats
   };
 };
 
 const ExperimentsPage = ({ params }) => {
-  const company = params?.company || 'Agilitee';
+  const resolvedParams = use(params);
+  const company = resolvedParams?.company || 'Agilitee';
   const [searchQuery, setSearchQuery] = useState('');
   const [experiments, setExperiments] = useState([]);
   const [pages, setPages] = useState([]);
@@ -209,8 +214,28 @@ const ExperimentsPage = ({ params }) => {
         <ExperimentsModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
+          experimentId={selectedExperiment.id}
           experimentTitle={selectedExperiment.name}
+          experimentStatus={selectedExperiment.status}
           comparisonText={selectedExperiment.comparison}
+          pageName={selectedExperiment.pageName}
+          variantName={selectedExperiment.variantName}
+          pageStats={selectedExperiment.pageStats}
+          variantStats={selectedExperiment.variantStats}
+          onEndExperiment={async () => {
+            try {
+              const { deactivateExperiment } = await import('@/lib/api/experiments');
+              await deactivateExperiment(selectedExperiment.id);
+              // Refresh experiments list
+              const workspaceName = company?.toUpperCase() || 'AE';
+              const response = await getExperimentsByWorkspace(workspaceName);
+              const transformedExperiments = response.data.map(transformExperimentData);
+              setExperiments(transformedExperiments);
+              handleCloseModal();
+            } catch (error) {
+              console.error('Error ending experiment:', error);
+            }
+          }}
         />
       )}
       
