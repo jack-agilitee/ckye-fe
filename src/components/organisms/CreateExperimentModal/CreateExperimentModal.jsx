@@ -10,15 +10,27 @@ import styles from './CreateExperimentModal.module.scss';
 const CreateExperimentModal = ({ 
   isOpen = false,
   onClose,
-  onCreate,
-  masterFiles = [],
+  onCreateExperiment,
+  pages = [],
   variants = [],
   className = ''
 }) => {
+  // Transform pages and variants to dropdown options
+  const pageOptions = (pages || []).map(page => ({
+    value: page.id,
+    label: page.name
+  }));
+  
+  const variantOptions = (variants || []).map(variant => ({
+    value: variant.id,
+    label: variant.summary || (variant.id ? `Variant ${variant.id.slice(0, 8)}` : 'Unnamed Variant')
+  }));
+  
   const [formData, setFormData] = useState({
     name: '',
-    masterFile: '',
-    variant: ''
+    description: '',
+    pageId: '',
+    variantId: ''
   });
   
   const modalRef = useRef(null);
@@ -28,11 +40,12 @@ const CreateExperimentModal = ({
     if (isOpen) {
       setFormData({
         name: '',
-        masterFile: masterFiles[0]?.value || '',
-        variant: variants[0]?.value || ''
+        description: '',
+        pageId: pageOptions[0]?.value || '',
+        variantId: variantOptions[0]?.value || ''
       });
     }
-  }, [isOpen, masterFiles, variants]);
+  }, [isOpen]);
 
   // Handle escape key
   useEffect(() => {
@@ -74,23 +87,30 @@ const CreateExperimentModal = ({
     }));
   };
 
-  const handleMasterFileChange = (event) => {
+  const handleDescriptionChange = (event) => {
     setFormData(prev => ({
       ...prev,
-      masterFile: event.target.value
+      description: event.target.value
+    }));
+  };
+
+  const handlePageChange = (event) => {
+    setFormData(prev => ({
+      ...prev,
+      pageId: event.target.value
     }));
   };
 
   const handleVariantChange = (event) => {
     setFormData(prev => ({
       ...prev,
-      variant: event.target.value
+      variantId: event.target.value
     }));
   };
 
   const handleCreate = () => {
-    if (onCreate) {
-      onCreate(formData);
+    if (onCreateExperiment) {
+      onCreateExperiment(formData);
     }
     onClose();
   };
@@ -143,20 +163,28 @@ const CreateExperimentModal = ({
             className={styles['create-experiment-modal__field']}
           />
 
+          <TextField
+            label="Description"
+            placeholder="Describe the experiment..."
+            value={formData.description}
+            onChange={handleDescriptionChange}
+            className={styles['create-experiment-modal__field']}
+          />
+
           <Dropdown
             label="Master File"
-            value={formData.masterFile}
-            onChange={handleMasterFileChange}
-            options={masterFiles}
+            value={formData.pageId}
+            onChange={handlePageChange}
+            options={pageOptions}
             placeholder="Select a master file"
             className={styles['create-experiment-modal__field']}
           />
 
           <Dropdown
             label="Variant to Test"
-            value={formData.variant}
+            value={formData.variantId}
             onChange={handleVariantChange}
-            options={variants}
+            options={variantOptions}
             placeholder="Select a variant"
             className={styles['create-experiment-modal__field']}
           />
