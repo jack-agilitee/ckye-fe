@@ -55,11 +55,12 @@ export default function VariantsPage({ params }) {
         setLoading(true);
         setError(null);
         
-        // Fetch all variants (you can filter by workspaceId if needed)
+        // Use company param directly as workspaceName (from URL like /variants/ae)
+        const workspaceName = company?.toUpperCase() || 'AE';
+        
+        // Fetch variants filtered by workspaceName
         const response = await getVariants({ 
-          limit: 50,
-          sortBy: 'createdAt',
-          sortOrder: 'desc'
+          workspaceName
         });
         
         // Transform API data to match component structure
@@ -78,7 +79,7 @@ export default function VariantsPage({ params }) {
     };
 
     fetchVariants();
-  }, []);
+  }, [company]);
 
   const handleSearch = (value) => {
     const filtered = variants.filter(variant => 

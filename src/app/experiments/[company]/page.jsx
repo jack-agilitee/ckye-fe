@@ -1,88 +1,71 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import ExperimentsTable from '@/components/templates/ExperimentsTable/ExperimentsTable';
 import ExperimentsModal from '@/components/organisms/ExperimentsModal/ExperimentsModal';
 import CreateExperimentModal from '@/components/organisms/CreateExperimentModal/CreateExperimentModal';
+import { getExperimentsByWorkspace, createExperiment } from '@/lib/api/experiments';
 import styles from './page.module.scss';
 
-// Hardcoded experiments data based on Figma design
-// Updated to match the prop names expected by ExperimentsTable
-const mockExperiments = [
-  {
-    id: '1',
-    name: 'Claude.md version 2',
-    comparison: 'master vs. version 2',
-    status: 'Active',
-    createdDate: '2025-08-28',
+// Transform API data to match component expectations
+const transformExperimentData = (apiExperiment) => {
+  return {
+    id: apiExperiment.id,
+    name: apiExperiment.name,
+    comparison: apiExperiment.description || 'No comparison available',
+    status: apiExperiment.status === 'active' ? 'Active' : 
+            apiExperiment.status === 'completed' ? 'Closed' : 'Inactive',
+    createdDate: new Date(apiExperiment.createdAt).toISOString().split('T')[0],
     createdBy: {
-      initial: 'J',
-      name: 'Jack Nichols',
-      email: 'jack@agilitee.com'
+      initial: 'C',
+      name: 'Claude Code',
+      email: 'Agent of: system@agilitee.com'
     }
-  },
-  {
-    id: '2',
-    name: 'Claude.md version 3',
-    comparison: 'master vs. version 3',
-    status: 'Closed',
-    createdDate: '2025-08-26',
-    createdBy: {
-      initial: 'J',
-      name: 'Jack Nichols',
-      email: 'jack@agilitee.com'
-    }
-  },
-  {
-    id: '3',
-    name: 'Claude.md version 4',
-    comparison: 'master vs. version 4',
-    status: 'Closed',
-    createdDate: '2025-08-26',
-    createdBy: {
-      initial: 'J',
-      name: 'Jack Nichols',
-      email: 'jack@agilitee.com'
-    }
-  },
-  {
-    id: '4',
-    name: 'Commands.md version 2',
-    comparison: 'master vs. version 2',
-    status: 'Closed',
-    createdDate: '2025-08-26',
-    createdBy: {
-      initial: 'J',
-      name: 'Jack Nichols',
-      email: 'jack@agilitee.com'
-    }
-  },
-  {
-    id: '5',
-    name: 'Claude.md version 5',
-    comparison: 'master vs. version 5',
-    status: 'Closed',
-    createdDate: '2025-08-26',
-    createdBy: {
-      initial: 'J',
-      name: 'Jack Nichols',
-      email: 'jack@agilitee.com'
-    }
-  }
-];
+  };
+};
 
 const ExperimentsPage = ({ params }) => {
   const company = params?.company || 'Agilitee';
   const [searchQuery, setSearchQuery] = useState('');
+  const [experiments, setExperiments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedExperiment, setSelectedExperiment] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+  // Fetch experiments from API on component mount
+  useEffect(() => {
+    const fetchExperiments = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Use company param directly as workspaceName (from URL like /experiments/ae)
+        const workspaceName = company?.toUpperCase() || 'AE';
+        
+        // Fetch experiments filtered by workspaceName
+        const response = await getExperimentsByWorkspace(workspaceName);
+        
+        // Transform API data to match component structure
+        const transformedExperiments = response.data.map(transformExperimentData);
+        setExperiments(transformedExperiments);
+      } catch (err) {
+        console.error('Error fetching experiments:', err);
+        setError(err.message || 'Failed to fetch experiments');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExperiments();
+  }, [company]);
+
   // Filter experiments based on search query
-  const filteredExperiments = mockExperiments.filter(experiment => {
+  const filteredExperiments = experiments.filter(experiment => {
     const query = searchQuery.toLowerCase();
     return (
       experiment.name.toLowerCase().includes(query) ||
@@ -113,10 +96,24 @@ const ExperimentsPage = ({ params }) => {
     setIsCreateModalOpen(false);
   };
 
-  const handleCreateExperiment = (experimentData) => {
-    console.log('Creating experiment:', experimentData);
-    // TODO: Implement API call to create experiment
-    setIsCreateModalOpen(false);
+  const handleCreateExperiment = async (experimentData) => {
+    try {
+      const workspaceName = company?.toUpperCase() || 'AE';
+      await createExperiment({
+        ...experimentData,
+        workspaceName
+      });
+      
+      // Refresh experiments list
+      const response = await getExperimentsByWorkspace(workspaceName);
+      
+      const transformedExperiments = response.data.map(transformExperimentData);
+      setExperiments(transformedExperiments);
+      setIsCreateModalOpen(false);
+    } catch (error) {
+      console.error('Error creating experiment:', error);
+      // TODO: Show error message to user
+    }
   };
 
   const handleContextItemClick = (item) => {
@@ -142,10 +139,20 @@ const ExperimentsPage = ({ params }) => {
         buttonText="New Experiment"
         onButtonClick={handleNewExperiment}
       />
-      <ExperimentsTable 
-        experiments={filteredExperiments}
-        onViewReport={handleViewReport}
-      />
+      {loading ? (
+        <div className={styles['experiments-page__loading']}>
+          Loading experiments...
+        </div>
+      ) : error ? (
+        <div className={styles['experiments-page__error']}>
+          Error: {error}
+        </div>
+      ) : (
+        <ExperimentsTable 
+          experiments={filteredExperiments}
+          onViewReport={handleViewReport}
+        />
+      )}
     </>
   );
 

@@ -5,56 +5,32 @@ import { prisma } from '@/lib/prisma';
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const workspaceId = searchParams.get('workspaceId');
-    const search = searchParams.get('search') || '';
-    const sortBy = searchParams.get('sortBy') || 'createdAt';
-    const sortOrder = searchParams.get('sortOrder') || 'desc';
+    const workspaceName = searchParams.get('workspaceName');
 
     // Build where clause
     const where = {};
     
-    // Filter by workspaceId if provided
-    if (workspaceId) {
-      where.workspaceId = workspaceId;
-    }
-    
-    // Search in content and summary
-    if (search) {
-      where.OR = [
-        { content: { contains: search, mode: 'insensitive' } },
-        { summary: { contains: search, mode: 'insensitive' } }
-      ];
+    // Filter by workspaceName if provided
+    if (workspaceName) {
+      where.workspaceName = workspaceName;
     }
 
-    // Execute query with pagination
-    const [variants, total] = await prisma.$transaction([
-      prisma.variant.findMany({
-        where,
-        skip: (page - 1) * limit,
-        take: limit,
-        orderBy: { [sortBy]: sortOrder },
-        select: {
-          id: true,
-          content: true,
-          summary: true,
-          workspaceId: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      }),
-      prisma.variant.count({ where })
-    ]);
+    // Execute query - get all variants, no pagination
+    const variants = await prisma.variant.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        content: true,
+        summary: true,
+        workspaceName: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
 
     return NextResponse.json({
-      data: variants,
-      meta: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit)
-      }
+      data: variants
     });
   } catch (error) {
     console.error('Error fetching variants:', error);

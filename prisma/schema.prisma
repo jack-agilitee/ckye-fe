@@ -64,44 +64,44 @@ model Page {
 }
 
 model Suggestion {
-  id          String   @id @default(cuid())
-  content     String   @db.Text
-  workspaceId String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  content       String   @db.Text
+  workspaceName String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  @@index([workspaceId])
+  @@index([workspaceName])
   @@map("suggestions")
 }
 
 model Variant {
-  id          String   @id @default(cuid())
-  content     String   @db.Text
-  summary     String?  @db.Text
-  workspaceId String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  content       String   @db.Text
+  summary       String?  @db.Text
+  workspaceName String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  @@index([workspaceId])
+  @@index([workspaceName])
   @@map("variants")
 }
 
 model Experiment {
-  id          String    @id @default(cuid())
-  name        String
-  description String?   @db.Text
-  pageId      String?   // Page ID associated with the experiment
-  variantId   String?
-  workspaceId String
-  status      String    @default("inactive") // active, inactive, completed
-  startDate   DateTime?
-  endDate     DateTime?
-  metrics     Json? // Store experiment metrics as JSON
-  createdBy   String? // User ID who created the experiment
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id            String    @id @default(cuid())
+  name          String
+  description   String?   @db.Text
+  pageId        String?   // Page ID associated with the experiment
+  variantId     String?
+  workspaceName String
+  status        String    @default("inactive") // active, inactive, completed
+  startDate     DateTime?
+  endDate       DateTime?
+  metrics       Json? // Store experiment metrics as JSON
+  createdBy     String? // User ID who created the experiment
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  @@index([workspaceId])
+  @@index([workspaceName])
   @@index([status])
   @@index([variantId])
   @@index([pageId])
