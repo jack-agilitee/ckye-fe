@@ -80,6 +80,7 @@ model Variant {
   content       String   @db.Text
   summary       String?  @db.Text
   workspaceName String
+  statistics    Json?    // Track PR success rates: {totalPRs: 0, firstTrySuccess: 0, secondTrySuccess: 0}
   createdBy     String?  // User ID who created the variant
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

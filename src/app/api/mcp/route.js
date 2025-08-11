@@ -290,6 +290,70 @@ const handler = createMcpHandler(
             }
         );
 
+        // Tool to fetch PRs by pageId
+        server.tool(
+            'fetch-prs-by-pageid',
+            'Fetch all pull requests for a specific page ID',
+            {
+                pageId: z.string().describe("The page ID to fetch PRs for")
+            },
+            async ({ pageId }) => {
+                const client = new Client({
+                    connectionString: process.env.DATABASE_URL,
+                });
+
+                try {
+                    await client.connect();
+
+                    // Fetch PRs for the given pageId
+                    const query = `
+        SELECT id, "prId", "pageId", "createdAt"
+        FROM pr
+        WHERE "pageId" = $1
+        ORDER BY "createdAt" DESC
+      `;
+                    
+                    const result = await client.query(query, [pageId]);
+                    const prs = result.rows;
+
+                    if (prs.length === 0) {
+                        return {
+                            content: [{
+                                type: "text",
+                                text: `No PRs found for page ID: ${pageId}`
+                            }]
+                        };
+                    }
+
+                    // Return PR data as JSON for easy parsing
+                    return {
+                        content: [{
+                            type: "text",
+                            text: JSON.stringify({
+                                pageId: pageId,
+                                prCount: prs.length,
+                                prs: prs.map(pr => ({
+                                    id: pr.id,
+                                    prId: pr.prId,
+                                    createdAt: pr.createdAt.toISOString()
+                                }))
+                            })
+                        }]
+                    };
+                } catch (error) {
+                    console.error("Error fetching PRs:", error);
+                    return {
+                        content: [{
+                            type: "text",
+                            text: `Error fetching PRs: ${error instanceof Error ? error.message : "Unknown error"}`
+                        }]
+                    };
+                } finally {
+                    await client.end();
+                }
+            }
+        );
+
         // Tool to write PR creation to database
         server.tool(
             'record-pr-creation',
@@ -335,6 +399,93 @@ const handler = createMcpHandler(
                         content: [{
                             type: "text",
                             text: `Error recording PR: ${error instanceof Error ? error.message : "Unknown error"}`
+                        }]
+                    };
+                } finally {
+                    await client.end();
+                }
+            }
+        );
+
+        // Tool to update page statistics
+        server.tool(
+            'update-page-statistics',
+            'Update statistics for a page or variant',
+            {
+                pageId: z.string().describe("The page/variant ID to update statistics for"),
+                statistics: z.object({
+                    totalPRs: z.number().describe("Total number of PRs"),
+                    firstTrySuccess: z.number().describe("Number of PRs with 2 or fewer commits"),
+                    successRate: z.number().optional().describe("Percentage of successful PRs")
+                }).describe("Statistics object to update")
+            },
+            async ({ pageId, statistics }) => {
+                const client = new Client({
+                    connectionString: process.env.DATABASE_URL,
+                });
+
+                try {
+                    await client.connect();
+
+                    // First, check if it's a page or a variant
+                    const pageQuery = `
+        SELECT id FROM pages WHERE id = $1
+      `;
+                    const pageResult = await client.query(pageQuery, [pageId]);
+                    
+                    let updateQuery;
+                    let tableName;
+                    
+                    if (pageResult.rows.length > 0) {
+                        // It's a page
+                        tableName = 'pages';
+                        updateQuery = `
+        UPDATE pages 
+        SET statistics = $1::jsonb, "updatedAt" = NOW()
+        WHERE id = $2
+        RETURNING id, statistics
+      `;
+                    } else {
+                        // Check if it's a variant
+                        const variantQuery = `
+        SELECT id FROM variants WHERE id = $1
+      `;
+                        const variantResult = await client.query(variantQuery, [pageId]);
+                        
+                        if (variantResult.rows.length > 0) {
+                            tableName = 'variants';
+                            updateQuery = `
+        UPDATE variants 
+        SET statistics = $1::jsonb, "updatedAt" = NOW()
+        WHERE id = $2
+        RETURNING id, statistics
+      `;
+                        } else {
+                            return {
+                                content: [{
+                                    type: "text",
+                                    text: `No page or variant found with ID: ${pageId}`
+                                }]
+                            };
+                        }
+                    }
+
+                    // Update the statistics
+                    const result = await client.query(updateQuery, [JSON.stringify(statistics), pageId]);
+                    const updated = result.rows[0];
+
+                    return {
+                        content: [{
+                            type: "text",
+                            text: `Statistics updated successfully for ${tableName}\nID: ${updated.id}\nStatistics: ${JSON.stringify(updated.statistics, null, 2)}`
+                        }]
+                    };
+                } catch (error) {
+                    console.error("Error updating statistics:", error);
+                    return {
+                        content: [{
+                            type: "text",
+                            text: `Error updating statistics: ${error instanceof Error ? error.message : "Unknown error"}`
                         }]
                     };
                 } finally {
