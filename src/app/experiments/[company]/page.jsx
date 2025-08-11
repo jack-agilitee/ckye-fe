@@ -99,7 +99,7 @@ const ExperimentsPage = ({ params }) => {
   const handleCreateExperiment = async (experimentData) => {
     try {
       const workspaceName = company?.toUpperCase() || 'AE';
-      const newExperiment = await createExperiment({
+      await createExperiment({
         ...experimentData,
         workspaceName
       });
