@@ -148,7 +148,7 @@ const Sidebar = ({
                 <h3 className={styles.sidebar__sectionTitle}>WORKSPACE</h3>
                 <div className={styles.sidebar__sectionContent}>
                   <ListItem
-                    text="Suggested Variants"
+                    text="Variants"
                     icon="/sparkle.svg"
                     selected={pathname?.includes('/variants')}
                     onClick={() => router.push(`/variants/${accountName.toLowerCase()}`)}

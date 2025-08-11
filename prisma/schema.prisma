@@ -79,10 +79,12 @@ model Variant {
   content       String   @db.Text
   summary       String?  @db.Text
   workspaceName String
+  createdBy     String?  // User ID who created the variant
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   @@index([workspaceName])
+  @@index([createdBy])
   @@map("variants")
 }
 

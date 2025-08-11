@@ -92,6 +92,36 @@ export async function getLatestVariantForWorkspace(workspaceName) {
 }
 
 /**
+ * Create a new variant
+ * @param {Object} variantData - The variant data
+ * @param {string} variantData.content - The markdown content
+ * @param {string} variantData.summary - The variant summary/name
+ * @param {string} variantData.workspaceName - The workspace name
+ * @returns {Promise<Object>}
+ */
+export async function createVariant(variantData) {
+  try {
+    const response = await fetch(`${API_BASE}/api/variants`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(variantData),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to create variant');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error creating variant:', error);
+    throw error;
+  }
+}
+
+/**
  * Set a variant as master (update/create page and delete variant)
  * @param {string} variantId - The variant ID
  * @param {string} company - The company name

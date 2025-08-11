@@ -6,7 +6,10 @@ import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import VariantsTable from '@/components/templates/VariantsTable/VariantsTable';
 import VariantsModal from '@/components/organisms/VariantsModal/VariantsModal';
-import { getVariants, setVariantToMaster } from '@/lib/api/variants';
+import MarkdownEditor from '@/components/organisms/MarkdownEditor/MarkdownEditor';
+import TextField from '@/components/atoms/TextField/TextField';
+import Button from '@/components/atoms/Button/Button';
+import { getVariants, setVariantToMaster, createVariant } from '@/lib/api/variants';
 import styles from './page.module.scss';
 
 // Transform API data to match component expectations
@@ -14,16 +17,28 @@ const transformVariantData = (apiVariant, index) => {
   // Extract variant number from summary or use index
   const variantNumber = index + 1; // Start from Variant 2
   
+  // Use actual user data if available, otherwise use default
+  let createdBy;
+  if (apiVariant.user) {
+    createdBy = {
+      initial: apiVariant.user.name ? apiVariant.user.name.charAt(0).toUpperCase() : 'U',
+      name: apiVariant.user.name || 'Unknown User',
+      email: apiVariant.user.email || 'No email'
+    };
+  } else {
+    createdBy = {
+      initial: 'C',
+      name: 'Claude Code',
+      email: 'Agent of: system@agilitee.com'
+    };
+  }
+  
   return {
     id: apiVariant.id,
     fileName: 'Claude.md', // Default filename, could be extracted from content
     variant: `Variant ${variantNumber}`,
     createdDate: new Date(apiVariant.createdAt).toISOString().split('T')[0],
-    createdBy: {
-      initial: 'C',
-      name: 'Claude Code',
-      email: 'Agent of: system@agilitee.com'
-    },
+    createdBy: createdBy,
     summary: apiVariant.summary || 'No summary available',
     content: apiVariant.content || ''
   };
@@ -47,6 +62,11 @@ export default function VariantsPage({ params }) {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // New state for edit mode
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editorContent, setEditorContent] = useState('');
+  const [variantSummary, setVariantSummary] = useState('');
 
   // Fetch variants from API on component mount
   useEffect(() => {
@@ -98,7 +118,47 @@ export default function VariantsPage({ params }) {
 
   const handleAddVariant = () => {
     console.log('Add Variant clicked');
-    // TODO: Open modal or navigate to create variant page
+    setIsEditMode(true);
+    setEditorContent('# New Variant\n\nStart writing your variant content here...');
+    setVariantSummary('');
+  };
+  
+  const handleSaveVariant = async () => {
+    try {
+      // Get workspace name from URL
+      const workspaceName = company?.toUpperCase() || 'AE';
+      
+      // Create the variant
+      const variantData = {
+        content: editorContent,
+        summary: variantSummary || 'Untitled Variant',
+        workspaceName: workspaceName
+      };
+      
+      await createVariant(variantData);
+      
+      // Refresh the variants list
+      const response = await getVariants({ workspaceName });
+      const transformedVariants = response.data.map((variant, index) => 
+        transformVariantData(variant, index)
+      );
+      setVariants(transformedVariants);
+      setFilteredVariants(transformedVariants);
+      
+      // Exit edit mode after saving
+      setIsEditMode(false);
+      setEditorContent('');
+      setVariantSummary('');
+    } catch (error) {
+      console.error('Error saving variant:', error);
+      // TODO: Show error message to user
+    }
+  };
+  
+  const handleCancelEdit = () => {
+    setIsEditMode(false);
+    setEditorContent('');
+    setVariantSummary('');
   };
 
   const handleContextItemClick = (item) => {
@@ -167,11 +227,47 @@ export default function VariantsPage({ params }) {
     />
   );
 
-  const mainContent = (
+  const mainContent = isEditMode ? (
+    // Edit mode - show markdown editor
+    <div className={styles['variants-page']}>
+      <div className={styles['variants-page__edit-header']}>
+        <TextField
+          placeholder="Enter variant summary..."
+          value={variantSummary}
+          onChange={(e) => setVariantSummary(e.target.value)}
+          className={styles['variants-page__summary-field']}
+        />
+        <div className={styles['variants-page__edit-actions']}>
+          <Button
+            variant="primary"
+            icon={null}
+            onClick={handleCancelEdit}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="secondary"
+            icon={null}
+            onClick={handleSaveVariant}
+          >
+            Save
+          </Button>
+        </div>
+      </div>
+      
+      <div className={styles['variants-page__editor-container']}>
+        <MarkdownEditor
+          value={editorContent}
+          onChange={setEditorContent}
+        />
+      </div>
+    </div>
+  ) : (
+    // Normal mode - show variants table
     <div className={styles['variants-page']}>
       <SearchHeader
-        title="Suggested Document Variants"
-        searchPlaceholder="Search Suggestions by Name"
+        title="Variants"
+        searchPlaceholder="Search Variants by Name"
         onSearch={handleSearch}
         searchValue={searchValue}
         onSearchChange={handleSearchChange}
