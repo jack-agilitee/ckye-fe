@@ -33,6 +33,7 @@ const handler = createMcpHandler(
                     // Format the response
                     const formattedPages = pages.map((page) =>
                         `Page: ${page.name}\n` +
+                        `ID: ${page.id}\n` +
                         `Company: ${page.company}\n` +
                         `Content: ${page.content}\n` +
                         `Created: ${page.createdAt.toISOString()}\n` +
