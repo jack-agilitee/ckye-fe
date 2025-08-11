@@ -51,27 +51,37 @@ export async function GET(request) {
         let variantName = null;
         let createdByUser = null;
 
-        // Fetch page name if pageId exists
+        // Fetch page name and statistics if pageId exists
+        let pageStats = null;
         if (experiment.pageId) {
           try {
             const page = await prisma.page.findUnique({
               where: { id: experiment.pageId },
-              select: { name: true }
+              select: { 
+                name: true,
+                statistics: true
+              }
             });
             pageName = page?.name || null;
+            pageStats = page?.statistics || null;
           } catch (error) {
             console.error(`Error fetching page ${experiment.pageId}:`, error);
           }
         }
 
-        // Fetch variant name/summary if variantId exists
+        // Fetch variant name/summary and statistics if variantId exists
+        let variantStats = null;
         if (experiment.variantId) {
           try {
             const variant = await prisma.variant.findUnique({
               where: { id: experiment.variantId },
-              select: { summary: true }
+              select: { 
+                summary: true,
+                statistics: true
+              }
             });
             variantName = variant?.summary || null;
+            variantStats = variant?.statistics || null;
           } catch (error) {
             console.error(`Error fetching variant ${experiment.variantId}:`, error);
           }
@@ -99,6 +109,8 @@ export async function GET(request) {
           ...experiment,
           pageName,
           variantName,
+          pageStats,
+          variantStats,
           createdByUser
         };
       })

@@ -1,51 +1,179 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import jStat from 'jstat';
 import Image from 'next/image';
 import VariantCard from '@/components/organisms/VariantCard/VariantCard';
 import ChartSection from '@/components/molecules/ChartSection/ChartSection';
 import styles from './ExperimentsModal.module.scss';
 
-const ExperimentsModal = ({ 
+const ExperimentsModal = ({
   isOpen = false,
   onClose,
   onEndExperiment,
-  experimentTitle = 'Clade.md version 3',
-  comparisonText = 'master vs. version 3',
-  // Results section data
-  resultsData = {
-    improvementPercentage: 25,
-    confidenceLevel: 95,
-    description: 'Variant 3 improved the 1st-try code acceptance rate by 25% compared to Master. Based on the data collected, we can be 95% confident that this improvement is real and not just due to random chance.'
-  },
-  // Stats for Nerds section data
-  statsData = {
-    pValue: '0.00000083',
-    masterConfidenceInterval: '42.7% – 57.3%',
-    variantConfidenceInterval: '68.5% – 81.5%'
-  },
-  // Potential Impact section data
-  impactDescription = 'For every 100 code generations, approximately 25 more would be accepted on the first try by developers.',
-  // Variant card data for master
-  masterData = {
-    variantName: 'Master',
-    createdDate: 'July 7, 2025',
-    currentValue: 89,
-    totalValue: 178,
-    percentage: 50,
-    metricLabel: '1st Shot Acceptance Rate'
-  },
-  // Variant card data for variant
-  variantData = {
-    variantName: 'Variant 3',
-    createdDate: 'Aug 25, 2025',
-    currentValue: 126,
-    totalValue: 168,
-    percentage: 75,
-    metricLabel: '1st Shot Acceptance Rate'
-  }
+  experimentId,
+  experimentTitle,
+  experimentStatus,
+  comparisonText,
+  pageName,
+  variantName,
+  pageStats,
+  variantStats
 }) => {
   const modalRef = useRef(null);
+
+  // Calculate statistics for page (master)
+  const pageStatsData = {
+    variantName: pageName || 'Master',
+    createdDate: 'July 7, 2025', // You may want to pass actual dates
+    currentValue: pageStats?.firstTrySuccess || 0,
+    totalValue: pageStats?.totalPRs || 0,
+    percentage: pageStats?.totalPRs > 0
+      ? Math.round((pageStats.firstTrySuccess / pageStats.totalPRs) * 100)
+      : 0,
+    metricLabel: '1st Shot Acceptance Rate'
+  };
+
+  // Calculate statistics for variant
+  const variantStatsData = {
+    variantName: variantName || 'Variant',
+    createdDate: 'Aug 25, 2025', // You may want to pass actual dates
+    currentValue: variantStats?.firstTrySuccess || 0,
+    totalValue: variantStats?.totalPRs || 0,
+    percentage: variantStats?.totalPRs > 0
+      ? Math.round((variantStats.firstTrySuccess / variantStats.totalPRs) * 100)
+      : 0,
+    metricLabel: '1st Shot Acceptance Rate'
+  };
+
+  const calculatePValue = () => {
+    const x1 = pageStatsData.currentValue, n1 = pageStatsData.totalValue;
+    const x2 = variantStatsData.currentValue, n2 = variantStatsData.totalValue;
+
+    if (n1 === 0 || n2 === 0) return 'N/A';
+
+    const p1 = x1 / n1;
+    const p2 = x2 / n2;
+
+    const betterX = p1 >= p2 ? x1 : x2;
+    const betterN = p1 >= p2 ? n1 : n2;
+    const worseX = p1 >= p2 ? x2 : x1;
+    const worseN = p1 >= p2 ? n2 : n1;
+
+    const betterP = betterX / betterN;
+    const worseP = worseX / worseN;
+
+    const p = (betterX + worseX) / (betterN + worseN);
+    const se = Math.sqrt(p * (1 - p) * (1 / betterN + 1 / worseN));
+    if (se === 0) return 'N/A';
+
+    const z = (betterP - worseP) / se;
+    const pValue = 1 - jStat.normal.cdf(z, 0, 1);
+
+    // Format as decimal with up to 10 decimal places, removing trailing zeros
+    return pValue.toFixed(10).replace(/\.?0+$/, '');
+  };
+
+  const calculateIntervals = (successes, total) => {
+    // Handle edge cases
+    if (total === 0 || isNaN(successes) || isNaN(total)) {
+      return 'N/A';
+    }
+
+    const p = successes / total;
+    const z = 1.96; // 95% CI
+    const se = Math.sqrt((p * (1 - p)) / total);
+
+    // Calculate bounds
+    let lower = p - z * se;
+    let upper = p + z * se;
+
+    // Clamp values between 0 and 1
+    lower = Math.max(0, Math.min(1, lower));
+    upper = Math.max(0, Math.min(1, upper));
+
+    // Convert to percentage and format to 2 decimal places
+    const lowerPercent = (lower * 100).toFixed(2);
+    const upperPercent = (upper * 100).toFixed(2);
+
+    return `${lowerPercent}% – ${upperPercent}%`;
+  }
+
+  // Stats for Nerds section data
+  const statsData = {
+    pValue: calculatePValue(),
+    masterConfidenceInterval: calculateIntervals(pageStatsData.currentValue, pageStatsData.totalValue),
+    variantConfidenceInterval: calculateIntervals(variantStatsData.currentValue, variantStatsData.totalValue),
+  };
+
+  // Calculate results data based on actual statistics
+  const calculateResultsData = () => {
+    const pagePercent = pageStatsData.percentage;
+    const variantPercent = variantStatsData.percentage;
+
+    // Calculate the absolute percentage point difference
+    const percentagePointDifference = variantPercent - pagePercent;
+
+    // Calculate relative improvement/decrease percentage
+    let relativeChangePercentage = 0;
+    if (pagePercent > 0) {
+      relativeChangePercentage = Math.round(((variantPercent - pagePercent) / pagePercent) * 100);
+    } else if (variantPercent > 0) {
+      relativeChangePercentage = 100; // If baseline is 0 and variant is not, it's 100% improvement
+    }
+
+    // Calculate confidence level from p-value
+    let confidenceLevel = 0;
+    const pVal = statsData.pValue;
+    if (pVal !== 'N/A' && !isNaN(pVal)) {
+      confidenceLevel = ((1 - pVal) * 100).toFixed(2);
+    }
+
+    // Create dynamic description
+    const variantNameText = variantName || 'Variant';
+    const pageNameText = pageName || 'Master';
+
+    let description;
+    if (percentagePointDifference > 0) {
+      // Variant is better
+      description = `${variantNameText} improved the 1st-try code acceptance rate by ${Math.abs(percentagePointDifference)}% compared to ${pageNameText}. Based on the data collected, we can be ${confidenceLevel}% confident that this improvement is real and not just due to random chance.`;
+    } else if (percentagePointDifference < 0) {
+      // Variant is worse
+      description = `${variantNameText} decreased the 1st-try code acceptance rate by ${Math.abs(percentagePointDifference)}% compared to ${pageNameText}. Based on the data collected, we can be ${confidenceLevel}% confident that this change is real and not just due to random chance.`;
+    } else {
+      description = `${variantNameText} showed no significant change in the 1st-try code acceptance rate compared to ${pageNameText}.`;
+    }
+
+    return {
+      improvementPercentage: relativeChangePercentage,
+      percentagePointDifference,
+      confidenceLevel,
+      description
+    };
+  };
+
+  const resultsData = calculateResultsData();
+
+  // Calculate potential impact description
+  const calculateImpactDescription = () => {
+    const pagePercent = pageStatsData.percentage;
+    const variantPercent = variantStatsData.percentage;
+
+    if (pagePercent === variantPercent || (pagePercent === 0 && variantPercent === 0)) {
+      return 'No significant impact detected based on current data.';
+    }
+
+    const difference = variantPercent - pagePercent;
+    const absoluteDifference = Math.abs(difference);
+
+    if (difference > 0) {
+      return `For every 100 code generations, approximately ${absoluteDifference} more would be accepted on the first try by developers.`;
+    } else {
+      return `For every 100 code generations, approximately ${absoluteDifference} fewer would be accepted on the first try by developers.`;
+    }
+  };
+
+  const impactDescription = calculateImpactDescription();
 
   // Handle click outside to close modal
   useEffect(() => {
@@ -94,12 +222,12 @@ const ExperimentsModal = ({
               <h2 className={styles['experiments-modal__title']}>{experimentTitle}</h2>
               <span className={styles['experiments-modal__comparison']}>{comparisonText}</span>
             </div>
-            <button 
+            <button
               className={styles['experiments-modal__close']}
               onClick={onClose}
               aria-label="Close modal"
             >
-              <Image 
+              <Image
                 src="/cross.svg"
                 alt=""
                 width={16}
@@ -112,15 +240,15 @@ const ExperimentsModal = ({
           <div className={styles['experiments-modal__divider']} />
 
           {/* Results Section */}
-          <ChartSection 
+          <ChartSection
             title="Results"
             className={styles['experiments-modal__section']}
           >
             <p className={styles['experiments-modal__section-description']}>
               {(() => {
-                const parts = resultsData.description.split(/(\d+%)/g);
+                const parts = resultsData.description.split(/(\d+(?:\.\d+)?%)/g);
                 return parts.map((part, index) => {
-                  if (part.match(/\d+%/)) {
+                  if (part.match(/\d+(?:\.\d+)?%/)) {
                     return <span key={index} className={styles['experiments-modal__highlight']}>{part}</span>;
                   }
                   return part;
@@ -130,7 +258,7 @@ const ExperimentsModal = ({
           </ChartSection>
 
           {/* Stats for Nerds Section */}
-          <ChartSection 
+          <ChartSection
             title="Stats for Nerds"
             className={styles['experiments-modal__section']}
           >
@@ -157,7 +285,7 @@ const ExperimentsModal = ({
           </ChartSection>
 
           {/* Potential Impact Section */}
-          <ChartSection 
+          <ChartSection
             title="Potential Impact"
             description={impactDescription}
             className={styles['experiments-modal__section']}
@@ -165,28 +293,33 @@ const ExperimentsModal = ({
 
           {/* Charts Section with Variant Cards */}
           <div className={styles['experiments-modal__charts']}>
-            <VariantCard 
-              {...masterData}
+            <VariantCard
+              {...pageStatsData}
               className={styles['experiments-modal__chart']}
             />
-            <VariantCard 
-              {...variantData}
+            <VariantCard
+              {...variantStatsData}
               className={styles['experiments-modal__chart']}
             />
           </div>
 
-          {/* Divider */}
-          <div className={styles['experiments-modal__divider']} />
+          {/* Only show divider and action button if experiment is active */}
+          {experimentStatus === 'Active' && (
+            <>
+              {/* Divider */}
+              <div className={styles['experiments-modal__divider']} />
 
-          {/* Action Button */}
-          <div className={styles['experiments-modal__actions']}>
-            <button
-              className={styles['experiments-modal__end-button']}
-              onClick={handleEndExperiment}
-            >
-              End Experiment
-            </button>
-          </div>
+              {/* Action Button */}
+              <div className={styles['experiments-modal__actions']}>
+                <button
+                  className={styles['experiments-modal__end-button']}
+                  onClick={handleEndExperiment}
+                >
+                  End Experiment
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
