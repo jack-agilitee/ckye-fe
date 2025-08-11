@@ -23,8 +23,7 @@ const VariantsModal = ({
   title = 'Clade.md',
   version = 'Version 2',
   codeContent = '',
-  onSetToMaster,
-  onCreateExperiment
+  onSetToMaster
 }) => {
   const modalRef = useRef(null);
 
@@ -121,23 +120,15 @@ const VariantsModal = ({
             />
           </div>
 
-          {/* Action Buttons */}
+          {/* Action Button */}
           <div className={styles['variants-modal__actions']}>
             <Button
-              variant="primary"
+              variant="secondary"
               icon={null}
               onClick={onSetToMaster}
               className={styles['variants-modal__action-button']}
             >
               Set to Master
-            </Button>
-            <Button
-              variant="secondary"
-              icon={null}
-              onClick={onCreateExperiment}
-              className={styles['variants-modal__action-button']}
-            >
-              Create Experiment with Variant
             </Button>
           </div>
         </div>
