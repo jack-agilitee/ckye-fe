@@ -295,9 +295,10 @@ const handler = createMcpHandler(
             'record-pr-creation',
             'Record a pull request creation in the database',
             {
-                prId: z.string().describe("The PR ID or number from GitHub")
+                prId: z.string().describe("The PR ID or number from GitHub"),
+                pageId: z.string().optional().describe("The page ID from CLAUDE.md")
             },
-            async ({ prId }) => {
+            async ({ prId, pageId }) => {
                 const client = new Client({
                     connectionString: process.env.DATABASE_URL,
                 });
@@ -305,20 +306,27 @@ const handler = createMcpHandler(
                 try {
                     await client.connect();
 
-                    // Insert PR record with just prId and createdAt
-                    const insertQuery = `
+                    // Insert PR record with prId, optional pageId and createdAt
+                    const insertQuery = pageId 
+                        ? `
+        INSERT INTO pr (id, "prId", "pageId", "createdAt")
+        VALUES (gen_random_uuid(), $1, $2, NOW())
+        RETURNING id, "prId", "pageId", "createdAt"
+      `
+                        : `
         INSERT INTO pr (id, "prId", "createdAt")
         VALUES (gen_random_uuid(), $1, NOW())
-        RETURNING id, "prId", "createdAt"
+        RETURNING id, "prId", "pageId", "createdAt"
       `;
                     
-                    const result = await client.query(insertQuery, [prId]);
+                    const queryParams = pageId ? [prId, pageId] : [prId];
+                    const result = await client.query(insertQuery, queryParams);
                     const pr = result.rows[0];
 
                     return {
                         content: [{
                             type: "text",
-                            text: `PR recorded successfully\nID: ${pr.id}\nPR ID: ${pr.prId}\nCreated: ${pr.createdAt.toISOString()}`
+                            text: `PR recorded successfully\nID: ${pr.id}\nPR ID: ${pr.prId}${pr.pageId ? `\nPage ID: ${pr.pageId}` : ''}\nCreated: ${pr.createdAt.toISOString()}`
                         }]
                     };
                 } catch (error) {
