@@ -14,10 +14,19 @@ import styles from './page.module.scss';
 
 // Transform API data to match component expectations
 const transformExperimentData = (apiExperiment) => {
+  // Create comparison text from page and variant names, or use description
+  let comparison;
+  
+  if (apiExperiment.pageName && apiExperiment.variantName) {
+    comparison = `${apiExperiment.pageName} vs. ${apiExperiment.variantName}`;
+  } else {
+    comparison = apiExperiment.description || 'No comparison available';
+  }
+  
   return {
     id: apiExperiment.id,
     name: apiExperiment.name,
-    comparison: apiExperiment.description || 'No comparison available',
+    comparison: comparison,
     status: apiExperiment.status === 'active' ? 'Active' : 
             apiExperiment.status === 'completed' ? 'Closed' : 'Inactive',
     createdDate: new Date(apiExperiment.createdAt).toISOString().split('T')[0],

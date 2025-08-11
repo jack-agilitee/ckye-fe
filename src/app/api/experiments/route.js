@@ -42,8 +42,48 @@ export async function GET(request) {
       }
     });
 
+    // Fetch page and variant names for each experiment
+    const experimentsWithNames = await Promise.all(
+      experiments.map(async (experiment) => {
+        let pageName = null;
+        let variantName = null;
+
+        // Fetch page name if pageId exists
+        if (experiment.pageId) {
+          try {
+            const page = await prisma.page.findUnique({
+              where: { id: experiment.pageId },
+              select: { name: true }
+            });
+            pageName = page?.name || null;
+          } catch (error) {
+            console.error(`Error fetching page ${experiment.pageId}:`, error);
+          }
+        }
+
+        // Fetch variant name/summary if variantId exists
+        if (experiment.variantId) {
+          try {
+            const variant = await prisma.variant.findUnique({
+              where: { id: experiment.variantId },
+              select: { summary: true }
+            });
+            variantName = variant?.summary || null;
+          } catch (error) {
+            console.error(`Error fetching variant ${experiment.variantId}:`, error);
+          }
+        }
+
+        return {
+          ...experiment,
+          pageName,
+          variantName
+        };
+      })
+    );
+
     return NextResponse.json({
-      data: experiments
+      data: experimentsWithNames
     });
   } catch (error) {
     console.error('Error fetching experiments:', error);
