@@ -8,6 +8,8 @@ import ExperimentsTable from '@/components/templates/ExperimentsTable/Experiment
 import ExperimentsModal from '@/components/organisms/ExperimentsModal/ExperimentsModal';
 import CreateExperimentModal from '@/components/organisms/CreateExperimentModal/CreateExperimentModal';
 import { getExperimentsByWorkspace, createExperiment } from '@/lib/api/experiments';
+import { getVariants } from '@/lib/api/variants';
+import { getPages } from '@/lib/api/pages';
 import styles from './page.module.scss';
 
 // Transform API data to match component expectations
@@ -31,15 +33,17 @@ const ExperimentsPage = ({ params }) => {
   const company = params?.company || 'Agilitee';
   const [searchQuery, setSearchQuery] = useState('');
   const [experiments, setExperiments] = useState([]);
+  const [pages, setPages] = useState([]);
+  const [variants, setVariants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedExperiment, setSelectedExperiment] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  // Fetch experiments from API on component mount
+  // Fetch experiments, pages, and variants from API on component mount
   useEffect(() => {
-    const fetchExperiments = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
@@ -47,21 +51,29 @@ const ExperimentsPage = ({ params }) => {
         // Use company param directly as workspaceName (from URL like /experiments/ae)
         const workspaceName = company?.toUpperCase() || 'AE';
         
-        // Fetch experiments filtered by workspaceName
-        const response = await getExperimentsByWorkspace(workspaceName);
+        // Fetch experiments, pages, and variants in parallel
+        const [experimentsResponse, pagesResponse, variantsResponse] = await Promise.all([
+          getExperimentsByWorkspace(workspaceName),
+          getPages(workspaceName),  // Using workspaceName as company name for pages
+          getVariants({ workspaceName })
+        ]);
         
-        // Transform API data to match component structure
-        const transformedExperiments = response.data.map(transformExperimentData);
+        // Transform and set experiments
+        const transformedExperiments = experimentsResponse.data.map(transformExperimentData);
         setExperiments(transformedExperiments);
+        
+        // Set pages and variants
+        setPages(pagesResponse.data || []);
+        setVariants(variantsResponse.data || []);
       } catch (err) {
-        console.error('Error fetching experiments:', err);
-        setError(err.message || 'Failed to fetch experiments');
+        console.error('Error fetching data:', err);
+        setError(err.message || 'Failed to fetch data');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchExperiments();
+    fetchData();
   }, [company]);
 
   // Filter experiments based on search query
@@ -99,9 +111,15 @@ const ExperimentsPage = ({ params }) => {
   const handleCreateExperiment = async (experimentData) => {
     try {
       const workspaceName = company?.toUpperCase() || 'AE';
+      
+      // Create experiment with pageId and variantId from the form
       await createExperiment({
-        ...experimentData,
-        workspaceName
+        name: experimentData.name,
+        description: experimentData.description,
+        pageId: experimentData.pageId,
+        variantId: experimentData.variantId,
+        workspaceName,
+        status: 'inactive'
       });
       
       // Refresh experiments list
@@ -178,6 +196,8 @@ const ExperimentsPage = ({ params }) => {
           isOpen={isCreateModalOpen}
           onClose={handleCloseCreateModal}
           onCreateExperiment={handleCreateExperiment}
+          pages={pages}
+          variants={variants}
         />
       )}
     </>
