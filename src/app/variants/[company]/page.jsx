@@ -122,12 +122,6 @@ export default function VariantsPage({ params }) {
     handleCloseModal();
   };
 
-  const handleCreateExperiment = () => {
-    console.log('Creating experiment from variant:', selectedVariant);
-    // TODO: Navigate to create experiment page or open experiment modal
-    handleCloseModal();
-  };
-
 
   const sidebarContent = (
     <Sidebar
@@ -186,7 +180,6 @@ export default function VariantsPage({ params }) {
         version={selectedVariant?.variant || ''}
         codeContent={selectedVariant?.content || ''}
         onSetToMaster={handleSetToMaster}
-        onCreateExperiment={handleCreateExperiment}
       />
     </>
   );
