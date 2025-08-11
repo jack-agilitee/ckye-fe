@@ -11,6 +11,7 @@ const handler = createMcpHandler(
             'Retrieve all pages for a specific company from the database',
             { company: z.string().describe("The company name to filter pages") },
             async ({ company }) => {
+                console.log('Debug: Fetching pages for company:', company, 'at', new Date().toISOString());
                 const client = new Client({
                     connectionString: process.env.DATABASE_URL,
                 });
