@@ -23,6 +23,24 @@ const transformExperimentData = (apiExperiment) => {
     comparison = apiExperiment.description || 'No comparison available';
   }
   
+  // Use actual user data if available, otherwise default
+  let createdBy;
+  if (apiExperiment.createdByUser) {
+    const user = apiExperiment.createdByUser;
+    createdBy = {
+      initial: user.avatar || user.name?.charAt(0)?.toUpperCase() || 'U',
+      name: user.name || 'Unknown User',
+      email: user.email || 'unknown@agilitee.com'
+    };
+  } else {
+    // Fallback if no user data
+    createdBy = {
+      initial: 'S',
+      name: 'System',
+      email: 'system@agilitee.com'
+    };
+  }
+  
   return {
     id: apiExperiment.id,
     name: apiExperiment.name,
@@ -30,11 +48,7 @@ const transformExperimentData = (apiExperiment) => {
     status: apiExperiment.status === 'active' ? 'Active' : 
             apiExperiment.status === 'completed' ? 'Closed' : 'Inactive',
     createdDate: new Date(apiExperiment.createdAt).toISOString().split('T')[0],
-    createdBy: {
-      initial: 'C',
-      name: 'Claude Code',
-      email: 'Agent of: system@agilitee.com'
-    }
+    createdBy: createdBy
   };
 };
 

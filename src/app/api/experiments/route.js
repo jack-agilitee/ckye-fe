@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
 // GET /api/experiments - Get experiments filtered by workspaceName
 export async function GET(request) {
@@ -42,11 +44,12 @@ export async function GET(request) {
       }
     });
 
-    // Fetch page and variant names for each experiment
+    // Fetch page, variant names, and user info for each experiment
     const experimentsWithNames = await Promise.all(
       experiments.map(async (experiment) => {
         let pageName = null;
         let variantName = null;
+        let createdByUser = null;
 
         // Fetch page name if pageId exists
         if (experiment.pageId) {
@@ -74,10 +77,29 @@ export async function GET(request) {
           }
         }
 
+        // Fetch user info if createdBy exists
+        if (experiment.createdBy) {
+          try {
+            const user = await prisma.user.findUnique({
+              where: { id: experiment.createdBy },
+              select: { 
+                id: true,
+                name: true,
+                email: true,
+                avatar: true
+              }
+            });
+            createdByUser = user;
+          } catch (error) {
+            console.error(`Error fetching user ${experiment.createdBy}:`, error);
+          }
+        }
+
         return {
           ...experiment,
           pageName,
-          variantName
+          variantName,
+          createdByUser
         };
       })
     );
@@ -98,6 +120,19 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
+    
+    // Get the current user from the session
+    const session = await getServerSession(authOptions);
+    let userId = null;
+    
+    if (session?.user?.email) {
+      // Try to find the user in the database
+      const user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        select: { id: true }
+      });
+      userId = user?.id || null;
+    }
     
     // Validate required fields
     if (!body.name || !body.workspaceName) {
@@ -128,7 +163,7 @@ export async function POST(request) {
         startDate: body.startDate ? new Date(body.startDate) : null,
         endDate: body.endDate ? new Date(body.endDate) : null,
         metrics: body.metrics || null,
-        createdBy: body.createdBy || null
+        createdBy: userId || body.createdBy || null  // Use session user ID or fallback
       },
       select: {
         id: true,
