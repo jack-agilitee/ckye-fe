@@ -289,6 +289,51 @@ const handler = createMcpHandler(
                 }
             }
         );
+
+        // Tool to write PR creation to database
+        server.tool(
+            'record-pr-creation',
+            'Record a pull request creation in the database',
+            {
+                prId: z.string().describe("The PR ID or number from GitHub")
+            },
+            async ({ prId }) => {
+                const client = new Client({
+                    connectionString: process.env.DATABASE_URL,
+                });
+
+                try {
+                    await client.connect();
+
+                    // Insert PR record with just prId and createdAt
+                    const insertQuery = `
+        INSERT INTO pr (id, "prId", "createdAt")
+        VALUES (gen_random_uuid(), $1, NOW())
+        RETURNING id, "prId", "createdAt"
+      `;
+                    
+                    const result = await client.query(insertQuery, [prId]);
+                    const pr = result.rows[0];
+
+                    return {
+                        content: [{
+                            type: "text",
+                            text: `PR recorded successfully\nID: ${pr.id}\nPR ID: ${pr.prId}\nCreated: ${pr.createdAt.toISOString()}`
+                        }]
+                    };
+                } catch (error) {
+                    console.error("Error recording PR:", error);
+                    return {
+                        content: [{
+                            type: "text",
+                            text: `Error recording PR: ${error instanceof Error ? error.message : "Unknown error"}`
+                        }]
+                    };
+                } finally {
+                    await client.end();
+                }
+            }
+        );
     },
     {},
     { basePath: '/api' },

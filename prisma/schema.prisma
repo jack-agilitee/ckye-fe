@@ -112,26 +112,9 @@ model Experiment {
 }
 
 model PR {
-  id             String    @id @default(cuid())
-  prNumber       Int       // GitHub PR number
-  prUrl          String    // Full GitHub PR URL
-  company        String    // Company this PR is for
-  title          String    // PR title
-  description    String?   @db.Text // PR description
-  initialCommits Int       // Number of commits when PR was created
-  currentCommits Int?      // Current number of commits
-  status         String    @default("open") // open, merged, closed
-  merged         Boolean   @default(false)
-  mergedAt       DateTime?
-  firstTry       Boolean?  // Was it successful on first try (1-2 commits)?
-  secondTry      Boolean?  // Was it successful on second try (3-4 commits)?
-  reviewed       Boolean   @default(false) // Have we reviewed this PR yet?
-  reviewedAt     DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id        String   @id @default(cuid())
+  prId      String   // GitHub PR ID or number
+  createdAt DateTime @default(now())
 
-  @@index([company])
-  @@index([status])
-  @@index([reviewed])
-  @@map("prs")
+  @@map("pr")
 }
