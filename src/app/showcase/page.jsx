@@ -14,6 +14,7 @@ import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import ChartSection from '@/components/molecules/ChartSection/ChartSection';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import Avatar from '@/components/atoms/Avatar/Avatar';
+import InteractiveIcon from '@/components/atoms/InteractiveIcon/InteractiveIcon';
 import SettingsModal from '@/components/organisms/SettingsModal/SettingsModal';
 import AddWorkspaceModal from '@/components/organisms/AddWorkspaceModal/AddWorkspaceModal';
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
@@ -987,6 +988,134 @@ const options = [
   size="large" 
   variant="primary" 
   className="custom-avatar"
+/>`}
+              </pre>
+            </div>
+          </div>
+
+          {/* InteractiveIcon Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>InteractiveIcon</h3>
+            <p className={styles.showcase__componentDescription}>
+              An interactive three-dot menu icon button with hover state
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default Interactive Icon</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <InteractiveIcon 
+                    onClick={() => alert('Menu icon clicked!')}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Size Variants</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', display: 'flex', gap: '16px', alignItems: 'center' }}>
+                  <InteractiveIcon 
+                    size="small"
+                    onClick={() => console.log('Small icon clicked')}
+                    ariaLabel="Small menu"
+                  />
+                  <InteractiveIcon 
+                    size="medium"
+                    onClick={() => console.log('Medium icon clicked')}
+                    ariaLabel="Medium menu"
+                  />
+                  <InteractiveIcon 
+                    size="large"
+                    onClick={() => console.log('Large icon clicked')}
+                    ariaLabel="Large menu"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Aria Labels</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', display: 'flex', gap: '16px' }}>
+                  <InteractiveIcon 
+                    onClick={() => console.log('Settings')}
+                    ariaLabel="Open settings menu"
+                  />
+                  <InteractiveIcon 
+                    onClick={() => console.log('User actions')}
+                    ariaLabel="User action menu"
+                  />
+                  <InteractiveIcon 
+                    onClick={() => console.log('More options')}
+                    ariaLabel="Additional options"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Disabled State</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <InteractiveIcon 
+                    disabled
+                    onClick={() => console.log('This should not fire')}
+                    ariaLabel="Disabled menu"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>In Context (Table Row)</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <Avatar initial="JD" size="small" />
+                      <div>
+                        <div style={{ color: '#D5D5D5' }}>John Doe</div>
+                        <div style={{ color: '#9B9B9B', fontSize: '12px' }}>john@example.com</div>
+                      </div>
+                    </div>
+                    <InteractiveIcon 
+                      onClick={() => alert('User actions menu')}
+                      ariaLabel="User actions"
+                    />
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderTop: '1px solid #2a2a2a' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <Avatar initial="JS" size="small" variant="primary" />
+                      <div>
+                        <div style={{ color: '#D5D5D5' }}>Jane Smith</div>
+                        <div style={{ color: '#9B9B9B', fontSize: '12px' }}>jane@example.com</div>
+                      </div>
+                    </div>
+                    <InteractiveIcon 
+                      onClick={() => alert('User actions menu')}
+                      ariaLabel="User actions"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import InteractiveIcon from '@/components/atoms/InteractiveIcon/InteractiveIcon';
+
+// Basic usage
+<InteractiveIcon onClick={handleClick} />
+
+// Size variants
+<InteractiveIcon size="small" onClick={handleClick} />
+<InteractiveIcon size="medium" onClick={handleClick} />
+<InteractiveIcon size="large" onClick={handleClick} />
+
+// Custom aria label
+<InteractiveIcon 
+  onClick={handleClick}
+  ariaLabel="Open settings menu"
+/>
+
+// Disabled state
+<InteractiveIcon 
+  disabled
+  onClick={handleClick}
 />`}
               </pre>
             </div>

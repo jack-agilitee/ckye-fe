@@ -1,0 +1,66 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.interactive-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s ease;
+  border-radius: 4px;
+  
+  &__icon {
+    display: block;
+    filter: brightness(0) saturate(100%) invert(65%) sepia(8%) saturate(192%) hue-rotate(314deg) brightness(93%) contrast(89%);
+  }
+
+  // Size variants
+  &--small {
+    width: 24px;
+    height: 24px;
+  }
+
+  &--medium {
+    width: 32px;
+    height: 32px;
+  }
+
+  &--large {
+    width: 40px;
+    height: 40px;
+  }
+
+  // Hover state
+  &--hover,
+  &:hover:not(&--disabled) {
+    background-color: $black-hover-light;
+    
+    .interactive-icon__icon {
+      filter: brightness(0) saturate(100%) invert(100%);
+    }
+  }
+
+  // Focus state for accessibility
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+
+  // Active/pressed state
+  &:active:not(&--disabled) {
+    transform: scale(0.95);
+  }
+
+  // Disabled state
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    
+    &:hover {
+      background-color: transparent;
+    }
+  }
+}
