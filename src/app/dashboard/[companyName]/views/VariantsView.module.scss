@@ -70,20 +70,27 @@
   }
 
   &__back-button {
-    @include body-medium;
-    @include font-medium;
-    background: $black-light;
-    border: 1px solid rgba($white-secondary, 0.1);
-    color: $white-secondary;
-    cursor: pointer;
-    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: transparent;
+    border: 1px solid $white-secondary;
     border-radius: 8px;
+    color: $white-secondary;
+    font-family: $font-family-secondary;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
 
     &:hover {
-      background-color: $background-hover;
+      background-color: rgba($white-secondary, 0.05);
       color: $white-primary;
+      border-color: $white-primary;
     }
 
     &:focus-visible {

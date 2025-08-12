@@ -180,7 +180,8 @@ export default function VariantsView({ companyName }) {
             onClick={handleBackToVariants}
             className={styles['variants-view__back-button']}
           >
-            ← Back to All Variants
+            <img src="/chevron-left.svg" alt="" width={16} height={16} />
+            Back to All Variants
           </button>
         </div>
         
@@ -218,7 +219,8 @@ export default function VariantsView({ companyName }) {
             onClick={handleCancelEdit}
             className={styles['variants-view__back-button']}
           >
-            ← Back to All Variants
+            <img src="/chevron-left.svg" alt="" width={16} height={16} />
+            Back to All Variants
           </button>
         </div>
         
