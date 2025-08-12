@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useUser } from '@/context/UserContext';
 import { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType'
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
@@ -27,11 +28,36 @@ const Sidebar = ({
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useUser();
+  const [currentView, setCurrentView] = useState(null);
+  
+  // Get view from URL on client side
+  useEffect(() => {
+    const handleLocationChange = () => {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        setCurrentView(params.get('view'));
+      }
+    };
+
+    // Initial check
+    handleLocationChange();
+
+    // Listen for popstate events (browser back/forward)
+    window.addEventListener('popstate', handleLocationChange);
+    
+    // Also check when pathname changes or component updates
+    handleLocationChange();
+
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+    };
+  }, [pathname]);
   
   // Determine if user is admin based on userType from UserContext
   const isAdmin = user?.userType === SEAT_TYPES.ADMIN;
 
   const handleContextItemClick = (item) => {
+    setCurrentView(null); // Clear view when selecting a page
     if (onContextItemClick) {
       onContextItemClick(item);
     }
@@ -150,14 +176,20 @@ const Sidebar = ({
                   <ListItem
                     text="Variants"
                     icon="/sparkle.svg"
-                    selected={pathname?.includes('/variants')}
-                    onClick={() => router.push(`/variants/${accountName.toLowerCase()}`)}
+                    selected={currentView === 'variants'}
+                    onClick={() => {
+                      setCurrentView('variants');
+                      router.push(`/dashboard/${accountName.toLowerCase()}?view=variants`);
+                    }}
                   />
                   <ListItem
                     text="Experiments"
                     icon="/shuffle.svg"
-                    selected={pathname?.includes('/experiments')}
-                    onClick={() => router.push(`/experiments/${accountName.toLowerCase()}`)}
+                    selected={currentView === 'experiments'}
+                    onClick={() => {
+                      setCurrentView('experiments');
+                      router.push(`/dashboard/${accountName.toLowerCase()}?view=experiments`);
+                    }}
                   />
                   <ListItem
                     text="Settings"

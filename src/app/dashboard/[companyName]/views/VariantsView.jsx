@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
-import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import VariantsTable from '@/components/templates/VariantsTable/VariantsTable';
 import VariantsModal from '@/components/organisms/VariantsModal/VariantsModal';
@@ -10,14 +8,12 @@ import MarkdownEditor from '@/components/organisms/MarkdownEditor/MarkdownEditor
 import TextField from '@/components/atoms/TextField/TextField';
 import Button from '@/components/atoms/Button/Button';
 import { getVariants, setVariantToMaster, createVariant } from '@/lib/api/variants';
-import styles from './page.module.scss';
+import styles from './VariantsView.module.scss';
 
 // Transform API data to match component expectations
 const transformVariantData = (apiVariant, index) => {
-  // Extract variant number from summary or use index
-  const variantNumber = index + 1; // Start from Variant 2
+  const variantNumber = index + 1;
   
-  // Use actual user data if available, otherwise use default
   let createdBy;
   if (apiVariant.user) {
     createdBy = {
@@ -35,7 +31,7 @@ const transformVariantData = (apiVariant, index) => {
   
   return {
     id: apiVariant.id,
-    fileName: 'Claude.md', // Default filename, could be extracted from content
+    fileName: 'Claude.md',
     variant: `Variant ${variantNumber}`,
     createdDate: new Date(apiVariant.createdAt).toISOString().split('T')[0],
     createdBy: createdBy,
@@ -44,46 +40,28 @@ const transformVariantData = (apiVariant, index) => {
   };
 };
 
-// Sidebar context items - matching Figma design
-const contextItems = [
-  { id: '1', name: 'Claude.md' },
-  { id: '2', name: 'Claude.md' },
-  { id: '3', name: 'Claude.md' },
-  { id: '4', name: 'Claude.md' }
-];
-
-export default function VariantsPage({ params }) {
-  const { company } = params;
+export default function VariantsView({ companyName }) {
   const [searchValue, setSearchValue] = useState('');
   const [variants, setVariants] = useState([]);
   const [filteredVariants, setFilteredVariants] = useState([]);
-  const [selectedContextItem, setSelectedContextItem] = useState('suggested-variants');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // New state for edit mode
   const [isEditMode, setIsEditMode] = useState(false);
   const [editorContent, setEditorContent] = useState('');
   const [variantSummary, setVariantSummary] = useState('');
 
-  // Fetch variants from API on component mount
+  // Fetch variants on mount
   useEffect(() => {
     const fetchVariants = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // Use company param directly as workspaceName (from URL like /variants/ae)
-        const workspaceName = company?.toUpperCase() || 'AE';
+        const workspaceName = companyName?.toUpperCase() || 'AE';
+        const response = await getVariants({ workspaceName });
         
-        // Fetch variants filtered by workspaceName
-        const response = await getVariants({ 
-          workspaceName
-        });
-        
-        // Transform API data to match component structure
         const transformedVariants = response.data.map((variant, index) => 
           transformVariantData(variant, index)
         );
@@ -99,7 +77,7 @@ export default function VariantsPage({ params }) {
     };
 
     fetchVariants();
-  }, [company]);
+  }, [companyName]);
 
   const handleSearch = (value) => {
     const filtered = variants.filter(variant => 
@@ -117,7 +95,6 @@ export default function VariantsPage({ params }) {
   };
 
   const handleAddVariant = () => {
-    console.log('Add Variant clicked');
     setIsEditMode(true);
     setEditorContent('# New Variant\n\nStart writing your variant content here...');
     setVariantSummary('');
@@ -125,10 +102,8 @@ export default function VariantsPage({ params }) {
   
   const handleSaveVariant = async () => {
     try {
-      // Get workspace name from URL
-      const workspaceName = company?.toUpperCase() || 'AE';
+      const workspaceName = companyName?.toUpperCase() || 'AE';
       
-      // Create the variant
       const variantData = {
         content: editorContent,
         summary: variantSummary || 'Untitled Variant',
@@ -145,13 +120,11 @@ export default function VariantsPage({ params }) {
       setVariants(transformedVariants);
       setFilteredVariants(transformedVariants);
       
-      // Exit edit mode after saving
       setIsEditMode(false);
       setEditorContent('');
       setVariantSummary('');
     } catch (error) {
       console.error('Error saving variant:', error);
-      // TODO: Show error message to user
     }
   };
   
@@ -159,11 +132,6 @@ export default function VariantsPage({ params }) {
     setIsEditMode(false);
     setEditorContent('');
     setVariantSummary('');
-  };
-
-  const handleContextItemClick = (item) => {
-    console.log('Context item clicked:', item);
-    setSelectedContextItem(item.id);
   };
 
   const handleRowClick = (variant) => {
@@ -180,127 +148,99 @@ export default function VariantsPage({ params }) {
     if (!selectedVariant) return;
     
     try {
-      // Use the company param directly as the company name
-      const companyName = company?.toUpperCase() || 'AE';
-      
-      // Find the original variant data to get the ID
+      const companyNameUpper = companyName?.toUpperCase() || 'AE';
       const originalVariant = variants.find(v => v.id === selectedVariant.id);
+      
       if (!originalVariant || !originalVariant.id) {
         console.error('Could not find variant ID');
         return;
       }
       
-      // Call API to set variant to master
-      // Use the fileName from selectedVariant as the page name
       const pageName = selectedVariant.fileName || 'Claude.md';
-      const result = await setVariantToMaster(originalVariant.id, companyName, pageName);
-      console.log('Variant set to master:', result);
+      await setVariantToMaster(originalVariant.id, companyNameUpper, pageName);
       
-      // Refresh variants list after successful update
-      const workspaceName = companyName;
-      const response = await getVariants({ workspaceName });
-      
-      // Transform and update variants
+      // Refresh variants list
+      const response = await getVariants({ workspaceName: companyNameUpper });
       const transformedVariants = response.data.map((variant, index) => 
         transformVariantData(variant, index)
       );
       setVariants(transformedVariants);
       setFilteredVariants(transformedVariants);
       
-      // Close modal
       handleCloseModal();
     } catch (error) {
       console.error('Error setting variant to master:', error);
-      // TODO: Show error message to user
     }
   };
 
-
-  const sidebarContent = (
-    <Sidebar
-      contextItems={contextItems}
-      selectedItemId={selectedContextItem}
-      accountName={company || 'Agilitee'}
-      accountInitial={company ? company.charAt(0).toUpperCase() : 'A'}
-      onContextItemClick={handleContextItemClick}
-      isAdminMode={false}
-    />
-  );
-
-  const mainContent = isEditMode ? (
-    // Edit mode - show markdown editor
-    <div className={styles['variants-page']}>
-      <div className={styles['variants-page__edit-header']}>
-        <TextField
-          placeholder="Enter variant summary..."
-          value={variantSummary}
-          onChange={(e) => setVariantSummary(e.target.value)}
-          className={styles['variants-page__summary-field']}
-        />
-        <div className={styles['variants-page__edit-actions']}>
-          <Button
-            variant="primary"
-            icon={null}
-            onClick={handleCancelEdit}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="secondary"
-            icon={null}
-            onClick={handleSaveVariant}
-          >
-            Save
-          </Button>
+  if (isEditMode) {
+    return (
+      <div className={styles['variants-view']}>
+        <div className={styles['variants-view__edit-header']}>
+          <TextField
+            placeholder="Enter variant summary..."
+            value={variantSummary}
+            onChange={(e) => setVariantSummary(e.target.value)}
+            className={styles['variants-view__summary-field']}
+          />
+          <div className={styles['variants-view__edit-actions']}>
+            <Button
+              variant="primary"
+              icon={null}
+              onClick={handleCancelEdit}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="secondary"
+              icon={null}
+              onClick={handleSaveVariant}
+            >
+              Save
+            </Button>
+          </div>
+        </div>
+        
+        <div className={styles['variants-view__editor-container']}>
+          <MarkdownEditor
+            value={editorContent}
+            onChange={setEditorContent}
+          />
         </div>
       </div>
-      
-      <div className={styles['variants-page__editor-container']}>
-        <MarkdownEditor
-          value={editorContent}
-          onChange={setEditorContent}
-        />
-      </div>
-    </div>
-  ) : (
-    // Normal mode - show variants table
-    <div className={styles['variants-page']}>
-      <SearchHeader
-        title="Variants"
-        searchPlaceholder="Search Variants by Name"
-        onSearch={handleSearch}
-        searchValue={searchValue}
-        onSearchChange={handleSearchChange}
-        buttonText="Add Variant"
-        onButtonClick={handleAddVariant}
-        className={styles['variants-page__header']}
-      />
-      
-      {loading ? (
-        <div className={styles['variants-page__loading']}>
-          Loading variants...
-        </div>
-      ) : error ? (
-        <div className={styles['variants-page__error']}>
-          Error: {error}
-        </div>
-      ) : (
-        <VariantsTable 
-          variants={filteredVariants}
-          onRowClick={handleRowClick}
-          className={styles['variants-page__table']}
-        />
-      )}
-    </div>
-  );
+    );
+  }
 
   return (
     <>
-      <TwoColumnPage
-        leftContent={sidebarContent}
-        rightContent={mainContent}
-        className={styles['variants-page__wrapper']}
-      />
+      <div className={styles['variants-view']}>
+        <SearchHeader
+          title="Variants"
+          searchPlaceholder="Search Variants by Name"
+          onSearch={handleSearch}
+          searchValue={searchValue}
+          onSearchChange={handleSearchChange}
+          buttonText="Add Variant"
+          onButtonClick={handleAddVariant}
+          className={styles['variants-view__header']}
+        />
+        
+        {loading ? (
+          <div className={styles['variants-view__loading']}>
+            Loading variants...
+          </div>
+        ) : error ? (
+          <div className={styles['variants-view__error']}>
+            Error: {error}
+          </div>
+        ) : (
+          <VariantsTable 
+            variants={filteredVariants}
+            onRowClick={handleRowClick}
+            className={styles['variants-view__table']}
+          />
+        )}
+      </div>
       
       <VariantsModal
         isOpen={isModalOpen}

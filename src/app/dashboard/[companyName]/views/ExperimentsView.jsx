@@ -1,20 +1,16 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
-import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
-import Sidebar from '@/components/templates/Sidebar/Sidebar';
+import { useState, useEffect } from 'react';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import ExperimentsTable from '@/components/templates/ExperimentsTable/ExperimentsTable';
 import ExperimentsModal from '@/components/organisms/ExperimentsModal/ExperimentsModal';
 import CreateExperimentModal from '@/components/organisms/CreateExperimentModal/CreateExperimentModal';
-import { getExperimentsByWorkspace, createExperiment } from '@/lib/api/experiments';
+import { getExperimentsByWorkspace, createExperiment, deactivateExperiment } from '@/lib/api/experiments';
 import { getVariants } from '@/lib/api/variants';
-import { getPages } from '@/lib/api/pages';
-import styles from './page.module.scss';
+import styles from './ExperimentsView.module.scss';
 
 // Transform API data to match component expectations
 const transformExperimentData = (apiExperiment) => {
-  // Create comparison text from page and variant names, or use description
   let comparison;
   
   if (apiExperiment.pageName && apiExperiment.variantName) {
@@ -23,7 +19,6 @@ const transformExperimentData = (apiExperiment) => {
     comparison = apiExperiment.description || 'No comparison available';
   }
   
-  // Use actual user data if available, otherwise default
   let createdBy;
   if (apiExperiment.createdByUser) {
     const user = apiExperiment.createdByUser;
@@ -33,7 +28,6 @@ const transformExperimentData = (apiExperiment) => {
       email: user.email || 'unknown@agilitee.com'
     };
   } else {
-    // Fallback if no user data
     createdBy = {
       initial: 'S',
       name: 'System',
@@ -56,12 +50,9 @@ const transformExperimentData = (apiExperiment) => {
   };
 };
 
-const ExperimentsPage = ({ params }) => {
-  const resolvedParams = use(params);
-  const company = resolvedParams?.company || 'Agilitee';
+export default function ExperimentsView({ companyName, pages }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [experiments, setExperiments] = useState([]);
-  const [pages, setPages] = useState([]);
   const [variants, setVariants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -69,29 +60,23 @@ const ExperimentsPage = ({ params }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  // Fetch experiments, pages, and variants from API on component mount
+  // Fetch experiments and variants on mount
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // Use company param directly as workspaceName (from URL like /experiments/ae)
-        const workspaceName = company?.toUpperCase() || 'AE';
+        const workspaceName = companyName?.toUpperCase() || 'AE';
         
-        // Fetch experiments, pages, and variants in parallel
-        const [experimentsResponse, pagesResponse, variantsResponse] = await Promise.all([
+        // Fetch experiments and variants in parallel
+        const [experimentsResponse, variantsResponse] = await Promise.all([
           getExperimentsByWorkspace(workspaceName),
-          getPages(workspaceName),  // Using workspaceName as company name for pages
           getVariants({ workspaceName })
         ]);
         
-        // Transform and set experiments
         const transformedExperiments = experimentsResponse.data.map(transformExperimentData);
         setExperiments(transformedExperiments);
-        
-        // Set pages and variants
-        setPages(pagesResponse.data || []);
         setVariants(variantsResponse.data || []);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -102,7 +87,7 @@ const ExperimentsPage = ({ params }) => {
     };
 
     fetchData();
-  }, [company]);
+  }, [companyName]);
 
   // Filter experiments based on search query
   const filteredExperiments = experiments.filter(experiment => {
@@ -138,9 +123,8 @@ const ExperimentsPage = ({ params }) => {
 
   const handleCreateExperiment = async (experimentData) => {
     try {
-      const workspaceName = company?.toUpperCase() || 'AE';
+      const workspaceName = companyName?.toUpperCase() || 'AE';
       
-      // Create experiment with pageId and variantId from the form
       await createExperiment({
         name: experimentData.name,
         description: experimentData.description,
@@ -152,63 +136,61 @@ const ExperimentsPage = ({ params }) => {
       
       // Refresh experiments list
       const response = await getExperimentsByWorkspace(workspaceName);
-      
       const transformedExperiments = response.data.map(transformExperimentData);
       setExperiments(transformedExperiments);
       setIsCreateModalOpen(false);
     } catch (error) {
       console.error('Error creating experiment:', error);
-      // TODO: Show error message to user
     }
   };
 
-  const handleContextItemClick = (item) => {
-    console.log('Context item clicked:', item);
+  const handleEndExperiment = async () => {
+    if (!selectedExperiment) return;
+    
+    try {
+      await deactivateExperiment(selectedExperiment.id);
+      
+      // Refresh experiments list
+      const workspaceName = companyName?.toUpperCase() || 'AE';
+      const response = await getExperimentsByWorkspace(workspaceName);
+      const transformedExperiments = response.data.map(transformExperimentData);
+      setExperiments(transformedExperiments);
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error ending experiment:', error);
+    }
   };
-
-  const leftContent = (
-    <Sidebar 
-      accountName={company}
-      selectedItemId="experiments"
-      onContextItemClick={handleContextItemClick}
-    />
-  );
-
-  const rightContent = (
-    <>
-      <SearchHeader
-        title="Experiments"
-        searchPlaceholder="Search Experiments by Name"
-        onSearch={(query) => console.log('Searching:', query)}
-        searchValue={searchQuery}
-        onSearchChange={handleSearchChange}
-        buttonText="New Experiment"
-        onButtonClick={handleNewExperiment}
-      />
-      {loading ? (
-        <div className={styles['experiments-page__loading']}>
-          Loading experiments...
-        </div>
-      ) : error ? (
-        <div className={styles['experiments-page__error']}>
-          Error: {error}
-        </div>
-      ) : (
-        <ExperimentsTable 
-          experiments={filteredExperiments}
-          onViewReport={handleViewReport}
-        />
-      )}
-    </>
-  );
 
   return (
     <>
-      <TwoColumnPage
-        leftContent={leftContent}
-        rightContent={rightContent}
-        className={styles['experiments-page']}
-      />
+      <div className={styles['experiments-view']}>
+        <SearchHeader
+          title="Experiments"
+          searchPlaceholder="Search Experiments by Name"
+          onSearch={(query) => console.log('Searching:', query)}
+          searchValue={searchQuery}
+          onSearchChange={handleSearchChange}
+          buttonText="New Experiment"
+          onButtonClick={handleNewExperiment}
+          className={styles['experiments-view__header']}
+        />
+        
+        {loading ? (
+          <div className={styles['experiments-view__loading']}>
+            Loading experiments...
+          </div>
+        ) : error ? (
+          <div className={styles['experiments-view__error']}>
+            Error: {error}
+          </div>
+        ) : (
+          <ExperimentsTable 
+            experiments={filteredExperiments}
+            onViewReport={handleViewReport}
+            className={styles['experiments-view__table']}
+          />
+        )}
+      </div>
       
       {isModalOpen && selectedExperiment && (
         <ExperimentsModal
@@ -222,20 +204,7 @@ const ExperimentsPage = ({ params }) => {
           variantName={selectedExperiment.variantName}
           pageStats={selectedExperiment.pageStats}
           variantStats={selectedExperiment.variantStats}
-          onEndExperiment={async () => {
-            try {
-              const { deactivateExperiment } = await import('@/lib/api/experiments');
-              await deactivateExperiment(selectedExperiment.id);
-              // Refresh experiments list
-              const workspaceName = company?.toUpperCase() || 'AE';
-              const response = await getExperimentsByWorkspace(workspaceName);
-              const transformedExperiments = response.data.map(transformExperimentData);
-              setExperiments(transformedExperiments);
-              handleCloseModal();
-            } catch (error) {
-              console.error('Error ending experiment:', error);
-            }
-          }}
+          onEndExperiment={handleEndExperiment}
         />
       )}
       
@@ -250,6 +219,4 @@ const ExperimentsPage = ({ params }) => {
       )}
     </>
   );
-};
-
-export default ExperimentsPage;
+}

@@ -1,9 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { upsertPage } from '@/lib/api/pages';
 import { useDashboard } from '@/context/DashboardContext';
+import VariantsView from './views/VariantsView';
+import ExperimentsView from './views/ExperimentsView';
+import styles from './DashboardPageClient.module.scss';
 
 const MarkdownEditor = dynamic(
   () => import('../../../components/organisms/MarkdownEditor/MarkdownEditor'),
@@ -11,14 +15,17 @@ const MarkdownEditor = dynamic(
     ssr: false,
     loading: () => <div>Loading editor...</div>
   }
-)
-import styles from './DashboardPageClient.module.scss';
+);
 
 export default function DashboardPageClient() {
-  const { currentPage, companyName, updatePage } = useDashboard();
+  const { currentPage, companyName, updatePage, pages } = useDashboard();
+  const searchParams = useSearchParams();
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
   const saveTimeoutRef = useRef(null);
+
+  // Get the current view from URL params
+  const view = searchParams.get('view') || 'pages';
 
   // Update content when page changes
   useEffect(() => {
@@ -27,10 +34,10 @@ export default function DashboardPageClient() {
       clearTimeout(saveTimeoutRef.current);
     }
 
-    if (currentPage) {
+    if (currentPage && view === 'pages') {
       setLastSaved(null); // Reset last saved time for new page
     }
-  }, [currentPage]);
+  }, [currentPage, view]);
 
   // Auto-save function
   const saveContent = useCallback(async (newContent) => {
@@ -78,6 +85,16 @@ export default function DashboardPageClient() {
     };
   }, []);
 
+  // Render different views based on the view parameter
+  if (view === 'variants') {
+    return <VariantsView companyName={companyName} />;
+  }
+
+  if (view === 'experiments') {
+    return <ExperimentsView companyName={companyName} pages={pages} />;
+  }
+
+  // Default pages view with MarkdownEditor
   return (
     <div className={styles['dashboard-content']}>
       <div className={styles['dashboard-content__header']}>
