@@ -96,7 +96,7 @@ export default function VariantsView({ companyName }) {
 
   const handleAddVariant = () => {
     setIsEditMode(true);
-    setEditorContent('# New Variant\n\nStart writing your variant content here...');
+    setEditorContent('# New Variant\n\nStart writing your variant content here...\n\n## Instructions\n\n## Context\n\n## Examples');
     setVariantSummary('');
   };
   
@@ -203,7 +203,7 @@ export default function VariantsView({ companyName }) {
         
         <div className={styles['variants-view__editor-container']}>
           <MarkdownEditor
-            value={editorContent}
+            markdown={editorContent || '# Start typing to create your variant\n\nBegin writing your CLAUDE.md variant content here.\n\n## Tips:\n- Use markdown formatting for better structure\n- Include clear instructions and context\n- Add examples when helpful'}
             onChange={setEditorContent}
           />
         </div>
