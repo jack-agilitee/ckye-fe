@@ -115,6 +115,19 @@
     color: $text-secondary;
   }
 
+  &__save-status {
+    margin-top: 8px;
+    @include body-small;
+    color: $text-secondary;
+
+    span {
+      display: inline-block;
+      padding: 4px 8px;
+      background: rgba($primary-color, 0.1);
+      border-radius: 4px;
+    }
+  }
+
   &__fullscreen-editor {
     flex: 1;
     overflow-y: auto;

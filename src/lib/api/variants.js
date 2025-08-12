@@ -153,3 +153,31 @@ export async function setVariantToMaster(variantId, company, pageName = null) {
     throw error;
   }
 }
+
+/**
+ * Update variant content
+ * @param {string} variantId - The variant ID
+ * @param {string} content - The updated markdown content
+ * @returns {Promise<Object>}
+ */
+export async function updateVariantContent(variantId, content) {
+  try {
+    const response = await fetch(`${API_BASE}/api/variants/${variantId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to update variant content');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error updating variant content:', error);
+    throw error;
+  }
+}
