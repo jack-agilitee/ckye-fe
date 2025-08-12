@@ -69,15 +69,16 @@ const Sidebar = ({
     }
   };
 
-  const handleSettingsClick = () => {
-    console.log('Settings');
-    // TODO: Navigate to settings page
-  };
+  // Temporarily commented out - features not yet implemented (CKYE-2)
+  // const handleSettingsClick = () => {
+  //   console.log('Settings');
+  //   // TODO: Navigate to settings page
+  // };
 
-  const handleInviteMembersClick = () => {
-    console.log('Invite Members');
-    // TODO: Navigate to invite members page
-  };
+  // const handleInviteMembersClick = () => {
+  //   console.log('Invite Members');
+  //   // TODO: Navigate to invite members page
+  // };
 
   const handleAdminClick = () => {
     router.push('/admin/workspaces');
@@ -191,6 +192,7 @@ const Sidebar = ({
                       router.push(`/dashboard/${accountName.toLowerCase()}?view=experiments`);
                     }}
                   />
+                  {/* Temporarily hidden - features not yet implemented (CKYE-2)
                   <ListItem
                     text="Settings"
                     icon="/settings.svg"
@@ -203,6 +205,7 @@ const Sidebar = ({
                     selected={false}
                     onClick={handleInviteMembersClick}
                   />
+                  */}
                 </div>
               </div>
 
