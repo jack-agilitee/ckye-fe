@@ -5,13 +5,16 @@ import { cookies } from 'next/headers';
 export async function generateMetadata({ params }) {
   const { companyName } = params;
   
+  // Force uppercase for the display name
+  const displayName = companyName.toUpperCase();
+  
   return {
-    title: `${companyName} Dashboard | Ckye`,
-    description: `Manage ${companyName} pages and documentation in the Ckye dashboard`,
-    keywords: ['dashboard', 'markdown', 'pages', companyName, 'Ckye'],
+    title: `${displayName} Dashboard | Ckye`,
+    description: `Manage ${displayName} pages and documentation in the Ckye dashboard`,
+    keywords: ['dashboard', 'markdown', 'pages', displayName, 'Ckye'],
     openGraph: {
-      title: `${companyName} Dashboard | Ckye`,
-      description: `Manage ${companyName} pages and documentation`,
+      title: `${displayName} Dashboard | Ckye`,
+      description: `Manage ${displayName} pages and documentation`,
       type: 'website',
     },
   };
