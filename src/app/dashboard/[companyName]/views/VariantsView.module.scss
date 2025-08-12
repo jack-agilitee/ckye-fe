@@ -71,16 +71,24 @@
 
   &__back-button {
     @include body-medium;
-    background: transparent;
-    border: none;
-    color: $text-secondary;
+    @include font-medium;
+    background: $black-light;
+    border: 1px solid rgba($white-secondary, 0.1);
+    color: $white-secondary;
     cursor: pointer;
     padding: 8px 16px;
     border-radius: 8px;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    white-space: nowrap;
 
     &:hover {
       background-color: $background-hover;
+      color: $white-primary;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
     }
   }
 

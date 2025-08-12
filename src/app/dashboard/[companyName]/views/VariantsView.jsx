@@ -176,14 +176,12 @@ export default function VariantsView({ companyName }) {
     return (
       <div className={styles['variants-view__fullscreen']}>
         <div className={styles['variants-view__fullscreen-header']}>
-          <Button
-            variant="tertiary"
-            icon={null}
+          <button
             onClick={handleBackToVariants}
             className={styles['variants-view__back-button']}
           >
             ← Back to All Variants
-          </Button>
+          </button>
         </div>
         
         <div className={styles['variants-view__fullscreen-info']}>
@@ -216,14 +214,12 @@ export default function VariantsView({ companyName }) {
     return (
       <div className={styles['variants-view__fullscreen']}>
         <div className={styles['variants-view__fullscreen-header']}>
-          <Button
-            variant="tertiary"
-            icon={null}
+          <button
             onClick={handleCancelEdit}
             className={styles['variants-view__back-button']}
           >
             ← Back to All Variants
-          </Button>
+          </button>
         </div>
         
         <div className={styles['variants-view__fullscreen-info']}>
