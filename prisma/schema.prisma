@@ -65,13 +65,13 @@ model Page {
 }
 
 model Suggestion {
-  id            String   @id @default(cuid())
-  content       String   @db.Text
-  workspaceName String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id          String   @id @default(cuid())
+  content     String   @db.Text
+  workspaceId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  @@index([workspaceName])
+  @@index([workspaceId])
   @@map("suggestions")
 }
 
