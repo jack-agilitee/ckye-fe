@@ -72,7 +72,7 @@ export default function DashboardSidebar() {
       updatePage(pageId, { name: formattedName });
 
       // Update the page in the database
-      const updatedPage = await upsertPage({
+      await upsertPage({
         id: pageId,
         name: formattedName,
         company: companyName,
