@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import VariantsTable from '@/components/templates/VariantsTable/VariantsTable';
-import VariantsModal from '@/components/organisms/VariantsModal/VariantsModal';
 import MarkdownEditor from '@/components/organisms/MarkdownEditor/MarkdownEditor';
 import TextField from '@/components/atoms/TextField/TextField';
 import Button from '@/components/atoms/Button/Button';
@@ -44,11 +43,11 @@ export default function VariantsView({ companyName }) {
   const [searchValue, setSearchValue] = useState('');
   const [variants, setVariants] = useState([]);
   const [filteredVariants, setFilteredVariants] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isViewMode, setIsViewMode] = useState(false);
   const [editorContent, setEditorContent] = useState('');
   const [variantSummary, setVariantSummary] = useState('');
 
@@ -136,11 +135,11 @@ export default function VariantsView({ companyName }) {
 
   const handleRowClick = (variant) => {
     setSelectedVariant(variant);
-    setIsModalOpen(true);
+    setIsViewMode(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleBackToVariants = () => {
+    setIsViewMode(false);
     setSelectedVariant(null);
   };
 
@@ -167,89 +166,124 @@ export default function VariantsView({ companyName }) {
       setVariants(transformedVariants);
       setFilteredVariants(transformedVariants);
       
-      handleCloseModal();
+      handleBackToVariants();
     } catch (error) {
       console.error('Error setting variant to master:', error);
     }
   };
 
+  if (isViewMode && selectedVariant) {
+    return (
+      <div className={styles['variants-view__fullscreen']}>
+        <div className={styles['variants-view__fullscreen-header']}>
+          <Button
+            variant="tertiary"
+            icon={null}
+            onClick={handleBackToVariants}
+            className={styles['variants-view__back-button']}
+          >
+            ← Back to All Variants
+          </Button>
+        </div>
+        
+        <div className={styles['variants-view__fullscreen-info']}>
+          <h1 className={styles['variants-view__fullscreen-title']}>{selectedVariant.fileName}</h1>
+          <span className={styles['variants-view__fullscreen-version']}>{selectedVariant.variant}</span>
+        </div>
+        
+        <div className={styles['variants-view__fullscreen-editor']}>
+          <MarkdownEditor
+            markdown={selectedVariant.content}
+            readOnly={true}
+          />
+        </div>
+        
+        <div className={styles['variants-view__fullscreen-actions']}>
+          <Button
+            variant="secondary"
+            icon={null}
+            onClick={handleSetToMaster}
+            className={styles['variants-view__action-button']}
+          >
+            Set to Master
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (isEditMode) {
     return (
-      <div className={styles['variants-view']}>
-        <div className={styles['variants-view__edit-header']}>
+      <div className={styles['variants-view__fullscreen']}>
+        <div className={styles['variants-view__fullscreen-header']}>
+          <Button
+            variant="tertiary"
+            icon={null}
+            onClick={handleCancelEdit}
+            className={styles['variants-view__back-button']}
+          >
+            ← Back to All Variants
+          </Button>
+        </div>
+        
+        <div className={styles['variants-view__fullscreen-info']}>
           <TextField
             placeholder="Enter variant summary..."
             value={variantSummary}
             onChange={(e) => setVariantSummary(e.target.value)}
             className={styles['variants-view__summary-field']}
           />
-          <div className={styles['variants-view__edit-actions']}>
-            <Button
-              variant="primary"
-              icon={null}
-              onClick={handleCancelEdit}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="secondary"
-              icon={null}
-              onClick={handleSaveVariant}
-            >
-              Save
-            </Button>
-          </div>
         </div>
         
-        <div className={styles['variants-view__editor-container']}>
+        <div className={styles['variants-view__fullscreen-editor']}>
           <MarkdownEditor
             markdown={editorContent || '# Start typing to create your variant\n\nBegin writing your CLAUDE.md variant content here.\n\n## Tips:\n- Use markdown formatting for better structure\n- Include clear instructions and context\n- Add examples when helpful'}
             onChange={setEditorContent}
           />
+        </div>
+        
+        <div className={styles['variants-view__fullscreen-actions']}>
+          <Button
+            variant="secondary"
+            icon={null}
+            onClick={handleSaveVariant}
+            className={styles['variants-view__action-button']}
+          >
+            Save Variant
+          </Button>
         </div>
       </div>
     );
   }
 
   return (
-    <>
-      <div className={styles['variants-view']}>
-        <SearchHeader
-          title="Variants"
-          searchPlaceholder="Search Variants by Name"
-          onSearch={handleSearch}
-          searchValue={searchValue}
-          onSearchChange={handleSearchChange}
-          buttonText="Add Variant"
-          onButtonClick={handleAddVariant}
-          className={styles['variants-view__header']}
-        />
-        
-        {loading ? (
-          <div className={styles['variants-view__loading']}>
-            Loading variants...
-          </div>
-        ) : error ? (
-          <div className={styles['variants-view__error']}>
-            Error: {error}
-          </div>
-        ) : (
-          <VariantsTable 
-            variants={filteredVariants}
-            onRowClick={handleRowClick}
-            className={styles['variants-view__table']}
-          />
-        )}
-      </div>
-      
-      <VariantsModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        title={selectedVariant?.fileName || ''}
-        version={selectedVariant?.variant || ''}
-        codeContent={selectedVariant?.content || ''}
-        onSetToMaster={handleSetToMaster}
+    <div className={styles['variants-view']}>
+      <SearchHeader
+        title="Variants"
+        searchPlaceholder="Search Variants by Name"
+        onSearch={handleSearch}
+        searchValue={searchValue}
+        onSearchChange={handleSearchChange}
+        buttonText="Add Variant"
+        onButtonClick={handleAddVariant}
+        className={styles['variants-view__header']}
       />
-    </>
+      
+      {loading ? (
+        <div className={styles['variants-view__loading']}>
+          Loading variants...
+        </div>
+      ) : error ? (
+        <div className={styles['variants-view__error']}>
+          Error: {error}
+        </div>
+      ) : (
+        <VariantsTable 
+          variants={filteredVariants}
+          onRowClick={handleRowClick}
+          className={styles['variants-view__table']}
+        />
+      )}
+    </div>
   );
 }
