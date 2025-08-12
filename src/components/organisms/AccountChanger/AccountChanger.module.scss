@@ -54,6 +54,7 @@
   &__name {
     @include button-text;
     color: $white-primary;
+    text-transform: uppercase;
   }
 
   &__chevron {
