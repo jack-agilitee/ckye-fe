@@ -208,7 +208,6 @@ export default function VariantsView({ companyName }) {
         <div className={styles['variants-view__fullscreen-editor']}>
           <MarkdownEditor
             markdown={isViewing ? selectedVariant.content : (editorContent || '# Start typing to create your variant\n\nBegin writing your CLAUDE.md variant content here.\n\n## Tips:\n- Use markdown formatting for better structure\n- Include clear instructions and context\n- Add examples when helpful')}
-            readOnly={isViewing}
             onChange={isEditing ? setEditorContent : undefined}
           />
         </div>

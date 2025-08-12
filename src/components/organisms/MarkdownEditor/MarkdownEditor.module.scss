@@ -16,6 +16,8 @@
       color: $white-primary;
       font-family: inherit;
       height: 100%;
+      display: flex;
+      flex-direction: column;
 
       // Toolbar styling
       .mdxeditor-toolbar {
@@ -24,6 +26,7 @@
         padding: 8px 16px;
         gap: 8px;
         flex-wrap: wrap;
+        flex-shrink: 0;
 
         button {
           background-color: $white-secondary;
@@ -77,6 +80,9 @@
         padding: 24px;
         color: $white-primary;
         background-color: $background-dark;
+        overflow-y: auto;
+        flex: 1;
+        min-height: 0;
 
         h1,
         h2,
