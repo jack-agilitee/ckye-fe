@@ -161,6 +161,32 @@
   &__highlight {
     color: $code-blue;
     font-weight: 600;
+    
+    &--yellow {
+      color: $accent-yellow;
+      font-weight: 600;
+    }
+    
+    &--green {
+      color: $accent-green-light;
+      font-weight: 600;
+    }
+    
+    &--red {
+      color: $code-red;
+      font-weight: 600;
+    }
+  }
+
+  &__winner-statement {
+    @include body-medium;
+    color: $white-primary;
+    margin: 8px 0 0 0;
+    padding-top: 8px;
+    line-height: 1.5;
+    
+    // Style for the trophy emoji and winner text
+    font-weight: 500;
   }
 
   &__stats {
@@ -182,6 +208,11 @@
 
     &--green {
       color: $accent-green-light;
+      font-weight: 600;
+    }
+    
+    &--red {
+      color: $code-red;
       font-weight: 600;
     }
   }

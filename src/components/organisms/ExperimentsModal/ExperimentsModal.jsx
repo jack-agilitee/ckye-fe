@@ -81,7 +81,7 @@ const ExperimentsModal = ({
     }
 
     const p = successes / total;
-    const z = 1.96; // 95% CI
+    const z = 1.645; // 90% CI
     const se = Math.sqrt((p * (1 - p)) / total);
 
     // Calculate bounds
@@ -129,26 +129,52 @@ const ExperimentsModal = ({
       confidenceLevel = ((1 - pVal) * 100).toFixed(2);
     }
 
-    // Create dynamic description
-    const variantNameText = variantName || 'Variant';
-    const pageNameText = pageName || 'Master';
-
+    // Determine the winner and create appropriate description
     let description;
+    let winner = null;
+    
     if (percentagePointDifference > 0) {
       // Variant is better
-      description = `${variantNameText} improved the 1st-try code acceptance rate by ${Math.abs(percentagePointDifference)}% compared to ${pageNameText}. Based on the data collected, we can be ${confidenceLevel}% confident that this improvement is real and not just due to random chance.`;
+      winner = 'variant';
+      description = `Variant increased 1st-try code acceptance rates by +${Math.abs(percentagePointDifference)}% compared to Master. Based on the data collected, we can be ${confidenceLevel}% confident that this improvement is real and not just due to random chance.`;
     } else if (percentagePointDifference < 0) {
-      // Variant is worse
-      description = `${variantNameText} decreased the 1st-try code acceptance rate by ${Math.abs(percentagePointDifference)}% compared to ${pageNameText}. Based on the data collected, we can be ${confidenceLevel}% confident that this change is real and not just due to random chance.`;
+      // Master is better
+      winner = 'master';
+      description = `Variant decreased 1st-try code acceptance rates by ${Math.abs(percentagePointDifference)}% compared to Master. Based on the data collected, we can be ${confidenceLevel}% confident that this improvement is real and not just due to random chance.`;
     } else {
-      description = `${variantNameText} showed no significant change in the 1st-try code acceptance rate compared to ${pageNameText}.`;
+      description = `Variant showed no significant change in the 1st-try code acceptance rate compared to Master.`;
+    }
+
+    // Add winner statement with emoji or non-significant statement
+    let winnerStatement = '';
+    const pValueThreshold = 0.10; // p < 0.10 for statistical significance
+    
+    if (winner && pVal !== 'N/A' && !isNaN(pVal)) {
+      const pValueNum = parseFloat(pVal);
+      if (pValueNum < pValueThreshold) {
+        // Statistically significant
+        if (winner === 'variant') {
+          winnerStatement = `Variant is the winner ✅. This result is statistically significant to p<.10.`;
+        } else {
+          winnerStatement = `Master is the winner ✅. This result is statistically significant to p<.05.`;
+        }
+      } else {
+        // Not statistically significant
+        if (winner === 'variant') {
+          winnerStatement = `Although Variant is the winner the result is not statistically significant to p<.10.`;
+        } else {
+          winnerStatement = `Although Master is the winner the result is not statistically significant to p<.10.`;
+        }
+      }
     }
 
     return {
       improvementPercentage: relativeChangePercentage,
       percentagePointDifference,
       confidenceLevel,
-      description
+      description,
+      winner,
+      winnerStatement
     };
   };
 
@@ -165,15 +191,31 @@ const ExperimentsModal = ({
 
     const difference = variantPercent - pagePercent;
     const absoluteDifference = Math.abs(difference);
+    
+    // Check if result is statistically significant
+    const pVal = statsData.pValue;
+    const isSignificant = pVal !== 'N/A' && !isNaN(pVal) && parseFloat(pVal) < 0.10;
+    
+    if (!isSignificant) {
+      // Not statistically significant - show range of possible impacts
+      const changeWord = difference > 0 ? 'increase' : 'change';
+      return `Variant is expected to ${changeWord} 1st-try acceptance by roughly ${absoluteDifference} more MRs per 100. However, because the test did not achieve statistical significance, the true impact could plausibly range from -7 to +14 per 100. Treat this results as directional evidence and consider the nuances of the changes prior to rollout.`;
+    }
 
     if (difference > 0) {
-      return `For every 100 code generations, approximately ${absoluteDifference} more would be accepted on the first try by developers.`;
+      // Variant is better and significant
+      return `Variant is expected to increase 1st-try code acceptance by roughly ${absoluteDifference} more MRs per 100.`;
     } else {
-      return `For every 100 code generations, approximately ${absoluteDifference} fewer would be accepted on the first try by developers.`;
+      // Master is better and significant
+      return `Variant is expected to decrease 1st-try code acceptance by roughly ${absoluteDifference} fewer MRs per 100.`;
     }
   };
 
   const impactDescription = calculateImpactDescription();
+  
+  // Calculate total PRs across both variants
+  const totalPRs = (pageStatsData.totalValue || 0) + (variantStatsData.totalValue || 0);
+  const hasEnoughData = totalPRs >= 200;
 
   // Handle click outside to close modal
   useEffect(() => {
@@ -239,57 +281,136 @@ const ExperimentsModal = ({
           {/* Divider */}
           <div className={styles['experiments-modal__divider']} />
 
-          {/* Results Section */}
-          <ChartSection
-            title="Results"
-            className={styles['experiments-modal__section']}
-          >
-            <p className={styles['experiments-modal__section-description']}>
-              {(() => {
-                const parts = resultsData.description.split(/(\d+(?:\.\d+)?%)/g);
-                return parts.map((part, index) => {
-                  if (part.match(/\d+(?:\.\d+)?%/)) {
-                    return <span key={index} className={styles['experiments-modal__highlight']}>{part}</span>;
-                  }
-                  return part;
-                });
-              })()}
-            </p>
-          </ChartSection>
+          {/* Conditional content based on data availability */}
+          {hasEnoughData ? (
+            <>
+              {/* Results Section */}
+              <ChartSection
+                title="Results"
+                className={styles['experiments-modal__section']}
+              >
+                <p className={styles['experiments-modal__section-description']}>
+                  {(() => {
+                    // Split on percentages, "Variant", and "Master"
+                    const parts = resultsData.description.split(/([\+\-]?\d+(?:\.\d+)?%|Variant|Master)/g);
+                    let seenFirstPercentage = false;
+                    
+                    return parts.map((part, index) => {
+                      // Highlight "Variant" and "Master" in yellow
+                      if (part === 'Variant' || part === 'Master') {
+                        return <span key={index} className={styles['experiments-modal__highlight--yellow']}>{part}</span>;
+                      }
+                      // Handle percentage values
+                      if (part.match(/[\+\-]?\d+(?:\.\d+)?%/)) {
+                        // The first percentage is the change percentage, the second is the confidence
+                        if (!seenFirstPercentage) {
+                          seenFirstPercentage = true;
+                          // This is the change percentage - green (positive) or red (negative)
+                          const isNegative = resultsData.winner === 'master'; // Master wins means variant decreased
+                          return <span key={index} className={isNegative ? styles['experiments-modal__highlight--red'] : styles['experiments-modal__highlight--green']}>{part}</span>;
+                        } else {
+                          // This is the confidence percentage - always blue
+                          return <span key={index} className={styles['experiments-modal__highlight']}>{part}</span>;
+                        }
+                      }
+                      return part;
+                    });
+                  })()}
+                </p>
+                {resultsData.winnerStatement && (
+                  <p className={styles['experiments-modal__winner-statement']}>
+                    {(() => {
+                      // Split on "Variant" and "Master" to highlight them in yellow
+                      const parts = resultsData.winnerStatement.split(/(Variant|Master)/g);
+                      return parts.map((part, index) => {
+                        if (part === 'Variant' || part === 'Master') {
+                          return <span key={index} className={styles['experiments-modal__highlight--yellow']}>{part}</span>;
+                        }
+                        return part;
+                      });
+                    })()}
+                  </p>
+                )}
+              </ChartSection>
 
-          {/* Stats for Nerds Section */}
-          <ChartSection
-            title="Stats for Nerds"
-            className={styles['experiments-modal__section']}
-          >
-            <div className={styles['experiments-modal__stats']}>
-              <p className={styles['experiments-modal__stat']}>
-                A two-proportion Z-Test resulted in a one-tailed p-value of{' '}
-                <span className={styles['experiments-modal__stat-value--green']}>
-                  {statsData.pValue}
-                </span>
-              </p>
-              <p className={styles['experiments-modal__stat']}>
-                95% Confidence Interval for Master:{' '}
-                <span className={styles['experiments-modal__stat-value']}>
-                  {statsData.masterConfidenceInterval}
-                </span>
-              </p>
-              <p className={styles['experiments-modal__stat']}>
-                95% Confidence Interval for Variant 3:{' '}
-                <span className={styles['experiments-modal__stat-value']}>
-                  {statsData.variantConfidenceInterval}
-                </span>
-              </p>
-            </div>
-          </ChartSection>
+              {/* Stats for Nerds Section */}
+              <ChartSection
+                title="Stats for Nerds"
+                className={styles['experiments-modal__section']}
+              >
+                <div className={styles['experiments-modal__stats']}>
+                  <p className={styles['experiments-modal__stat']}>
+                    A two-proportion Z-Test resulted in a one-tailed p-value of{' '}
+                    <span className={
+                      statsData.pValue !== 'N/A' && !isNaN(statsData.pValue) && parseFloat(statsData.pValue) >= 0.10
+                        ? styles['experiments-modal__stat-value--red']
+                        : styles['experiments-modal__stat-value--green']
+                    }>
+                      {statsData.pValue}
+                    </span>
+                  </p>
+                  <p className={styles['experiments-modal__stat']}>
+                    90% Confidence Interval for Master:{' '}
+                    <span className={styles['experiments-modal__stat-value']}>
+                      {statsData.masterConfidenceInterval}
+                    </span>
+                  </p>
+                  <p className={styles['experiments-modal__stat']}>
+                    90% Confidence Interval for Variant:{' '}
+                    <span className={styles['experiments-modal__stat-value']}>
+                      {statsData.variantConfidenceInterval}
+                    </span>
+                  </p>
+                </div>
+              </ChartSection>
 
-          {/* Potential Impact Section */}
-          <ChartSection
-            title="Potential Impact"
-            description={impactDescription}
-            className={styles['experiments-modal__section']}
-          />
+              {/* Potential Impact Section */}
+              <ChartSection
+                title="Potential Impact"
+                className={styles['experiments-modal__section']}
+              >
+                <p className={styles['experiments-modal__section-description']}>
+                  {(() => {
+                    // Split on "Variant", "increase/decrease", and "n more/fewer" patterns (without MRs)
+                    const parts = impactDescription.split(/(Variant|increase|decrease|\d+\s+(?:more|fewer))/g);
+                    const isDecrease = impactDescription.includes('decrease');
+                    
+                    return parts.map((part, index) => {
+                      // Highlight "Variant" in yellow
+                      if (part === 'Variant') {
+                        return <span key={index} className={styles['experiments-modal__highlight--yellow']}>{part}</span>;
+                      }
+                      // Highlight "increase" in green or "decrease" in red
+                      if (part === 'increase') {
+                        return <span key={index} className={styles['experiments-modal__highlight--green']}>{part}</span>;
+                      }
+                      if (part === 'decrease') {
+                        return <span key={index} className={styles['experiments-modal__highlight--red']}>{part}</span>;
+                      }
+                      // Highlight "n more" in green or "n fewer" in red (without MRs)
+                      if (part.match(/\d+\s+(?:more|fewer)/)) {
+                        const colorClass = isDecrease ? styles['experiments-modal__highlight--red'] : styles['experiments-modal__highlight--green'];
+                        return <span key={index} className={colorClass}>{part}</span>;
+                      }
+                      return part;
+                    });
+                  })()}
+                </p>
+              </ChartSection>
+            </>
+          ) : (
+            <>
+              {/* Insufficient Data Message */}
+              <ChartSection
+                title="Results"
+                className={styles['experiments-modal__section']}
+              >
+                <p className={styles['experiments-modal__section-description']}>
+                  Ckye requires 200 total MRs before posting results. Currently this test has reviewed {totalPRs} MRs.
+                </p>
+              </ChartSection>
+            </>
+          )}
 
           {/* Charts Section with Variant Cards */}
           <div className={styles['experiments-modal__charts']}>
