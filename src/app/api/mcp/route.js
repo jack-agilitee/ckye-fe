@@ -355,6 +355,61 @@ const handler = createMcpHandler(
             }
         );
 
+        // Tool to delete a PR from database
+        server.tool(
+            'delete-pr',
+            'Delete a pull request from the database by its ID',
+            {
+                prId: z.string().describe("The PR ID from the database (not the GitHub PR number)")
+            },
+            async ({ prId }) => {
+                const client = new Client({
+                    connectionString: process.env.DATABASE_URL,
+                });
+
+                try {
+                    await client.connect();
+
+                    // Delete PR record
+                    const deleteQuery = `
+        DELETE FROM pr
+        WHERE id = $1
+        RETURNING id, "prId", "pageId", "createdAt"
+      `;
+                    
+                    const result = await client.query(deleteQuery, [prId]);
+                    
+                    if (result.rowCount === 0) {
+                        return {
+                            content: [{
+                                type: "text",
+                                text: `No PR found with ID: ${prId}`
+                            }]
+                        };
+                    }
+                    
+                    const deletedPr = result.rows[0];
+
+                    return {
+                        content: [{
+                            type: "text",
+                            text: `PR deleted successfully\nID: ${deletedPr.id}\nPR ID: ${deletedPr.prId}${deletedPr.pageId ? `\nPage ID: ${deletedPr.pageId}` : ''}\nWas created: ${deletedPr.createdAt.toISOString()}`
+                        }]
+                    };
+                } catch (error) {
+                    console.error("Error deleting PR:", error);
+                    return {
+                        content: [{
+                            type: "text",
+                            text: `Error deleting PR: ${error instanceof Error ? error.message : "Unknown error"}`
+                        }]
+                    };
+                } finally {
+                    await client.end();
+                }
+            }
+        );
+
         // Tool to write PR creation to database
         server.tool(
             'record-pr-creation',
@@ -428,18 +483,20 @@ const handler = createMcpHandler(
                 try {
                     await client.connect();
 
-                    // First, check if it's a page or a variant
+                    // First, check if it's a page or a variant and get existing statistics
                     const pageQuery = `
-        SELECT id FROM pages WHERE id = $1
+        SELECT id, statistics FROM pages WHERE id = $1
       `;
                     const pageResult = await client.query(pageQuery, [pageId]);
                     
                     let updateQuery;
                     let tableName;
+                    let existingStats = {};
                     
                     if (pageResult.rows.length > 0) {
                         // It's a page
                         tableName = 'pages';
+                        existingStats = pageResult.rows[0].statistics || {};
                         updateQuery = `
         UPDATE pages 
         SET statistics = $1::jsonb, "updatedAt" = NOW()
@@ -449,12 +506,13 @@ const handler = createMcpHandler(
                     } else {
                         // Check if it's a variant
                         const variantQuery = `
-        SELECT id FROM variants WHERE id = $1
+        SELECT id, statistics FROM variants WHERE id = $1
       `;
                         const variantResult = await client.query(variantQuery, [pageId]);
                         
                         if (variantResult.rows.length > 0) {
                             tableName = 'variants';
+                            existingStats = variantResult.rows[0].statistics || {};
                             updateQuery = `
         UPDATE variants 
         SET statistics = $1::jsonb, "updatedAt" = NOW()
@@ -471,8 +529,20 @@ const handler = createMcpHandler(
                         }
                     }
 
-                    // Update the statistics
-                    const result = await client.query(updateQuery, [JSON.stringify(statistics), pageId]);
+                    // Merge statistics - add new values to existing ones
+                    const cumulativeStats = {
+                        totalPRs: (existingStats.totalPRs || 0) + statistics.totalPRs,
+                        firstTrySuccess: (existingStats.firstTrySuccess || 0) + statistics.firstTrySuccess,
+                        successRate: 0
+                    };
+                    
+                    // Recalculate success rate based on cumulative values
+                    if (cumulativeStats.totalPRs > 0) {
+                        cumulativeStats.successRate = Math.round((cumulativeStats.firstTrySuccess / cumulativeStats.totalPRs) * 100);
+                    }
+
+                    // Update the statistics with cumulative values
+                    const result = await client.query(updateQuery, [JSON.stringify(cumulativeStats), pageId]);
                     const updated = result.rows[0];
 
                     return {
