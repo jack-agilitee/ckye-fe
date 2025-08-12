@@ -81,7 +81,7 @@ const ExperimentsModal = ({
     }
 
     const p = successes / total;
-    const z = 1.96; // 95% CI
+    const z = 1.645; // 90% CI
     const se = Math.sqrt((p * (1 - p)) / total);
 
     // Calculate bounds
@@ -174,6 +174,10 @@ const ExperimentsModal = ({
   };
 
   const impactDescription = calculateImpactDescription();
+  
+  // Calculate total PRs across both variants
+  const totalPRs = (pageStatsData.totalValue || 0) + (variantStatsData.totalValue || 0);
+  const hasEnoughData = totalPRs >= 200;
 
   // Handle click outside to close modal
   useEffect(() => {
@@ -239,57 +243,74 @@ const ExperimentsModal = ({
           {/* Divider */}
           <div className={styles['experiments-modal__divider']} />
 
-          {/* Results Section */}
-          <ChartSection
-            title="Results"
-            className={styles['experiments-modal__section']}
-          >
-            <p className={styles['experiments-modal__section-description']}>
-              {(() => {
-                const parts = resultsData.description.split(/(\d+(?:\.\d+)?%)/g);
-                return parts.map((part, index) => {
-                  if (part.match(/\d+(?:\.\d+)?%/)) {
-                    return <span key={index} className={styles['experiments-modal__highlight']}>{part}</span>;
-                  }
-                  return part;
-                });
-              })()}
-            </p>
-          </ChartSection>
+          {/* Conditional content based on data availability */}
+          {hasEnoughData ? (
+            <>
+              {/* Results Section */}
+              <ChartSection
+                title="Results"
+                className={styles['experiments-modal__section']}
+              >
+                <p className={styles['experiments-modal__section-description']}>
+                  {(() => {
+                    const parts = resultsData.description.split(/(\d+(?:\.\d+)?%)/g);
+                    return parts.map((part, index) => {
+                      if (part.match(/\d+(?:\.\d+)?%/)) {
+                        return <span key={index} className={styles['experiments-modal__highlight']}>{part}</span>;
+                      }
+                      return part;
+                    });
+                  })()}
+                </p>
+              </ChartSection>
 
-          {/* Stats for Nerds Section */}
-          <ChartSection
-            title="Stats for Nerds"
-            className={styles['experiments-modal__section']}
-          >
-            <div className={styles['experiments-modal__stats']}>
-              <p className={styles['experiments-modal__stat']}>
-                A two-proportion Z-Test resulted in a one-tailed p-value of{' '}
-                <span className={styles['experiments-modal__stat-value--green']}>
-                  {statsData.pValue}
-                </span>
-              </p>
-              <p className={styles['experiments-modal__stat']}>
-                95% Confidence Interval for Master:{' '}
-                <span className={styles['experiments-modal__stat-value']}>
-                  {statsData.masterConfidenceInterval}
-                </span>
-              </p>
-              <p className={styles['experiments-modal__stat']}>
-                95% Confidence Interval for Variant 3:{' '}
-                <span className={styles['experiments-modal__stat-value']}>
-                  {statsData.variantConfidenceInterval}
-                </span>
-              </p>
-            </div>
-          </ChartSection>
+              {/* Stats for Nerds Section */}
+              <ChartSection
+                title="Stats for Nerds"
+                className={styles['experiments-modal__section']}
+              >
+                <div className={styles['experiments-modal__stats']}>
+                  <p className={styles['experiments-modal__stat']}>
+                    A two-proportion Z-Test resulted in a one-tailed p-value of{' '}
+                    <span className={styles['experiments-modal__stat-value--green']}>
+                      {statsData.pValue}
+                    </span>
+                  </p>
+                  <p className={styles['experiments-modal__stat']}>
+                    90% Confidence Interval for Master:{' '}
+                    <span className={styles['experiments-modal__stat-value']}>
+                      {statsData.masterConfidenceInterval}
+                    </span>
+                  </p>
+                  <p className={styles['experiments-modal__stat']}>
+                    90% Confidence Interval for Variant 3:{' '}
+                    <span className={styles['experiments-modal__stat-value']}>
+                      {statsData.variantConfidenceInterval}
+                    </span>
+                  </p>
+                </div>
+              </ChartSection>
 
-          {/* Potential Impact Section */}
-          <ChartSection
-            title="Potential Impact"
-            description={impactDescription}
-            className={styles['experiments-modal__section']}
-          />
+              {/* Potential Impact Section */}
+              <ChartSection
+                title="Potential Impact"
+                description={impactDescription}
+                className={styles['experiments-modal__section']}
+              />
+            </>
+          ) : (
+            <>
+              {/* Insufficient Data Message */}
+              <ChartSection
+                title="Results"
+                className={styles['experiments-modal__section']}
+              >
+                <p className={styles['experiments-modal__section-description']}>
+                  Ckye requires 200 total MRs before posting results. Currently this test has reviewed {totalPRs} MRs.
+                </p>
+              </ChartSection>
+            </>
+          )}
 
           {/* Charts Section with Variant Cards */}
           <div className={styles['experiments-modal__charts']}>
