@@ -172,12 +172,16 @@ export default function VariantsView({ companyName }) {
     }
   };
 
-  if (isViewMode && selectedVariant) {
+  // Combine view and edit modes since they share the same layout
+  if (isViewMode || isEditMode) {
+    const isViewing = isViewMode && selectedVariant;
+    const isEditing = isEditMode;
+    
     return (
       <div className={styles['variants-view__fullscreen']}>
         <div className={styles['variants-view__fullscreen-header']}>
           <button
-            onClick={handleBackToVariants}
+            onClick={isViewing ? handleBackToVariants : handleCancelEdit}
             className={styles['variants-view__back-button']}
           >
             <img src="/chevron-left.svg" alt="" width={16} height={16} />
@@ -186,14 +190,26 @@ export default function VariantsView({ companyName }) {
         </div>
         
         <div className={styles['variants-view__fullscreen-info']}>
-          <h1 className={styles['variants-view__fullscreen-title']}>{selectedVariant.fileName}</h1>
-          <span className={styles['variants-view__fullscreen-version']}>{selectedVariant.variant}</span>
+          {isViewing ? (
+            <>
+              <h1 className={styles['variants-view__fullscreen-title']}>{selectedVariant.fileName}</h1>
+              <span className={styles['variants-view__fullscreen-version']}>{selectedVariant.variant}</span>
+            </>
+          ) : (
+            <TextField
+              placeholder="Enter variant summary..."
+              value={variantSummary}
+              onChange={(e) => setVariantSummary(e.target.value)}
+              className={styles['variants-view__summary-field']}
+            />
+          )}
         </div>
         
         <div className={styles['variants-view__fullscreen-editor']}>
           <MarkdownEditor
-            markdown={selectedVariant.content}
-            readOnly={true}
+            markdown={isViewing ? selectedVariant.content : (editorContent || '# Start typing to create your variant\n\nBegin writing your CLAUDE.md variant content here.\n\n## Tips:\n- Use markdown formatting for better structure\n- Include clear instructions and context\n- Add examples when helpful')}
+            readOnly={isViewing}
+            onChange={isEditing ? setEditorContent : undefined}
           />
         </div>
         
@@ -201,53 +217,10 @@ export default function VariantsView({ companyName }) {
           <Button
             variant="secondary"
             icon={null}
-            onClick={handleSetToMaster}
+            onClick={isViewing ? handleSetToMaster : handleSaveVariant}
             className={styles['variants-view__action-button']}
           >
-            Set to Master
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  if (isEditMode) {
-    return (
-      <div className={styles['variants-view__fullscreen']}>
-        <div className={styles['variants-view__fullscreen-header']}>
-          <button
-            onClick={handleCancelEdit}
-            className={styles['variants-view__back-button']}
-          >
-            <img src="/chevron-left.svg" alt="" width={16} height={16} />
-            Back to All Variants
-          </button>
-        </div>
-        
-        <div className={styles['variants-view__fullscreen-info']}>
-          <TextField
-            placeholder="Enter variant summary..."
-            value={variantSummary}
-            onChange={(e) => setVariantSummary(e.target.value)}
-            className={styles['variants-view__summary-field']}
-          />
-        </div>
-        
-        <div className={styles['variants-view__fullscreen-editor']}>
-          <MarkdownEditor
-            markdown={editorContent || '# Start typing to create your variant\n\nBegin writing your CLAUDE.md variant content here.\n\n## Tips:\n- Use markdown formatting for better structure\n- Include clear instructions and context\n- Add examples when helpful'}
-            onChange={setEditorContent}
-          />
-        </div>
-        
-        <div className={styles['variants-view__fullscreen-actions']}>
-          <Button
-            variant="secondary"
-            icon={null}
-            onClick={handleSaveVariant}
-            className={styles['variants-view__action-button']}
-          >
-            Save Variant
+            {isViewing ? 'Set to Master' : 'Save Variant'}
           </Button>
         </div>
       </div>
