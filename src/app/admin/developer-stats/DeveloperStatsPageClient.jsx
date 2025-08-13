@@ -65,19 +65,25 @@ const DeveloperStatsPageClient = ({ workspaces }) => {
     });
 
     // Convert to array and calculate final metrics
-    return Object.values(statsByDeveloper).map(dev => ({
-      user: dev.user,
-      daysUsingCkye: dev.uniqueDays.size,
-      totalPRs: dev.prs.length,
-      totalEstimatedHours: dev.totalEstimatedHours,
-      // Calculate workdays saved (8 hour workday)
-      workdaysSaved: Math.round((dev.totalEstimatedHours / 8) * 10) / 10,
-      prs: dev.prs.sort((a, b) => {
-        const dateA = new Date(a.mergedDate || 0).getTime();
-        const dateB = new Date(b.mergedDate || 0).getTime();
-        return dateB - dateA; // Most recent first
-      })
-    })).sort((a, b) => b.workdaysSaved - a.workdaysSaved); // Sort by time saved descending
+    return Object.values(statsByDeveloper).map(dev => {
+      const daysUsingCkye = dev.uniqueDays.size;
+      const workdaysWithoutCkye = dev.totalEstimatedHours / 8;
+      // Workdays saved = time it would have taken - actual days spent
+      const workdaysSaved = Math.max(0, Math.round((workdaysWithoutCkye - daysUsingCkye) * 10) / 10);
+      
+      return {
+        user: dev.user,
+        daysUsingCkye,
+        totalPRs: dev.prs.length,
+        totalEstimatedHours: dev.totalEstimatedHours,
+        workdaysSaved,
+        prs: dev.prs.sort((a, b) => {
+          const dateA = new Date(a.mergedDate || 0).getTime();
+          const dateB = new Date(b.mergedDate || 0).getTime();
+          return dateB - dateA; // Most recent first
+        })
+      };
+    }).sort((a, b) => b.workdaysSaved - a.workdaysSaved); // Sort by time saved descending
   }, [allStats]);
 
   const handleWorkspaceChange = (e) => {
@@ -151,7 +157,7 @@ const DeveloperStatsPageClient = ({ workspaces }) => {
                         Workday{dev.workdaysSaved !== 1 ? 's' : ''} saved
                       </div>
                       <div className={styles.metric__sublabel}>
-                        ({dev.totalEstimatedHours} hours total)
+                        ({Math.round(dev.totalEstimatedHours)} hrs → {dev.daysUsingCkye} day{dev.daysUsingCkye !== 1 ? 's' : ''})
                       </div>
                     </div>
                   </div>
