@@ -77,9 +77,9 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           timeout_minutes: "10"
           direct_prompt: |
-            Estimate development time for this merged PR and record it to the database.
+            Estimate development time for this merged PR and save it via the API.
             
-            DATABASE_URL: ${{ secrets.DATABASE_URL }}
+            API_URL: ${{ secrets.API_URL || 'https://ckye-fe.vercel.app' }}
             
             PR Data:
             PR Number: ${{ github.event.pull_request.number }}
@@ -88,7 +88,8 @@ jobs:
             Files Changed: ${{ github.event.pull_request.changed_files }}
             Additions: ${{ github.event.pull_request.additions }}
             Deletions: ${{ github.event.pull_request.deletions }}
-              Merged Date: ${{ github.event.pull_request.merged_at }}
+            Merged Date: ${{ github.event.pull_request.merged_at }}
+            Workspace ID: cme3e54et00028onui9epyx4w
             
             ## Estimation Process:
             
@@ -130,30 +131,28 @@ jobs:
                - Add fixed hours for special file types
                - Round to nearest 0.5 hour
             
-            7. **Write to PostgreSQL Database**:
-               Connect to the database using the DATABASE_URL and execute:
+            7. **Save via API**:
+               Make a POST request to the developer-statistics API endpoint:
                
-               ```sql
-               INSERT INTO developer_stats (
-                 id,
-                 "user",
-                 workspace_id,
-                 pr_number,
-                 merged_date,
-                 estimated_time,
-                 created_at,
-                 updated_at
-               ) VALUES (
-                 gen_random_uuid()::text,
-                 '<user from PR data>',
-                 'cme3e54et00028onui9epyx4w',
-                 <prNumber from PR data>,
-                 '<mergedDate from PR data>',
-                 <calculated hours>,
-                 CURRENT_TIMESTAMP,
-                 CURRENT_TIMESTAMP
-               );
+               ```bash
+               curl -X POST "${API_URL}/api/developer-statistics" \
+                 -H "Content-Type: application/json" \
+                 -d '{
+                   "user": "<GitHub username from PR data>",
+                   "workspaceId": "cme3e54et00028onui9epyx4w",
+                   "prNumber": <PR number from PR data>,
+                   "mergedDate": "<merged date from PR data>",
+                   "estimatedTime": <calculated hours>
+                 }'
                ```
+               
+               The API will validate the input and save to the database.
+               Ensure all required fields are provided:
+               - user: GitHub username (string)
+               - workspaceId: The workspace ID (string)
+               - prNumber: PR number (integer)
+               - mergedDate: ISO 8601 date string
+               - estimatedTime: Hours as a number (optional, can be null)
             
             8. **Return Result** with breakdown:
                ```json
@@ -185,7 +184,10 @@ jobs:
             
             Final: (3 * 1.5) + 0.75 + 0.45 = 5.7 hours → round to 6 hours
             
-            Now analyze the PR data provided above and perform these calculations, then write to the database.
+            ## Implementation:
+            Now analyze the PR data provided above, perform these calculations, and call the API endpoint to save the result.
+            Use the actual PR data values when making the API call.
+            The API endpoint will handle validation and database persistence.
       
       - name: Create Summary
         if: always()
