@@ -1,0 +1,217 @@
+name: Track PR Merge Statistics
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  track-developer-stats:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      pull-requests: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install Claude Code CLI
+        run: |
+          npm install -g @anthropic/claude-code
+      
+      - name: Extract PR Details
+        id: pr_details
+        run: |
+          # Extract PR information from GitHub context
+          cat << EOF > pr-details.json
+          {
+            "prNumber": ${{ github.event.pull_request.number }},
+            "user": "${{ github.event.pull_request.user.login }}",
+            "mergedDate": "${{ github.event.pull_request.merged_at }}",
+            "title": "${{ github.event.pull_request.title }}",
+            "body": $(echo '${{ github.event.pull_request.body }}' | jq -Rs .),
+            "filesChanged": ${{ github.event.pull_request.changed_files }},
+            "additions": ${{ github.event.pull_request.additions }},
+            "deletions": ${{ github.event.pull_request.deletions }},
+            "mergedBy": "${{ github.event.pull_request.merged_by.login }}",
+            "repository": "${{ github.repository }}",
+            "headSha": "${{ github.event.pull_request.head.sha }}",
+            "baseSha": "${{ github.event.pull_request.base.sha }}"
+          }
+          EOF
+          
+          echo "PR Details extracted:"
+          cat pr-details.json
+      
+      - name: Get Changed Files List
+        id: changed_files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Fetch the list of changed files
+          curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" \
+            > changed-files.json
+          
+          # Extract just the necessary file information
+          jq '[.[] | {filename: .filename, additions: .additions, deletions: .deletions, changes: .changes, status: .status}]' changed-files.json > files-summary.json
+          
+          echo "Changed files:"
+          cat files-summary.json
+      
+      - name: Combine PR Data
+        run: |
+          # Merge PR details with changed files
+          jq -s '.[0] + {changedFiles: .[1]}' pr-details.json files-summary.json > complete-pr-data.json
+          
+          echo "Complete PR data:"
+          cat complete-pr-data.json
+      
+      - name: Estimate Development Time
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          # Run Claude command with PR data
+          PR_DATA=$(cat complete-pr-data.json)
+          
+          claude code << 'EOF'
+          Estimate development time for this merged PR and record it to the database.
+          
+          DATABASE_URL: $DATABASE_URL
+          
+          PR_DATA:
+          $PR_DATA
+          
+          ## Estimation Process:
+          
+          1. **Parse the PR data** from the JSON above
+          
+          2. **Calculate Base Time** from total lines changed:
+             - Less than 50 lines: 1.5 hours
+             - 50-200 lines: 3 hours  
+             - 200-500 lines: 6 hours
+             - Over 500 lines: 12 hours
+          
+          3. **Apply Multipliers** based on PR type (from title):
+             - "feat:" prefix = 1.5x multiplier (new feature)
+             - "fix:" prefix = 1.0x multiplier (bug fix)
+             - "refactor:" prefix = 1.3x multiplier
+             - "docs:" prefix = 0.5x multiplier
+             - "test:" prefix = 0.8x multiplier
+             - "chore:" prefix = 0.7x multiplier
+          
+          4. **Add Time for Special Files**:
+             - Test files (*.test.js, *.spec.js, *.test.tsx): +25% of base time
+             - Documentation (*.md files): +15% of base time
+             - Database migrations (prisma/migrations/*): +2 hours
+             - GitHub workflows (.github/workflows/*): +1 hour
+             - Config files (package.json, tsconfig.json, etc.): +0.5 hours
+             - Multiple file types (e.g., both frontend and backend): +20% of base time
+          
+          5. **Analyze the changed files** from changedFiles array:
+             - Check if any are test files
+             - Check if any are documentation
+             - Check if any are migrations
+             - Check if any are GitHub workflows
+             - Check if both .jsx/.tsx and .js/.ts files are present (frontend + backend)
+          
+          6. **Calculate Final Estimate**:
+             - Start with base time
+             - Apply PR type multiplier
+             - Add percentages for tests/docs if present
+             - Add fixed hours for special file types
+             - Round to nearest 0.5 hour
+          
+          7. **Write to PostgreSQL Database**:
+             Connect to the database using the DATABASE_URL and execute:
+             
+             ```sql
+             INSERT INTO developer_stats (
+               id,
+               "user",
+               workspace_id,
+               pr_number,
+               merged_date,
+               estimated_time,
+               created_at,
+               updated_at
+             ) VALUES (
+               gen_random_uuid()::text,
+               '<user from PR data>',
+               'cme3e54et00028onui9epyx4w',
+               <prNumber from PR data>,
+               '<mergedDate from PR data>',
+               <calculated hours>,
+               CURRENT_TIMESTAMP,
+               CURRENT_TIMESTAMP
+             );
+             ```
+          
+          8. **Return Result** with breakdown:
+             ```json
+             {
+               "success": true,
+               "prNumber": <number>,
+               "user": "<username>",
+               "estimatedHours": <calculated>,
+               "breakdown": {
+                 "baseTime": <hours>,
+                 "multiplier": "<type>",
+                 "testingTime": <hours>,
+                 "documentationTime": <hours>,
+                 "specialFilesTime": <hours>
+               },
+               "factors": [
+                 "list of factors applied"
+               ],
+               "databaseWrite": "success or error message"
+             }
+             ```
+          
+          ## Example Calculation:
+          If PR has:
+          - 150 lines changed (base: 3 hours)
+          - Title starts with "feat:" (1.5x multiplier)
+          - Includes 2 test files (+25% = +0.75 hours)
+          - Includes README.md update (+15% = +0.45 hours)
+          
+          Final: (3 * 1.5) + 0.75 + 0.45 = 5.7 hours → round to 6 hours
+          
+          Now analyze the PR data provided above and perform these calculations, then write to the database.
+          EOF
+      
+      - name: Create Summary
+        if: always()
+        run: |
+          echo "## PR Development Time Tracking" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **PR**: #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Title**: ${{ github.event.pull_request.title }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Author**: @${{ github.event.pull_request.user.login }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Merged By**: @${{ github.event.pull_request.merged_by.login }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Files Changed**: ${{ github.event.pull_request.changed_files }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Lines Added**: ${{ github.event.pull_request.additions }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Lines Deleted**: ${{ github.event.pull_request.deletions }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the logs above for the estimated development time and breakdown." >> $GITHUB_STEP_SUMMARY
+      
+      - name: Report Error
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Create a comment on the PR if tracking failed
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ github.event.pull_request.number }},
+              body: `⚠️ Failed to track development time for this PR. Please check the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.`
+            });
