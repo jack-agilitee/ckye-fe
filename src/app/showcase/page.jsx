@@ -26,6 +26,7 @@ import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
 import VariantsTable from '@/components/templates/VariantsTable/VariantsTable';
 import ExperimentsTable from '@/components/templates/ExperimentsTable/ExperimentsTable';
+import BarChart from '@/components/templates/BarChart/BarChart';
 import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import styles from './page.module.scss';
 
@@ -3495,6 +3496,130 @@ const experiments = [
             </div>
           </div>
 
+          {/* BarChart Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>BarChart</h3>
+            <p className={styles.showcase__componentDescription}>
+              A data visualization template component that displays bar charts with customizable data, labels, and styling
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default BarChart (Development Hours)</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <BarChart />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Data - Weekly Stats</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <BarChart 
+                    title="Weekly Active Users"
+                    dateRange="Week of Jan 1-7, 2024"
+                    data={[
+                      { date: 'Mon', value: 45 },
+                      { date: 'Tue', value: 52 },
+                      { date: 'Wed', value: 48 },
+                      { date: 'Thu', value: 70 },
+                      { date: 'Fri', value: 65 },
+                      { date: 'Sat', value: 35 },
+                      { date: 'Sun', value: 30 }
+                    ]}
+                    maxValue={100}
+                    yAxisLabel="Users"
+                    xAxisLabel="Day of Week"
+                    barColor="#4CAF50"
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Quarterly Revenue</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <BarChart 
+                    title="Quarterly Revenue (2024)"
+                    dateRange="Fiscal Year 2024"
+                    data={[
+                      { date: 'Q1', value: 85 },
+                      { date: 'Q2', value: 92 },
+                      { date: 'Q3', value: 110 },
+                      { date: 'Q4', value: 125 }
+                    ]}
+                    maxValue={150}
+                    yAxisLabel="Revenue ($M)"
+                    xAxisLabel="Quarter"
+                    barColor="#2196F3"
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Performance Metrics</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <BarChart 
+                    title="API Response Times"
+                    dateRange="Last 24 Hours"
+                    data={[
+                      { date: '00:00', value: 120 },
+                      { date: '04:00', value: 95 },
+                      { date: '08:00', value: 180 },
+                      { date: '12:00', value: 220 },
+                      { date: '16:00', value: 195 },
+                      { date: '20:00', value: 150 }
+                    ]}
+                    maxValue={300}
+                    yAxisLabel="Time (ms)"
+                    xAxisLabel="Hour"
+                    barColor="#FF9800"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import BarChart from '@/components/templates/BarChart/BarChart';
+
+// Default usage (Development Hours)
+<BarChart />
+
+// Custom data and labels
+<BarChart 
+  title="Weekly Active Users"
+  dateRange="Week of Jan 1-7, 2024"
+  data={[
+    { date: 'Mon', value: 45 },
+    { date: 'Tue', value: 52 },
+    { date: 'Wed', value: 48 },
+    { date: 'Thu', value: 70 },
+    { date: 'Fri', value: 65 }
+  ]}
+  maxValue={100}
+  yAxisLabel="Users"
+  xAxisLabel="Day of Week"
+  barColor="#4CAF50"
+/>
+
+// Quarterly data
+<BarChart 
+  title="Quarterly Revenue"
+  dateRange="Fiscal Year 2024"
+  data={[
+    { date: 'Q1', value: 85 },
+    { date: 'Q2', value: 92 },
+    { date: 'Q3', value: 110 },
+    { date: 'Q4', value: 125 }
+  ]}
+  maxValue={150}
+  yAxisLabel="Revenue ($M)"
+  xAxisLabel="Quarter"
+  barColor="#2196F3"
+/>`}
+              </pre>
+            </div>
+          </div>
         </section>
 
         {/* Pages Section */}

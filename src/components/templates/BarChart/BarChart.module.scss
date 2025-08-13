@@ -1,0 +1,258 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.bar-chart {
+  background-color: $black-bg-dark;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  min-height: 400px;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__title {
+    @include heading-2;
+    color: $white-primary;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  &__date-range {
+    @include body-small;
+    color: $white-secondary;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    gap: 0;
+    position: relative;
+    min-height: 350px;
+  }
+
+  &__y-axis {
+    display: flex;
+    position: relative;
+    width: 60px;
+  }
+
+  &__y-lines {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 4px 0;
+  }
+
+  &__grid-line {
+    height: 1px;
+    width: 100%;
+    background-image: linear-gradient(
+      to right,
+      $white-secondary 33%,
+      transparent 33%
+    );
+    background-size: 6px 1px;
+    background-repeat: repeat-x;
+  }
+
+  &__y-labels {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    position: relative;
+  }
+
+  &__y-values {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 4px 8px 44px 0;
+    flex: 1;
+  }
+
+  &__y-value {
+    @include body-small;
+    color: $white-primary;
+    font-size: 8px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  &__y-label-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    position: relative;
+  }
+
+  &__y-label {
+    @include body-small;
+    color: $white-secondary;
+    font-size: 12px;
+    font-weight: 600;
+    transform: rotate(-90deg);
+    white-space: nowrap;
+    position: absolute;
+  }
+
+  &__chart-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-right: 38px;
+  }
+
+  &__bars {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 8px;
+    gap: 4px;
+    position: relative;
+
+    // Extend grid lines across the chart
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent calc(20% - 0.5px),
+        rgba($white-secondary, 0.2) calc(20% - 0.5px),
+        rgba($white-secondary, 0.2) 20%
+      );
+      pointer-events: none;
+    }
+  }
+
+  &__bar-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    min-width: 12px;
+    max-width: 20px;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__bar {
+    width: 100%;
+    border-radius: 2px 2px 0 0;
+    transition: opacity 0.2s ease;
+    cursor: default;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
+  &__x-axis {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  &__x-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 8px;
+    height: 28px;
+    position: relative;
+  }
+
+  &__x-label-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    min-width: 12px;
+    max-width: 20px;
+  }
+
+  &__x-label {
+    @include body-small;
+    color: $white-primary;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    transform: rotate(30deg);
+    transform-origin: center bottom;
+    white-space: nowrap;
+    position: absolute;
+    bottom: 0;
+  }
+
+  &__x-axis-label {
+    @include body-small;
+    color: $white-secondary;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    padding: 12px;
+    min-height: 300px;
+
+    &__body {
+      min-height: 250px;
+    }
+
+    &__y-axis {
+      width: 50px;
+    }
+
+    &__chart-area {
+      padding-right: 20px;
+    }
+
+    &__x-label {
+      font-size: 10px;
+      transform: rotate(45deg);
+    }
+
+    &__bar-wrapper {
+      min-width: 8px;
+      max-width: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__x-labels {
+      // Show every other label on mobile
+      .bar-chart__x-label-wrapper:nth-child(even) {
+        .bar-chart__x-label {
+          display: none;
+        }
+      }
+    }
+  }
+}
