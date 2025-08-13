@@ -3503,28 +3503,35 @@ const experiments = [
               A data visualization template component that displays bar charts with customizable data, labels, and styling
             </p>
             
-            <div className={styles.showcase__demo}>
+            <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Default BarChart (Development Hours)</h4>
-                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', height: '500px' }}>
                   <BarChart />
                 </div>
               </div>
-              
+
               <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Custom Data - Weekly Stats</h4>
-                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', height: '500px' }}>
                   <BarChart 
                     title="Weekly Active Users"
                     dateRange="Week of Jan 1-7, 2024"
                     data={[
-                      { date: 'Mon', value: 45 },
-                      { date: 'Tue', value: 52 },
-                      { date: 'Wed', value: 48 },
-                      { date: 'Thu', value: 70 },
-                      { date: 'Fri', value: 65 },
-                      { date: 'Sat', value: 35 },
-                      { date: 'Sun', value: 30 }
+                      { date: 'Mon', value: 45, showLabel: true },
+                      { date: '', value: 48 },
+                      { date: 'Tue', value: 52, showLabel: true },
+                      { date: '', value: 55 },
+                      { date: 'Wed', value: 48, showLabel: true },
+                      { date: '', value: 51 },
+                      { date: 'Thu', value: 70, showLabel: true },
+                      { date: '', value: 68 },
+                      { date: 'Fri', value: 65, showLabel: true },
+                      { date: '', value: 60 },
+                      { date: 'Sat', value: 35, showLabel: true },
+                      { date: '', value: 32 },
+                      { date: 'Sun', value: 30, showLabel: true },
+                      { date: '', value: 28 }
                     ]}
                     maxValue={100}
                     yAxisLabel="Users"
@@ -3535,42 +3542,19 @@ const experiments = [
               </div>
               
               <div className={styles.showcase__example}>
-                <h4 className={styles.showcase__exampleTitle}>Quarterly Revenue</h4>
-                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
-                  <BarChart 
-                    title="Quarterly Revenue (2024)"
-                    dateRange="Fiscal Year 2024"
-                    data={[
-                      { date: 'Q1', value: 85 },
-                      { date: 'Q2', value: 92 },
-                      { date: 'Q3', value: 110 },
-                      { date: 'Q4', value: 125 }
-                    ]}
-                    maxValue={150}
-                    yAxisLabel="Revenue ($M)"
-                    xAxisLabel="Quarter"
-                    barColor="#2196F3"
-                  />
-                </div>
-              </div>
-              
-              <div className={styles.showcase__example}>
-                <h4 className={styles.showcase__exampleTitle}>Performance Metrics</h4>
-                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                <h4 className={styles.showcase__exampleTitle}>Monthly Performance</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', height: '500px' }}>
                   <BarChart 
                     title="API Response Times"
-                    dateRange="Last 24 Hours"
-                    data={[
-                      { date: '00:00', value: 120 },
-                      { date: '04:00', value: 95 },
-                      { date: '08:00', value: 180 },
-                      { date: '12:00', value: 220 },
-                      { date: '16:00', value: 195 },
-                      { date: '20:00', value: 150 }
-                    ]}
+                    dateRange="Past 30 Days"
+                    data={Array.from({ length: 30 }, (_, i) => ({
+                      date: i % 3 === 0 ? `${Math.floor(i/3) + 1}` : '',
+                      value: Math.floor(Math.random() * 200) + 50,
+                      showLabel: i % 3 === 0
+                    }))}
                     maxValue={300}
                     yAxisLabel="Time (ms)"
-                    xAxisLabel="Hour"
+                    xAxisLabel="Day"
                     barColor="#FF9800"
                   />
                 </div>
@@ -3582,39 +3566,40 @@ const experiments = [
               <pre className={styles.showcase__codeBlock}>
 {`import BarChart from '@/components/templates/BarChart/BarChart';
 
-// Default usage (Development Hours)
+// Default usage (30 bars with spaced labels)
 <BarChart />
 
-// Custom data and labels
+// Custom data with selective labels
+// Use showLabel: true to display a label for that bar
+// Or provide empty date strings for bars without labels
 <BarChart 
-  title="Weekly Active Users"
-  dateRange="Week of Jan 1-7, 2024"
+  title="Weekly Stats"
+  dateRange="This Week"
   data={[
-    { date: 'Mon', value: 45 },
-    { date: 'Tue', value: 52 },
-    { date: 'Wed', value: 48 },
-    { date: 'Thu', value: 70 },
-    { date: 'Fri', value: 65 }
+    { date: 'Mon', value: 45, showLabel: true },
+    { date: '', value: 48 },  // No label
+    { date: 'Wed', value: 52, showLabel: true },
+    { date: '', value: 55 },  // No label
+    { date: 'Fri', value: 65, showLabel: true }
   ]}
   maxValue={100}
-  yAxisLabel="Users"
-  xAxisLabel="Day of Week"
+  yAxisLabel="Count"
+  xAxisLabel="Day"
   barColor="#4CAF50"
 />
 
-// Quarterly data
+// Monthly data (30 bars with labels every 3rd bar)
 <BarChart 
-  title="Quarterly Revenue"
-  dateRange="Fiscal Year 2024"
-  data={[
-    { date: 'Q1', value: 85 },
-    { date: 'Q2', value: 92 },
-    { date: 'Q3', value: 110 },
-    { date: 'Q4', value: 125 }
-  ]}
+  title="Monthly Metrics"
+  dateRange="Past 30 Days"
+  data={Array.from({ length: 30 }, (_, i) => ({
+    date: i % 3 === 0 ? \`Day \${i + 1}\` : '',
+    value: Math.random() * 100,
+    showLabel: i % 3 === 0
+  }))}
   maxValue={150}
-  yAxisLabel="Revenue ($M)"
-  xAxisLabel="Quarter"
+  yAxisLabel="Value"
+  xAxisLabel="Date"
   barColor="#2196F3"
 />`}
               </pre>

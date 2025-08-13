@@ -20,23 +20,38 @@ const BarChart = ({
     return `${(value / maxValue) * 100}%`;
   };
 
-  // Default sample data if none provided
+  // Default sample data if none provided (30 days like in Figma)
   const chartData = data.length > 0 ? data : [
-    { date: '7/15', value: 110 },
-    { date: '7/17', value: 72 },
-    { date: '7/19', value: 90 },
-    { date: '7/21', value: 105 },
-    { date: '7/23', value: 86 },
-    { date: '7/25', value: 112 },
-    { date: '7/27', value: 51 },
-    { date: '7/29', value: 107 },
-    { date: '7/31', value: 86 },
-    { date: '8/2', value: 96 },
-    { date: '8/4', value: 112 },
-    { date: '8/6', value: 51 },
-    { date: '8/8', value: 86 },
-    { date: '8/10', value: 112 },
-    { date: '8/12', value: 105 }
+    { date: '7/15', value: 110, showLabel: true },
+    { date: '', value: 72 },
+    { date: '7/17', value: 90, showLabel: true },
+    { date: '', value: 105 },
+    { date: '7/19', value: 86, showLabel: true },
+    { date: '', value: 112 },
+    { date: '7/21', value: 51, showLabel: true },
+    { date: '', value: 107 },
+    { date: '7/23', value: 86, showLabel: true },
+    { date: '', value: 96 },
+    { date: '7/25', value: 112, showLabel: true },
+    { date: '', value: 51 },
+    { date: '7/27', value: 86, showLabel: true },
+    { date: '', value: 112 },
+    { date: '7/29', value: 105, showLabel: true },
+    { date: '', value: 95 },
+    { date: '7/31', value: 85, showLabel: true },
+    { date: '', value: 75 },
+    { date: '8/2', value: 65, showLabel: true },
+    { date: '', value: 80 },
+    { date: '8/4', value: 90, showLabel: true },
+    { date: '', value: 85 },
+    { date: '8/6', value: 95, showLabel: true },
+    { date: '', value: 100 },
+    { date: '8/8', value: 105, showLabel: true },
+    { date: '', value: 95 },
+    { date: '8/10', value: 88, showLabel: true },
+    { date: '', value: 92 },
+    { date: '8/12', value: 110, showLabel: true },
+    { date: '', value: 85 }
   ];
 
   return (
@@ -104,9 +119,11 @@ const BarChart = ({
                   key={index}
                   className={styles['bar-chart__x-label-wrapper']}
                 >
-                  <span className={styles['bar-chart__x-label']}>
-                    {item.date}
-                  </span>
+                  {(item.showLabel || item.date) && (
+                    <span className={styles['bar-chart__x-label']}>
+                      {item.date}
+                    </span>
+                  )}
                 </div>
               ))}
             </div>
