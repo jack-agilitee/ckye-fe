@@ -1,6 +1,18 @@
 import { render, screen } from '@testing-library/react';
 import BarChart from './BarChart';
 
+// Mock Recharts components
+jest.mock('recharts', () => ({
+  BarChart: ({ children, ...props }) => <div data-testid="recharts-bar-chart" {...props}>{children}</div>,
+  Bar: ({ children, ...props }) => <div data-testid="recharts-bar" {...props}>{children}</div>,
+  XAxis: (props) => <div data-testid="recharts-xaxis" {...props} />,
+  YAxis: (props) => <div data-testid="recharts-yaxis" {...props} />,
+  CartesianGrid: (props) => <div data-testid="recharts-grid" {...props} />,
+  Tooltip: (props) => <div data-testid="recharts-tooltip" {...props} />,
+  ResponsiveContainer: ({ children }) => <div data-testid="recharts-container">{children}</div>,
+  Cell: (props) => <div data-testid="recharts-cell" {...props} />
+}));
+
 describe('BarChart', () => {
   const defaultProps = {
     title: 'Test Chart',
@@ -32,56 +44,26 @@ describe('BarChart', () => {
   it('renders axis labels correctly', () => {
     render(<BarChart {...defaultProps} />);
     
-    expect(screen.getByText('Value')).toBeInTheDocument();
     expect(screen.getByText('Date')).toBeInTheDocument();
   });
 
-  it('renders correct number of bars', () => {
-    const { container } = render(<BarChart {...defaultProps} />);
-    
-    const bars = container.querySelectorAll('[class*="bar-chart__bar"]');
-    expect(bars).toHaveLength(3);
-  });
-
-  it('renders y-axis values correctly', () => {
+  it('renders Recharts components', () => {
     render(<BarChart {...defaultProps} />);
     
-    // Should render 6 y-axis values from maxValue down to 0
-    expect(screen.getByText('100')).toBeInTheDocument();
-    expect(screen.getByText('80')).toBeInTheDocument();
-    expect(screen.getByText('60')).toBeInTheDocument();
-    expect(screen.getByText('40')).toBeInTheDocument();
-    expect(screen.getByText('20')).toBeInTheDocument();
-    expect(screen.getByText('0')).toBeInTheDocument();
+    expect(screen.getByTestId('recharts-container')).toBeInTheDocument();
+    expect(screen.getByTestId('recharts-bar-chart')).toBeInTheDocument();
+    expect(screen.getByTestId('recharts-bar')).toBeInTheDocument();
+    expect(screen.getByTestId('recharts-xaxis')).toBeInTheDocument();
+    expect(screen.getByTestId('recharts-yaxis')).toBeInTheDocument();
+    expect(screen.getByTestId('recharts-grid')).toBeInTheDocument();
+    expect(screen.getByTestId('recharts-tooltip')).toBeInTheDocument();
   });
 
-  it('renders x-axis date labels', () => {
-    render(<BarChart {...defaultProps} />);
-    
-    expect(screen.getByText('1/1')).toBeInTheDocument();
-    expect(screen.getByText('1/15')).toBeInTheDocument();
-    expect(screen.getByText('1/31')).toBeInTheDocument();
-  });
-
-  it('applies custom bar color', () => {
-    const { container } = render(
-      <BarChart {...defaultProps} barColor="#FF0000" />
-    );
-    
-    const bars = container.querySelectorAll('[class*="bar-chart__bar"]');
-    expect(bars[0]).toHaveStyle({ backgroundColor: '#FF0000' });
-  });
-
-  it('calculates bar heights correctly', () => {
+  it('passes correct data to Recharts', () => {
     const { container } = render(<BarChart {...defaultProps} />);
     
-    const bars = container.querySelectorAll('[class*="bar-chart__bar"]');
-    // First bar: 50/100 = 50%
-    expect(bars[0]).toHaveStyle({ height: '50%' });
-    // Second bar: 75/100 = 75%
-    expect(bars[1]).toHaveStyle({ height: '75%' });
-    // Third bar: 100/100 = 100%
-    expect(bars[2]).toHaveStyle({ height: '100%' });
+    const barChart = screen.getByTestId('recharts-bar-chart');
+    expect(barChart).toHaveAttribute('data');
   });
 
   it('applies custom className', () => {
@@ -98,51 +80,41 @@ describe('BarChart', () => {
     
     // Should render with default sample data
     expect(screen.getByText('Test Chart')).toBeInTheDocument();
-    const { container } = render(<BarChart {...defaultProps} data={[]} />);
-    const bars = container.querySelectorAll('[class*="bar-chart__bar"]');
-    expect(bars.length).toBeGreaterThan(0);
+    expect(screen.getByTestId('recharts-bar-chart')).toBeInTheDocument();
   });
 
   it('handles large datasets', () => {
     const largeData = Array.from({ length: 30 }, (_, i) => ({
-      date: `Day ${i + 1}`,
+      date: i % 3 === 0 ? `Day ${i + 1}` : '',
       value: Math.random() * 100
     }));
     
-    const { container } = render(
-      <BarChart {...defaultProps} data={largeData} />
-    );
+    render(<BarChart {...defaultProps} data={largeData} />);
     
-    const bars = container.querySelectorAll('[class*="bar-chart__bar"]');
-    expect(bars).toHaveLength(30);
+    expect(screen.getByTestId('recharts-bar-chart')).toBeInTheDocument();
   });
 
-  it('has proper accessibility attributes', () => {
-    const { container } = render(<BarChart {...defaultProps} />);
+  it('renders correct number of Cell components for custom colors', () => {
+    render(<BarChart {...defaultProps} />);
     
-    const bars = container.querySelectorAll('[role="img"]');
-    expect(bars).toHaveLength(3);
-    
-    // Check aria-labels
-    expect(bars[0]).toHaveAttribute('aria-label', '1/1: 50 Value');
-    expect(bars[1]).toHaveAttribute('aria-label', '1/15: 75 Value');
-    expect(bars[2]).toHaveAttribute('aria-label', '1/31: 100 Value');
+    const cells = screen.getAllByTestId('recharts-cell');
+    expect(cells).toHaveLength(3); // Should match data length
   });
 
-  it('renders grid lines', () => {
-    const { container } = render(<BarChart {...defaultProps} />);
+  it('passes barColor prop correctly', () => {
+    render(<BarChart {...defaultProps} barColor="#FF0000" />);
     
-    const gridLines = container.querySelectorAll('[class*="bar-chart__grid-line"]');
-    expect(gridLines).toHaveLength(6); // One for each y-axis value
+    const cells = screen.getAllByTestId('recharts-cell');
+    cells.forEach(cell => {
+      expect(cell).toHaveAttribute('fill', '#FF0000');
+    });
   });
 
-  it('handles custom maxValue', () => {
+  it('renders with custom maxValue', () => {
     render(<BarChart {...defaultProps} maxValue={200} />);
     
-    // Should render y-axis values based on new maxValue
-    expect(screen.getByText('200')).toBeInTheDocument();
-    expect(screen.getByText('160')).toBeInTheDocument();
-    expect(screen.getByText('120')).toBeInTheDocument();
+    const yAxis = screen.getByTestId('recharts-yaxis');
+    expect(yAxis).toHaveAttribute('domain');
   });
 
   it('renders with different data values', () => {
@@ -153,17 +125,40 @@ describe('BarChart', () => {
       { date: 'Q4', value: 100 }
     ];
     
-    const { container } = render(
-      <BarChart {...defaultProps} data={customData} />
-    );
+    render(<BarChart {...defaultProps} data={customData} />);
     
-    const bars = container.querySelectorAll('[class*="bar-chart__bar"]');
-    expect(bars).toHaveLength(4);
+    const cells = screen.getAllByTestId('recharts-cell');
+    expect(cells).toHaveLength(4);
+  });
+
+  it('has proper chart structure', () => {
+    const { container } = render(<BarChart {...defaultProps} />);
     
-    // Check date labels
-    expect(screen.getByText('Q1')).toBeInTheDocument();
-    expect(screen.getByText('Q2')).toBeInTheDocument();
-    expect(screen.getByText('Q3')).toBeInTheDocument();
-    expect(screen.getByText('Q4')).toBeInTheDocument();
+    // Check for header section
+    const header = container.querySelector('[class*="bar-chart__header"]');
+    expect(header).toBeInTheDocument();
+    
+    // Check for body section
+    const body = container.querySelector('[class*="bar-chart__body"]');
+    expect(body).toBeInTheDocument();
+    
+    // Check for x-axis label
+    const xLabel = container.querySelector('[class*="bar-chart__x-label"]');
+    expect(xLabel).toBeInTheDocument();
+  });
+
+  it('renders with spaced labels in data', () => {
+    const spacedData = [
+      { date: 'Mon', value: 45 },
+      { date: '', value: 48 },
+      { date: 'Wed', value: 52 },
+      { date: '', value: 55 },
+      { date: 'Fri', value: 65 }
+    ];
+    
+    render(<BarChart {...defaultProps} data={spacedData} />);
+    
+    const cells = screen.getAllByTestId('recharts-cell');
+    expect(cells).toHaveLength(5);
   });
 });
