@@ -152,4 +152,73 @@ jobs:
             exit 1
           fi
 
-          # Pref
+          # Prefer the numeric body from a tool_use event; fallback to assistant text content
+          HOURS=$(
+            jq -r '
+              # 1) Tool-use body where Claude may have posted pure number (preferred)
+              (.. | objects
+               | select(.type? == "tool_use" and .name? == "mcp__github_comment__update_claude_comment")
+               | .input.body?),
+
+              # 2) Any assistant text content (fallback)
+              (.. | objects
+               | select(.role? == "assistant" or .type? == "assistant_message")
+               | .content? // []
+               | map(select(type=="object" and .type=="text" and (.text|type=="string")) | .text)
+               | .[])
+            ' "$LOG" \
+            | tr -d '\r' \
+            | grep -Eo '[0-9]+(\.[0-9]+)?' \
+            | tail -n1
+          )
+
+          if [ -z "${HOURS:-}" ] || ! echo "$HOURS" | grep -Eq '^[0-9]+(\.[0-9]+)?$'; then
+            echo "Could not parse hours from Claude output. Full log follows:"
+            cat "$LOG"
+            exit 1
+          fi
+
+          echo "Parsed hours: $HOURS"
+          echo "hours=$HOURS" >> "$GITHUB_OUTPUT"
+
+      - name: Save to Database via API
+        run: |
+          set -euo pipefail
+
+          ESTIMATED_TIME="${{ steps.extract_hours.outputs.hours }}"
+
+          API_URL="${{ secrets.API_URL }}"
+          if [ -z "${API_URL:-}" ]; then
+            API_URL="https://ckye-fe.vercel.app"
+          fi
+
+          echo "Posting to $API_URL/api/developer-statistics with estimatedTime=$ESTIMATED_TIME"
+
+          curl -sS -X POST "$API_URL/api/developer-statistics" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"user\": \"${{ github.event.pull_request.user.login }}\",
+              \"workspaceId\": \"cme3e54et00028onui9epyx4w\",
+              \"prNumber\": ${{ github.event.pull_request.number }},
+              \"mergedDate\": \"${{ github.event.pull_request.merged_at }}\",
+              \"estimatedTime\": \"${ESTIMATED_TIME}\"
+            }"
+
+          echo
+          echo "Developer statistics saved successfully"
+
+      - name: Create Summary
+        if: always()
+        run: |
+          echo "## PR Development Time Tracking" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **PR**: #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Title**: ${{ github.event.pull_request.title }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Author**: @${{ github.event.pull_request.user.login }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Merged By**: @${{ github.event.pull_request.merged_by.login }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Files Changed**: ${{ github.event.pull_request.changed_files }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Lines Added**: ${{ github.event.pull_request.additions }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Lines Deleted**: ${{ github.event.pull_request.deletions }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Estimated Hours**: ${{ steps.extract_hours.outputs.hours }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the logs above for the estimated development time and breakdown." >> $GITHUB_STEP_SUMMARY
