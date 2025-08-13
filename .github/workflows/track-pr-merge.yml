@@ -72,14 +72,13 @@ jobs:
           cat complete-pr-data.json
       
       - name: Estimate Development Time
+        id: estimate
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           timeout_minutes: "10"
           direct_prompt: |
-            Estimate development time for this merged PR and save it via the API.
-            
-            API_URL: ${{ secrets.API_URL || 'https://ckye-fe.vercel.app' }}
+            Estimate development time for this merged PR and output ONLY the estimated hours as a number (e.g., "5.5" or "12.0").
             
             PR Data:
             PR Number: ${{ github.event.pull_request.number }}
@@ -131,49 +130,10 @@ jobs:
                - Add fixed hours for special file types
                - Round to nearest 0.5 hour
             
-            7. **Save via API**:
-               Make a POST request to the developer-statistics API endpoint:
-               
-               ```bash
-               curl -X POST "${API_URL}/api/developer-statistics" \
-                 -H "Content-Type: application/json" \
-                 -d '{
-                   "user": "<GitHub username from PR data>",
-                   "workspaceId": "cme3e54et00028onui9epyx4w",
-                   "prNumber": <PR number from PR data>,
-                   "mergedDate": "<merged date from PR data>",
-                   "estimatedTime": <calculated hours>
-                 }'
-               ```
-               
-               The API will validate the input and save to the database.
-               Ensure all required fields are provided:
-               - user: GitHub username (string)
-               - workspaceId: The workspace ID (string)
-               - prNumber: PR number (integer)
-               - mergedDate: ISO 8601 date string
-               - estimatedTime: Hours as a number (optional, can be null)
-            
-            8. **Return Result** with breakdown:
-               ```json
-               {
-                 "success": true,
-                 "prNumber": <number>,
-                 "user": "<username>",
-                 "estimatedHours": <calculated>,
-                 "breakdown": {
-                   "baseTime": <hours>,
-                   "multiplier": "<type>",
-                   "testingTime": <hours>,
-                   "documentationTime": <hours>,
-                   "specialFilesTime": <hours>
-                 },
-                 "factors": [
-                   "list of factors applied"
-                 ],
-                 "databaseWrite": "success or error message"
-               }
-               ```
+            7. **Return Result**:
+               Output ONLY the final calculated hours as a decimal number.
+               Do not include any other text, markdown, or explanation.
+               Just the number (e.g., "5.5" or "12.0").
             
             ## Example Calculation:
             If PR has:
@@ -183,11 +143,25 @@ jobs:
             - Includes README.md update (+15% = +0.45 hours)
             
             Final: (3 * 1.5) + 0.75 + 0.45 = 5.7 hours → round to 6 hours
-            
-            ## Implementation:
-            Now analyze the PR data provided above, perform these calculations, and call the API endpoint to save the result.
-            Use the actual PR data values when making the API call.
-            The API endpoint will handle validation and database persistence.
+            Output: 6.0
+      
+      - name: Save to Database via API
+        run: |
+          # Get the estimated time from previous step
+          ESTIMATED_TIME="${{ steps.estimate.outputs.result }}"
+          
+          # Call the API endpoint
+          curl -X POST "${{ secrets.API_URL || 'https://ckye-fe.vercel.app' }}/api/developer-statistics" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"user\": \"${{ github.event.pull_request.user.login }}\",
+              \"workspaceId\": \"cme3e54et00028onui9epyx4w\",
+              \"prNumber\": ${{ github.event.pull_request.number }},
+              \"mergedDate\": \"${{ github.event.pull_request.merged_at }}\",
+              \"estimatedTime\": ${ESTIMATED_TIME:-null}
+            }"
+          
+          echo "Developer statistics saved successfully"
       
       - name: Create Summary
         if: always()
