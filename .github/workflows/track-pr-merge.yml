@@ -8,21 +8,21 @@ jobs:
   track-developer-stats:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: read
       pull-requests: read
       id-token: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      
+
       - name: Extract PR Details
         id: pr_details
         run: |
@@ -43,10 +43,10 @@ jobs:
             "baseSha": "${{ github.event.pull_request.base.sha }}"
           }
           EOF
-          
+
           echo "PR Details extracted:"
           cat pr-details.json
-      
+
       - name: Get Changed Files List
         id: changed_files
         env:
@@ -56,21 +56,21 @@ jobs:
           curl -s -H "Authorization: token $GITHUB_TOKEN" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" \
             > changed-files.json
-          
+
           # Extract just the necessary file information
           jq '[.[] | {filename: .filename, additions: .additions, deletions: .deletions, changes: .changes, status: .status}]' changed-files.json > files-summary.json
-          
+
           echo "Changed files:"
           cat files-summary.json
-      
+
       - name: Combine PR Data
         run: |
           # Merge PR details with changed files
           jq -s '.[0] + {changedFiles: .[1]}' pr-details.json files-summary.json > complete-pr-data.json
-          
+
           echo "Complete PR data:"
           cat complete-pr-data.json
-      
+
       - name: Estimate Development Time
         id: estimate
         uses: anthropics/claude-code-action@beta
@@ -79,7 +79,7 @@ jobs:
           timeout_minutes: "10"
           direct_prompt: |
             Estimate development time for this merged PR and output ONLY the estimated hours as a number (e.g., "5.5" or "12.0").
-            
+
             PR Data:
             PR Number: ${{ github.event.pull_request.number }}
             User: ${{ github.event.pull_request.user.login }}
@@ -89,17 +89,17 @@ jobs:
             Deletions: ${{ github.event.pull_request.deletions }}
             Merged Date: ${{ github.event.pull_request.merged_at }}
             Workspace ID: cme3e54et00028onui9epyx4w
-            
+
             ## Estimation Process:
-            
+
             1. **Parse the PR data** from the JSON above
-            
+
             2. **Calculate Base Time** from total lines changed:
                - Less than 50 lines: 1.5 hours
-               - 50-200 lines: 3 hours  
+               - 50-200 lines: 3 hours
                - 200-500 lines: 6 hours
                - Over 500 lines: 12 hours
-            
+
             3. **Apply Multipliers** based on PR type (from title):
                - "feat:" prefix = 1.5x multiplier (new feature)
                - "fix:" prefix = 1.0x multiplier (bug fix)
@@ -107,7 +107,7 @@ jobs:
                - "docs:" prefix = 0.5x multiplier
                - "test:" prefix = 0.8x multiplier
                - "chore:" prefix = 0.7x multiplier
-            
+
             4. **Add Time for Special Files**:
                - Test files (*.test.js, *.spec.js, *.test.tsx): +25% of base time
                - Documentation (*.md files): +15% of base time
@@ -115,49 +115,67 @@ jobs:
                - GitHub workflows (.github/workflows/*): +1 hour
                - Config files (package.json, tsconfig.json, etc.): +0.5 hours
                - Multiple file types (e.g., both frontend and backend): +20% of base time
-            
+
             5. **Analyze the changed files** from changedFiles array:
                - Check if any are test files
                - Check if any are documentation
                - Check if any are migrations
                - Check if any are GitHub workflows
                - Check if both .jsx/.tsx and .js/.ts files are present (frontend + backend)
-            
+
             6. **Calculate Final Estimate**:
                - Start with base time
                - Apply PR type multiplier
                - Add percentages for tests/docs if present
                - Add fixed hours for special file types
                - Round to nearest 0.5 hour
-            
+
             7. **Return Result**:
                Output ONLY the final calculated hours as a decimal number.
                Do not include any other text, markdown, or explanation.
                Just the number (e.g., "5.5" or "12.0").
-            
-            ## Example Calculation:
-            If PR has:
-            - 150 lines changed (base: 3 hours)
-            - Title starts with "feat:" (1.5x multiplier)
-            - Includes 2 test files (+25% = +0.75 hours)
-            - Includes README.md update (+15% = +0.45 hours)
-            
-            Final: (3 * 1.5) + 0.75 + 0.45 = 5.7 hours → round to 6 hours
-            Output: 6.0
-      
+
+      - name: Extract hours from Claude execution log
+        id: extract_hours
+        run: |
+          LOG="${{ steps.estimate.outputs.execution_file }}"
+          echo "Execution log: $LOG"
+          if [ ! -f "$LOG" ]; then
+            echo "Execution file not found: $LOG"
+            exit 1
+          fi
+
+          # Pull the last bare decimal number from assistant text messages
+          HOURS=$(jq -r '
+            .. | objects
+            | select(.type?=="assistant_message" or .role?=="assistant")
+            | .content? // []
+            | map(select(.type=="text") | .text) | .[]
+            | capture("(?<n>^[0-9]+(\\.[0-9]+)?)$")?.n
+          ' "$LOG" | tail -n1)
+
+          if [ -z "$HOURS" ] || ! echo "$HOURS" | grep -Eq '^[0-9]+(\.[0-9]+)?$'; then
+            echo "Could not parse hours from Claude output. Full log follows:"
+            cat "$LOG"
+            exit 1
+          fi
+
+          echo "Parsed hours: $HOURS"
+          echo "hours=$HOURS" >> "$GITHUB_OUTPUT"
+
       - name: Save to Database via API
         run: |
-          # Get Claude's full response
-          CLAUDE_RESPONSE='${{ steps.estimate.outputs.body }}'
-          
-          # Extract the number from the response (looking for a standalone number line)
-          # Claude outputs "**Result:**" followed by the number on its own line
-          ESTIMATED_TIME=$(echo "$CLAUDE_RESPONSE" | grep -A 2 "\*\*Result:\*\*" | tail -1 | grep -o '[0-9.]*' | head -1)
-          
-          echo "Extracted estimated time: ${ESTIMATED_TIME}"
-          
-          # Call the API endpoint with estimatedTime as string
-          curl -X POST "${{ secrets.API_URL || 'https://ckye-fe.vercel.app' }}/api/developer-statistics" \
+          ESTIMATED_TIME="${{ steps.extract_hours.outputs.hours }}"
+
+          # Allow a default API base if secret not set
+          API_URL="${{ secrets.API_URL }}"
+          if [ -z "$API_URL" ]; then
+            API_URL="https://ckye-fe.vercel.app"
+          fi
+
+          echo "Posting to $API_URL/api/developer-statistics with estimatedTime=$ESTIMATED_TIME"
+
+          curl -sS -X POST "$API_URL/api/developer-statistics" \
             -H "Content-Type: application/json" \
             -d "{
               \"user\": \"${{ github.event.pull_request.user.login }}\",
@@ -166,9 +184,10 @@ jobs:
               \"mergedDate\": \"${{ github.event.pull_request.merged_at }}\",
               \"estimatedTime\": \"${ESTIMATED_TIME}\"
             }"
-          
+
+          echo
           echo "Developer statistics saved successfully"
-      
+
       - name: Create Summary
         if: always()
         run: |
@@ -181,9 +200,10 @@ jobs:
           echo "- **Files Changed**: ${{ github.event.pull_request.changed_files }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Lines Added**: ${{ github.event.pull_request.additions }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Lines Deleted**: ${{ github.event.pull_request.deletions }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Estimated Hours**: ${{ steps.extract_hours.outputs.hours }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Check the logs above for the estimated development time and breakdown." >> $GITHUB_STEP_SUMMARY
-      
+
       - name: Report Error
         if: failure()
         uses: actions/github-script@v7
@@ -195,4 +215,4 @@ jobs:
               repo: context.repo.repo,
               issue_number: ${{ github.event.pull_request.number }},
               body: `⚠️ Failed to track development time for this PR. Please check the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.`
-            });
+            })
