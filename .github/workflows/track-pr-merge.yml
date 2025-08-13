@@ -72,12 +72,11 @@ jobs:
           cat complete-pr-data.json
       
       - name: Estimate Development Time
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          # Call Anthropic API directly
-          PROMPT=$(cat << 'PROMPT_END'
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          timeout_minutes: "10"
+          direct_prompt: |
             Estimate development time for this merged PR and record it to the database.
             
             DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -187,48 +186,6 @@ jobs:
             Final: (3 * 1.5) + 0.75 + 0.45 = 5.7 hours → round to 6 hours
             
             Now analyze the PR data provided above and perform these calculations, then write to the database.
-          PROMPT_END
-          )
-          
-          # Add PR data to prompt
-          PR_DATA=$(cat complete-pr-data.json)
-          FULL_PROMPT="$PROMPT
-
-PR Data (JSON):
-$PR_DATA"
-          
-          # Call Anthropic API
-          RESPONSE=$(curl -s -X POST https://api.anthropic.com/v1/messages \
-            -H "x-api-key: $ANTHROPIC_API_KEY" \
-            -H "anthropic-version: 2023-06-01" \
-            -H "content-type: application/json" \
-            -d @- << EOF
-          {
-            "model": "claude-3-5-sonnet-20241022",
-            "max_tokens": 4096,
-            "messages": [
-              {
-                "role": "user",
-                "content": "$FULL_PROMPT"
-              }
-            ]
-          }
-          EOF
-          )
-          
-          echo "Claude Response:"
-          echo "$RESPONSE" | jq -r '.content[0].text'
-          
-          # Extract and execute the SQL if present
-          SQL=$(echo "$RESPONSE" | jq -r '.content[0].text' | grep -A 20 "INSERT INTO developer_stats" | sed '/```$/q')
-          
-          if [ ! -z "$SQL" ]; then
-            echo "Executing SQL:"
-            echo "$SQL"
-            
-            # Use psql to execute the SQL
-            echo "$SQL" | psql "$DATABASE_URL"
-          fi
       
       - name: Create Summary
         if: always()
