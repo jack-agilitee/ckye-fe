@@ -37,7 +37,7 @@
     padding: 8px 12px;
     border: 1px solid $border-color;
     border-radius: 6px;
-    background-color: $background-primary;
+    background-color: $black-bg-dark;
     color: $text-primary;
     min-width: 200px;
     cursor: pointer;
@@ -65,17 +65,17 @@
     padding: 48px;
     text-align: center;
     color: $text-secondary;
-    background-color: $background-secondary;
+    background-color: $black-bg-dark;
     border-radius: 8px;
   }
 
   &__error {
-    color: $error-color;
-    background-color: rgba($error-color, 0.05);
+    color: $code-red;
+    background-color: rgba($code-red, 0.05);
   }
 
   &__table {
-    background-color: $background-primary;
+    background-color: $background-dark;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -126,7 +126,7 @@
   border-collapse: collapse;
 
   thead {
-    background-color: $background-secondary;
+    background-color: $black-bg-dark;
   }
 
   th {

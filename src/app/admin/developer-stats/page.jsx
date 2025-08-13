@@ -16,7 +16,7 @@ export default async function DeveloperStatsPage() {
   
   // Server-side API call to fetch workspaces
   const workspacesResponse = await getWorkspaces(cookieHeader);
-  const workspaces = workspacesResponse.data;
+  const workspaces = workspacesResponse?.data || [];
   
   return (
     <TwoColumnPage
