@@ -74,8 +74,7 @@ export async function POST(request) {
       type: isVariant ? 'variant' : 'page'
     });
 
-  } catch (error) {
-    console.error('Error updating page statistics:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Failed to update page statistics' },
       { status: 500 }
