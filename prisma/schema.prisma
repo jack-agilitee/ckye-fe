@@ -112,15 +112,6 @@ model Experiment {
   @@map("experiments")
 }
 
-model PR {
-  id        String   @id @default(cuid())
-  prId      String   // GitHub PR ID or number
-  pageId    String?  // CLAUDE.md page ID (optional for backward compatibility)
-  createdAt DateTime @default(now())
-
-  @@map("pr")
-}
-
 model DeveloperStats {
   id            String   @id @default(cuid())
   user          String   // GitHub username
