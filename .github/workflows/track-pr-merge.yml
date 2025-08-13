@@ -82,32 +82,110 @@ jobs:
           # Run Claude command with PR data
           PR_DATA=$(cat complete-pr-data.json)
           
-          claude code << EOF
-          Execute the estimate-pr-time command with the following PR data and database connection:
+          claude code << 'EOF'
+          Estimate development time for this merged PR and record it to the database.
           
           DATABASE_URL: $DATABASE_URL
           
           PR_DATA:
           $PR_DATA
           
-          Steps:
-          1. Parse the provided PR data
-          2. Calculate estimated development time based on:
-             - Total lines changed (additions + deletions)
-             - File types modified
-             - PR type from title (feat/fix/refactor)
-             - Presence of tests and documentation
-          3. Write directly to PostgreSQL database using the provided DATABASE_URL:
-             - Connect to PostgreSQL
-             - Insert into developer_stats table:
-               - user: from PR data
-               - workspace_id: "cme3e54et00028onui9epyx4w"
-               - pr_number: from PR data
-               - merged_date: from PR data
-               - estimated_time: calculated hours
-          4. Return the estimation breakdown and confirm database write
+          ## Estimation Process:
           
-          Use SQL INSERT to write the record directly to PostgreSQL.
+          1. **Parse the PR data** from the JSON above
+          
+          2. **Calculate Base Time** from total lines changed:
+             - Less than 50 lines: 1.5 hours
+             - 50-200 lines: 3 hours  
+             - 200-500 lines: 6 hours
+             - Over 500 lines: 12 hours
+          
+          3. **Apply Multipliers** based on PR type (from title):
+             - "feat:" prefix = 1.5x multiplier (new feature)
+             - "fix:" prefix = 1.0x multiplier (bug fix)
+             - "refactor:" prefix = 1.3x multiplier
+             - "docs:" prefix = 0.5x multiplier
+             - "test:" prefix = 0.8x multiplier
+             - "chore:" prefix = 0.7x multiplier
+          
+          4. **Add Time for Special Files**:
+             - Test files (*.test.js, *.spec.js, *.test.tsx): +25% of base time
+             - Documentation (*.md files): +15% of base time
+             - Database migrations (prisma/migrations/*): +2 hours
+             - GitHub workflows (.github/workflows/*): +1 hour
+             - Config files (package.json, tsconfig.json, etc.): +0.5 hours
+             - Multiple file types (e.g., both frontend and backend): +20% of base time
+          
+          5. **Analyze the changed files** from changedFiles array:
+             - Check if any are test files
+             - Check if any are documentation
+             - Check if any are migrations
+             - Check if any are GitHub workflows
+             - Check if both .jsx/.tsx and .js/.ts files are present (frontend + backend)
+          
+          6. **Calculate Final Estimate**:
+             - Start with base time
+             - Apply PR type multiplier
+             - Add percentages for tests/docs if present
+             - Add fixed hours for special file types
+             - Round to nearest 0.5 hour
+          
+          7. **Write to PostgreSQL Database**:
+             Connect to the database using the DATABASE_URL and execute:
+             
+             ```sql
+             INSERT INTO developer_stats (
+               id,
+               "user",
+               workspace_id,
+               pr_number,
+               merged_date,
+               estimated_time,
+               created_at,
+               updated_at
+             ) VALUES (
+               gen_random_uuid()::text,
+               '<user from PR data>',
+               'cme3e54et00028onui9epyx4w',
+               <prNumber from PR data>,
+               '<mergedDate from PR data>',
+               <calculated hours>,
+               CURRENT_TIMESTAMP,
+               CURRENT_TIMESTAMP
+             );
+             ```
+          
+          8. **Return Result** with breakdown:
+             ```json
+             {
+               "success": true,
+               "prNumber": <number>,
+               "user": "<username>",
+               "estimatedHours": <calculated>,
+               "breakdown": {
+                 "baseTime": <hours>,
+                 "multiplier": "<type>",
+                 "testingTime": <hours>,
+                 "documentationTime": <hours>,
+                 "specialFilesTime": <hours>
+               },
+               "factors": [
+                 "list of factors applied"
+               ],
+               "databaseWrite": "success or error message"
+             }
+             ```
+          
+          ## Example Calculation:
+          If PR has:
+          - 150 lines changed (base: 3 hours)
+          - Title starts with "feat:" (1.5x multiplier)
+          - Includes 2 test files (+25% = +0.75 hours)
+          - Includes README.md update (+15% = +0.45 hours)
+          
+          Final: (3 * 1.5) + 0.75 + 0.45 = 5.7 hours → round to 6 hours
+          
+          Now analyze the PR data provided above and perform these calculations, then write to the database.
           EOF
       
       - name: Create Summary
