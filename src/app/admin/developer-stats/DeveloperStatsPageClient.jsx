@@ -58,9 +58,9 @@ const DeveloperStatsPageClient = ({ workspaces }) => {
         statsByDeveloper[stat.user].uniqueDays.add(dateOnly);
       }
       
-      // Add estimated time
+      // Add estimated time (convert string to number)
       if (stat.estimatedTime) {
-        statsByDeveloper[stat.user].totalEstimatedHours += stat.estimatedTime;
+        statsByDeveloper[stat.user].totalEstimatedHours += parseFloat(stat.estimatedTime) || 0;
       }
     });
 
