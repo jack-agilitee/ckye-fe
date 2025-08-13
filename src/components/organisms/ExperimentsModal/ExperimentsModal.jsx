@@ -70,8 +70,8 @@ const ExperimentsModal = ({
     const z = (betterP - worseP) / se;
     const pValue = 1 - jStat.normal.cdf(z, 0, 1);
 
-    // Format as decimal with up to 10 decimal places, removing trailing zeros
-    return pValue.toFixed(10).replace(/\.?0+$/, '');
+    // Format as decimal with up to 2 decimal places (hundredths)
+    return pValue.toFixed(2);
   };
 
   const calculateIntervals = (successes, total) => {
@@ -92,9 +92,9 @@ const ExperimentsModal = ({
     lower = Math.max(0, Math.min(1, lower));
     upper = Math.max(0, Math.min(1, upper));
 
-    // Convert to percentage and format to 2 decimal places
-    const lowerPercent = (lower * 100).toFixed(2);
-    const upperPercent = (upper * 100).toFixed(2);
+    // Convert to percentage and format to 1 decimal place (tenths)
+    const lowerPercent = (lower * 100).toFixed(1);
+    const upperPercent = (upper * 100).toFixed(1);
 
     return `${lowerPercent}% – ${upperPercent}%`;
   }
@@ -126,7 +126,7 @@ const ExperimentsModal = ({
     let confidenceLevel = 0;
     const pVal = statsData.pValue;
     if (pVal !== 'N/A' && !isNaN(pVal)) {
-      confidenceLevel = ((1 - pVal) * 100).toFixed(2);
+      confidenceLevel = ((1 - pVal) * 100).toFixed(1);
     }
 
     // Determine the winner and create appropriate description
