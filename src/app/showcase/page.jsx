@@ -12,6 +12,7 @@ import SeatType, { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
 import WorkspaceSelector from '@/components/molecules/WorkspaceSelector/WorkspaceSelector';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import ChartSection from '@/components/molecules/ChartSection/ChartSection';
+import KpiCard from '@/components/molecules/KpiCard/KpiCard';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import InteractiveIcon from '@/components/atoms/InteractiveIcon/InteractiveIcon';
@@ -1806,6 +1807,138 @@ const [searchValue, setSearchValue] = useState('');
   description="Your results description here"
   className="custom-class"
 />`}
+              </pre>
+            </div>
+          </div>
+
+          {/* KpiCard Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>KpiCard</h3>
+            <p className={styles.showcase__componentDescription}>
+              A KPI card component displaying metrics with a title, chip badge, and multiple value/label pairs
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default KpiCard</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <KpiCard />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Time Period</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <KpiCard 
+                    title="This Week"
+                    chipText="12 PRs"
+                    metrics={[
+                      { value: 5, label: 'Active Developers' },
+                      { value: 20, label: 'Hours Saved' }
+                    ]}
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Single Metric</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <KpiCard 
+                    title="Today"
+                    chipText="3 PRs"
+                    metrics={[
+                      { value: 15, label: 'Code Reviews Completed' }
+                    ]}
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Multiple Metrics</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <KpiCard 
+                    title="Q4 2024"
+                    chipText="450 PRs"
+                    metrics={[
+                      { value: 25, label: 'Teams' },
+                      { value: 150, label: 'Developers' },
+                      { value: 1200, label: 'Days Saved' }
+                    ]}
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Large Numbers</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <KpiCard 
+                    title="All Time"
+                    chipText="10,234 PRs"
+                    metrics={[
+                      { value: 999999, label: 'Lines Changed' },
+                      { value: 123456, label: 'Hours Saved' }
+                    ]}
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Grid Layout</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
+                    <KpiCard 
+                      title="Past 30 Days"
+                      chipText="66 PRs"
+                      metrics={[
+                        { value: 9, label: 'Developers Using Ckye' },
+                        { value: 102, label: 'Workdays Saved' }
+                      ]}
+                    />
+                    <KpiCard 
+                      title="This Quarter"
+                      chipText="280 PRs"
+                      metrics={[
+                        { value: 35, label: 'Active Teams' },
+                        { value: 450, label: 'Days Saved' }
+                      ]}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import KpiCard from '@/components/molecules/KpiCard/KpiCard';
+
+// Default usage
+<KpiCard />
+
+// Custom metrics
+<KpiCard 
+  title="Past 30 Days"
+  chipText="66 PRs"
+  metrics={[
+    { value: 9, label: 'Developers Using Ckye' },
+    { value: 102, label: 'Workdays Saved' }
+  ]}
+/>
+
+// Single metric
+<KpiCard 
+  title="Today"
+  chipText="3 PRs"
+  metrics={[
+    { value: 15, label: 'Code Reviews Completed' }
+  ]}
+/>
+
+// Grid layout for dashboards
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
+  <KpiCard {...card1Props} />
+  <KpiCard {...card2Props} />
+</div>`}
               </pre>
             </div>
           </div>
