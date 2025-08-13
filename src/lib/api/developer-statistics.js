@@ -1,27 +1,17 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 /**
- * Fetch developer statistics by workspace ID
+ * Fetch all developer statistics by workspace ID
  * @param {string} workspaceId - The workspace ID to filter by
- * @param {Object} params - Additional query parameters
- * @param {number} params.page - Page number
- * @param {number} params.limit - Items per page
- * @param {string} params.sortBy - Sort field (user, prNumber, mergedDate, estimatedTime)
- * @param {string} params.sortOrder - Sort order (asc/desc)
- * @returns {Promise<{data: Array, meta: Object}>}
+ * @returns {Promise<{data: Array}>}
  */
-export async function getDeveloperStatsByWorkspace(workspaceId, params = {}) {
+export async function getDeveloperStatsByWorkspace(workspaceId) {
   try {
     if (!workspaceId) {
       throw new Error('Workspace ID is required');
     }
-
-    const queryParams = {
-      workspaceId,
-      ...params
-    };
     
-    const queryString = new URLSearchParams(queryParams).toString();
+    const queryString = new URLSearchParams({ workspaceId }).toString();
     const response = await fetch(`${API_BASE}/api/developer-statistics?${queryString}`, {
       method: 'GET',
       headers: {

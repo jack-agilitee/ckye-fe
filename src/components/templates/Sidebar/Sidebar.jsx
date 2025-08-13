@@ -92,6 +92,10 @@ const Sidebar = ({
     router.push('/admin/users');
   };
 
+  const handleDeveloperStatsClick = () => {
+    router.push('/admin/developer-stats');
+  };
+
   const handleAdminBack = () => {
     if (onAdminBack) {
       onAdminBack();
@@ -131,6 +135,12 @@ const Sidebar = ({
                   icon="/person.svg"
                   selected={pathname === '/admin/users'}
                   onClick={handleUsersClick}
+                />
+                <ListItem
+                  text="Developer Statistics"
+                  icon="/file.svg"
+                  selected={pathname === '/admin/developer-stats'}
+                  onClick={handleDeveloperStatsClick}
                 />
               </div>
             </div>

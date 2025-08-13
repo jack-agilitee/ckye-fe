@@ -7,10 +7,6 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const workspaceId = searchParams.get('workspaceId');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const sortBy = searchParams.get('sortBy') || 'mergedDate';
-    const sortOrder = searchParams.get('sortOrder') || 'desc';
 
     // Validate workspaceId is provided
     if (!workspaceId) {
@@ -25,36 +21,24 @@ export async function GET(request) {
       workspaceId
     };
 
-    // Execute query with pagination
-    const [stats, total] = await prisma.$transaction([
-      prisma.developerStats.findMany({
-        where,
-        skip: (page - 1) * limit,
-        take: limit,
-        orderBy: { [sortBy]: sortOrder },
-        select: {
-          id: true,
-          user: true,
-          workspaceId: true,
-          prNumber: true,
-          mergedDate: true,
-          estimatedTime: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      }),
-      prisma.developerStats.count({ where })
-    ]);
+    // Execute query - return ALL stats for the workspace
+    const stats = await prisma.developerStats.findMany({
+      where,
+      orderBy: { mergedDate: 'desc' }, // Default ordering by most recent
+      select: {
+        id: true,
+        user: true,
+        workspaceId: true,
+        prNumber: true,
+        mergedDate: true,
+        estimatedTime: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
 
     return NextResponse.json({
-      data: stats,
-      meta: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-        workspaceId
-      }
+      data: stats
     });
   } catch (error) {
     console.error('Error fetching developer statistics:', error);
