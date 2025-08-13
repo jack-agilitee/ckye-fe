@@ -333,37 +333,6 @@ const ExperimentsModal = ({
                 )}
               </ChartSection>
 
-              {/* Stats for Nerds Section */}
-              <ChartSection
-                title="Stats for Nerds"
-                className={styles['experiments-modal__section']}
-              >
-                <div className={styles['experiments-modal__stats']}>
-                  <p className={styles['experiments-modal__stat']}>
-                    A two-proportion Z-Test resulted in a one-tailed p-value of{' '}
-                    <span className={
-                      statsData.pValue !== 'N/A' && !isNaN(statsData.pValue) && parseFloat(statsData.pValue) >= 0.10
-                        ? styles['experiments-modal__stat-value--red']
-                        : styles['experiments-modal__stat-value--green']
-                    }>
-                      {statsData.pValue}
-                    </span>
-                  </p>
-                  <p className={styles['experiments-modal__stat']}>
-                    90% Confidence Interval for Master:{' '}
-                    <span className={styles['experiments-modal__stat-value']}>
-                      {statsData.masterConfidenceInterval}
-                    </span>
-                  </p>
-                  <p className={styles['experiments-modal__stat']}>
-                    90% Confidence Interval for Variant:{' '}
-                    <span className={styles['experiments-modal__stat-value']}>
-                      {statsData.variantConfidenceInterval}
-                    </span>
-                  </p>
-                </div>
-              </ChartSection>
-
               {/* Potential Impact Section */}
               <ChartSection
                 title="Potential Impact"
@@ -423,6 +392,39 @@ const ExperimentsModal = ({
               className={styles['experiments-modal__chart']}
             />
           </div>
+
+          {/* Stats for Nerds Section - moved to bottom */}
+          {hasEnoughData && (
+            <ChartSection
+              title="Stats for Nerds"
+              className={styles['experiments-modal__section']}
+            >
+              <div className={styles['experiments-modal__stats']}>
+                <p className={styles['experiments-modal__stat']}>
+                  A two-proportion Z-Test resulted in a one-tailed p-value of{' '}
+                  <span className={
+                    statsData.pValue !== 'N/A' && !isNaN(statsData.pValue) && parseFloat(statsData.pValue) >= 0.10
+                      ? styles['experiments-modal__stat-value--red']
+                      : styles['experiments-modal__stat-value--green']
+                  }>
+                    {statsData.pValue}
+                  </span>
+                </p>
+                <p className={styles['experiments-modal__stat']}>
+                  90% Confidence Interval for Master:{' '}
+                  <span className={styles['experiments-modal__stat-value']}>
+                    {statsData.masterConfidenceInterval}
+                  </span>
+                </p>
+                <p className={styles['experiments-modal__stat']}>
+                  90% Confidence Interval for Variant:{' '}
+                  <span className={styles['experiments-modal__stat-value']}>
+                    {statsData.variantConfidenceInterval}
+                  </span>
+                </p>
+              </div>
+            </ChartSection>
+          )}
 
           {/* Only show divider and action button if experiment is active */}
           {experimentStatus === 'Active' && (
