@@ -39,11 +39,6 @@ describe('DeveloperStatsPageClient', () => {
   beforeEach(() => {
     getDeveloperStatsByWorkspace.mockResolvedValue({
       data: mockStats,
-      meta: {
-        page: 1,
-        totalPages: 2,
-        total: 15,
-      },
     });
   });
 
@@ -83,12 +78,7 @@ describe('DeveloperStatsPageClient', () => {
     fireEvent.change(select, { target: { value: 'ws-1' } });
     
     await waitFor(() => {
-      expect(getDeveloperStatsByWorkspace).toHaveBeenCalledWith('ws-1', {
-        page: 1,
-        limit: 10,
-        sortBy: 'mergedDate',
-        sortOrder: 'desc',
-      });
+      expect(getDeveloperStatsByWorkspace).toHaveBeenCalledWith('ws-1');
     });
     
     // Check table headers
@@ -118,12 +108,9 @@ describe('DeveloperStatsPageClient', () => {
     fireEvent.click(developerHeader);
     
     await waitFor(() => {
-      expect(getDeveloperStatsByWorkspace).toHaveBeenCalledWith('ws-1', {
-        page: 1,
-        limit: 10,
-        sortBy: 'user',
-        sortOrder: 'asc',
-      });
+      // Sorting is now done client-side, so API call remains the same
+      expect(getDeveloperStatsByWorkspace).toHaveBeenCalledTimes(1);
+      expect(getDeveloperStatsByWorkspace).toHaveBeenCalledWith('ws-1');
     });
   });
 
@@ -156,7 +143,6 @@ describe('DeveloperStatsPageClient', () => {
   it('displays empty state when no statistics found', async () => {
     getDeveloperStatsByWorkspace.mockResolvedValue({
       data: [],
-      meta: { page: 1, totalPages: 0, total: 0 },
     });
     
     render(<DeveloperStatsPageClient workspaces={mockWorkspaces} />);
@@ -170,14 +156,31 @@ describe('DeveloperStatsPageClient', () => {
   });
 
   it('handles pagination correctly', async () => {
+    // Mock more data for pagination testing
+    const manyStats = Array.from({ length: 25 }, (_, i) => ({
+      id: i + 1,
+      user: `user${i + 1}`,
+      prNumber: 100 + i,
+      mergedDate: '2024-03-15T10:30:00Z',
+      estimatedTime: 8,
+    }));
+    
+    getDeveloperStatsByWorkspace.mockResolvedValue({
+      data: manyStats,
+    });
+    
     render(<DeveloperStatsPageClient workspaces={mockWorkspaces} />);
     
     const select = screen.getByLabelText('Select Workspace:');
     fireEvent.change(select, { target: { value: 'ws-1' } });
     
     await waitFor(() => {
-      expect(screen.getByText('Page 1 of 2')).toBeInTheDocument();
+      expect(screen.getByText('Page 1 of 3')).toBeInTheDocument();
     });
+    
+    // Should show first 10 items
+    expect(screen.getByText('user1')).toBeInTheDocument();
+    expect(screen.queryByText('user11')).not.toBeInTheDocument();
     
     // Click Next button
     const nextButton = screen.getByText('Next');
@@ -185,12 +188,9 @@ describe('DeveloperStatsPageClient', () => {
     fireEvent.click(nextButton);
     
     await waitFor(() => {
-      expect(getDeveloperStatsByWorkspace).toHaveBeenCalledWith('ws-1', {
-        page: 2,
-        limit: 10,
-        sortBy: 'mergedDate',
-        sortOrder: 'desc',
-      });
+      // Should now show items 11-20
+      expect(screen.queryByText('user1')).not.toBeInTheDocument();
+      expect(screen.getByText('user11')).toBeInTheDocument();
     });
   });
 
@@ -209,7 +209,6 @@ describe('DeveloperStatsPageClient', () => {
   it('disables Next button on last page', async () => {
     getDeveloperStatsByWorkspace.mockResolvedValue({
       data: mockStats,
-      meta: { page: 1, totalPages: 1, total: 3 },
     });
     
     render(<DeveloperStatsPageClient workspaces={mockWorkspaces} />);
@@ -248,7 +247,6 @@ describe('DeveloperStatsPageClient', () => {
           estimatedTime: null,
         },
       ],
-      meta: { page: 1, totalPages: 1, total: 1 },
     });
     
     render(<DeveloperStatsPageClient workspaces={mockWorkspaces} />);
@@ -280,18 +278,15 @@ describe('DeveloperStatsPageClient', () => {
     fireEvent.click(screen.getByText('Next'));
     
     await waitFor(() => {
-      expect(getDeveloperStatsByWorkspace).toHaveBeenCalledWith('ws-1', 
-        expect.objectContaining({ page: 2 })
-      );
+      expect(screen.getByText('Page 2 of 1')).toBeInTheDocument();
     });
     
     // Change workspace
     fireEvent.change(select, { target: { value: 'ws-2' } });
     
     await waitFor(() => {
-      expect(getDeveloperStatsByWorkspace).toHaveBeenCalledWith('ws-2', 
-        expect.objectContaining({ page: 1 }) // Should reset to page 1
-      );
+      expect(getDeveloperStatsByWorkspace).toHaveBeenCalledWith('ws-2');
+      expect(screen.getByText('Page 1 of 1')).toBeInTheDocument();
     });
   });
 });

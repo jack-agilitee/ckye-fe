@@ -6,7 +6,8 @@ import styles from './DeveloperStatsPageClient.module.scss';
 
 const DeveloperStatsPageClient = ({ workspaces }) => {
   const [selectedWorkspace, setSelectedWorkspace] = useState('');
-  const [stats, setStats] = useState([]);
+  const [allStats, setAllStats] = useState([]);
+  const [displayedStats, setDisplayedStats] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sortConfig, setSortConfig] = useState({
@@ -14,7 +15,6 @@ const DeveloperStatsPageClient = ({ workspaces }) => {
     direction: 'desc'
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 10;
 
   // Fetch statistics when workspace is selected
@@ -22,22 +22,17 @@ const DeveloperStatsPageClient = ({ workspaces }) => {
     if (selectedWorkspace) {
       fetchStatistics();
     }
-  }, [selectedWorkspace, currentPage, sortConfig]);
+  }, [selectedWorkspace]);
 
   const fetchStatistics = async () => {
     setLoading(true);
     setError(null);
+    setCurrentPage(1);
     
     try {
-      const response = await getDeveloperStatsByWorkspace(selectedWorkspace, {
-        page: currentPage,
-        limit: itemsPerPage,
-        sortBy: sortConfig.key,
-        sortOrder: sortConfig.direction
-      });
+      const response = await getDeveloperStatsByWorkspace(selectedWorkspace);
       
-      setStats(response.data || []);
-      setTotalPages(response.meta?.totalPages || 1);
+      setAllStats(response.data || []);
     } catch (err) {
       setError('Failed to load developer statistics');
       console.error('Error fetching stats:', err);
@@ -46,9 +41,49 @@ const DeveloperStatsPageClient = ({ workspaces }) => {
     }
   };
 
+  // Sort and paginate data on the client side
+  useEffect(() => {
+    if (allStats.length === 0) {
+      setDisplayedStats([]);
+      return;
+    }
+
+    // Sort data
+    const sorted = [...allStats].sort((a, b) => {
+      let aValue = a[sortConfig.key];
+      let bValue = b[sortConfig.key];
+      
+      // Handle null/undefined values
+      if (aValue == null) return 1;
+      if (bValue == null) return -1;
+      
+      // Handle date sorting
+      if (sortConfig.key === 'mergedDate') {
+        aValue = new Date(aValue).getTime();
+        bValue = new Date(bValue).getTime();
+      }
+      
+      // Handle numeric sorting
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+      
+      // Handle string sorting
+      const comparison = String(aValue).localeCompare(String(bValue));
+      return sortConfig.direction === 'asc' ? comparison : -comparison;
+    });
+
+    // Paginate data
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setDisplayedStats(sorted.slice(startIndex, endIndex));
+  }, [allStats, sortConfig, currentPage]);
+
   const handleWorkspaceChange = (e) => {
     setSelectedWorkspace(e.target.value);
-    setCurrentPage(1); // Reset to first page when workspace changes
+    setAllStats([]); // Clear stats when changing workspace
+    setDisplayedStats([]);
+    setCurrentPage(1);
   };
 
   const handleSort = (key) => {
@@ -56,8 +91,11 @@ const DeveloperStatsPageClient = ({ workspaces }) => {
       key,
       direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
     }));
-    setCurrentPage(1); // Reset to first page when sorting changes
+    setCurrentPage(1);
   };
+
+  // Calculate total pages based on all stats
+  const totalPages = Math.ceil(allStats.length / itemsPerPage);
 
   const formatDate = (dateString) => {
     if (!dateString) return '-';
@@ -116,7 +154,7 @@ const DeveloperStatsPageClient = ({ workspaces }) => {
             <div className={styles.page__loading}>Loading statistics...</div>
           ) : error ? (
             <div className={styles.page__error}>{error}</div>
-          ) : stats.length === 0 ? (
+          ) : displayedStats.length === 0 && allStats.length === 0 ? (
             <div className={styles.page__empty}>
               No developer statistics found for this workspace.
             </div>
@@ -153,7 +191,7 @@ const DeveloperStatsPageClient = ({ workspaces }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {stats.map((stat) => (
+                    {displayedStats.map((stat) => (
                       <tr key={stat.id}>
                         <td className={styles.table__cell}>{stat.user}</td>
                         <td className={styles.table__cell}>#{stat.prNumber}</td>
