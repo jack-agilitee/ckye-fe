@@ -1,21 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getDeveloperStatsByWorkspace } from '@/lib/api/developer-statistics';
 import styles from './DeveloperStatsPageClient.module.scss';
 
 const DeveloperStatsPageClient = ({ workspaces }) => {
   const [selectedWorkspace, setSelectedWorkspace] = useState('');
   const [allStats, setAllStats] = useState([]);
-  const [displayedStats, setDisplayedStats] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [sortConfig, setSortConfig] = useState({
-    key: 'mergedDate',
-    direction: 'desc'
-  });
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   // Fetch statistics when workspace is selected
   useEffect(() => {
@@ -27,7 +20,6 @@ const DeveloperStatsPageClient = ({ workspaces }) => {
   const fetchStatistics = async () => {
     setLoading(true);
     setError(null);
-    setCurrentPage(1);
     
     try {
       const response = await getDeveloperStatsByWorkspace(selectedWorkspace);
@@ -41,84 +33,56 @@ const DeveloperStatsPageClient = ({ workspaces }) => {
     }
   };
 
-  // Sort and paginate data on the client side
-  useEffect(() => {
-    if (allStats.length === 0) {
-      setDisplayedStats([]);
-      return;
-    }
+  // Process statistics by developer
+  const developerStats = useMemo(() => {
+    if (allStats.length === 0) return [];
 
-    // Sort data
-    const sorted = [...allStats].sort((a, b) => {
-      let aValue = a[sortConfig.key];
-      let bValue = b[sortConfig.key];
-      
-      // Handle null/undefined values
-      if (aValue == null) return 1;
-      if (bValue == null) return -1;
-      
-      // Handle date sorting
-      if (sortConfig.key === 'mergedDate') {
-        aValue = new Date(aValue).getTime();
-        bValue = new Date(bValue).getTime();
+    // Group stats by developer
+    const statsByDeveloper = {};
+    
+    allStats.forEach(stat => {
+      if (!statsByDeveloper[stat.user]) {
+        statsByDeveloper[stat.user] = {
+          user: stat.user,
+          prs: [],
+          uniqueDays: new Set(),
+          totalEstimatedHours: 0
+        };
       }
       
-      // Handle numeric sorting
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+      statsByDeveloper[stat.user].prs.push(stat);
+      
+      // Add unique day (ignore time, just get the date)
+      if (stat.mergedDate) {
+        const dateOnly = new Date(stat.mergedDate).toDateString();
+        statsByDeveloper[stat.user].uniqueDays.add(dateOnly);
       }
       
-      // Handle string sorting
-      const comparison = String(aValue).localeCompare(String(bValue));
-      return sortConfig.direction === 'asc' ? comparison : -comparison;
+      // Add estimated time
+      if (stat.estimatedTime) {
+        statsByDeveloper[stat.user].totalEstimatedHours += stat.estimatedTime;
+      }
     });
 
-    // Paginate data
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    setDisplayedStats(sorted.slice(startIndex, endIndex));
-  }, [allStats, sortConfig, currentPage]);
+    // Convert to array and calculate final metrics
+    return Object.values(statsByDeveloper).map(dev => ({
+      user: dev.user,
+      daysUsingCkye: dev.uniqueDays.size,
+      totalPRs: dev.prs.length,
+      totalEstimatedHours: dev.totalEstimatedHours,
+      // Calculate workdays saved (8 hour workday)
+      workdaysSaved: Math.round((dev.totalEstimatedHours / 8) * 10) / 10,
+      prs: dev.prs.sort((a, b) => {
+        const dateA = new Date(a.mergedDate || 0).getTime();
+        const dateB = new Date(b.mergedDate || 0).getTime();
+        return dateB - dateA; // Most recent first
+      })
+    })).sort((a, b) => b.workdaysSaved - a.workdaysSaved); // Sort by time saved descending
+  }, [allStats]);
 
   const handleWorkspaceChange = (e) => {
     setSelectedWorkspace(e.target.value);
     setAllStats([]); // Clear stats when changing workspace
-    setDisplayedStats([]);
-    setCurrentPage(1);
-  };
-
-  const handleSort = (key) => {
-    setSortConfig(prev => ({
-      key,
-      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
-    }));
-    setCurrentPage(1);
-  };
-
-  // Calculate total pages based on all stats
-  const totalPages = Math.ceil(allStats.length / itemsPerPage);
-
-  const formatDate = (dateString) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const formatTime = (hours) => {
-    if (!hours) return '-';
-    return `${hours}h`;
-  };
-
-  const getSortIndicator = (column) => {
-    if (sortConfig.key !== column) {
-      return <span className={styles['page__sort-indicator']}>⇅</span>;
-    }
-    return sortConfig.direction === 'asc' 
-      ? <span className={styles['page__sort-indicator']}>↑</span>
-      : <span className={styles['page__sort-indicator']}>↓</span>;
   };
 
   return (
@@ -154,77 +118,46 @@ const DeveloperStatsPageClient = ({ workspaces }) => {
             <div className={styles.page__loading}>Loading statistics...</div>
           ) : error ? (
             <div className={styles.page__error}>{error}</div>
-          ) : displayedStats.length === 0 && allStats.length === 0 ? (
+          ) : developerStats.length === 0 ? (
             <div className={styles.page__empty}>
               No developer statistics found for this workspace.
             </div>
           ) : (
-            <>
-              <div className={styles.page__table}>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th 
-                        onClick={() => handleSort('user')}
-                        className={styles['table__header--sortable']}
-                      >
-                        Developer {getSortIndicator('user')}
-                      </th>
-                      <th 
-                        onClick={() => handleSort('prNumber')}
-                        className={styles['table__header--sortable']}
-                      >
-                        PR Number {getSortIndicator('prNumber')}
-                      </th>
-                      <th 
-                        onClick={() => handleSort('mergedDate')}
-                        className={styles['table__header--sortable']}
-                      >
-                        Merged Date {getSortIndicator('mergedDate')}
-                      </th>
-                      <th 
-                        onClick={() => handleSort('estimatedTime')}
-                        className={styles['table__header--sortable']}
-                      >
-                        Estimated Time {getSortIndicator('estimatedTime')}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {displayedStats.map((stat) => (
-                      <tr key={stat.id}>
-                        <td className={styles.table__cell}>{stat.user}</td>
-                        <td className={styles.table__cell}>#{stat.prNumber}</td>
-                        <td className={styles.table__cell}>{formatDate(stat.mergedDate)}</td>
-                        <td className={styles.table__cell}>{formatTime(stat.estimatedTime)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {totalPages > 1 && (
-                <div className={styles.page__pagination}>
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                    className={styles.page__button}
-                  >
-                    Previous
-                  </button>
-                  <span className={styles.page__pageInfo}>
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                    disabled={currentPage === totalPages}
-                    className={styles.page__button}
-                  >
-                    Next
-                  </button>
+            <div className={styles.page__developers}>
+              {developerStats.map((dev) => (
+                <div key={dev.user} className={styles.developerCard}>
+                  <div className={styles.developerCard__header}>
+                    <h3 className={styles.developerCard__name}>{dev.user}</h3>
+                    <span className={styles.developerCard__prCount}>
+                      {dev.totalPRs} PR{dev.totalPRs !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                  
+                  <div className={styles.developerCard__metrics}>
+                    <div className={styles.metric}>
+                      <div className={styles.metric__value}>
+                        {dev.daysUsingCkye}
+                      </div>
+                      <div className={styles.metric__label}>
+                        Day{dev.daysUsingCkye !== 1 ? 's' : ''} using Ckye
+                      </div>
+                    </div>
+                    
+                    <div className={styles.metric}>
+                      <div className={styles.metric__value}>
+                        {dev.workdaysSaved}
+                      </div>
+                      <div className={styles.metric__label}>
+                        Workday{dev.workdaysSaved !== 1 ? 's' : ''} saved
+                      </div>
+                      <div className={styles.metric__sublabel}>
+                        ({dev.totalEstimatedHours} hours total)
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
-            </>
+              ))}
+            </div>
           )}
         </div>
       )}

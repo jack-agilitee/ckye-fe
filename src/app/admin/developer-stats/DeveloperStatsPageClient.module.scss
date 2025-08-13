@@ -58,6 +58,12 @@
     margin-top: 32px;
   }
 
+  &__developers {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
   &__loading,
   &__error,
   &__empty {
@@ -73,96 +79,70 @@
     color: $code-red;
     background-color: rgba($code-red, 0.05);
   }
+}
 
-  &__table {
-    background-color: $background-dark;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.developerCard {
+  background-color: $black-bg-dark;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid $border-color;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $primary-color;
+    box-shadow: 0 4px 12px rgba($primary-color, 0.1);
   }
 
-  &__sort-indicator {
-    margin-left: 4px;
-    opacity: 0.6;
-    font-size: 12px;
-  }
-
-  &__pagination {
+  &__header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 16px;
-    margin-top: 24px;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid $border-color;
   }
 
-  &__button {
-    @include button-text;
-    padding: 8px 16px;
-    background-color: $primary-color;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-
-    &:hover:not(:disabled) {
-      background-color: darken($primary-color, 10%);
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+  &__name {
+    @include heading-3;
+    color: $text-primary;
+    margin: 0;
   }
 
-  &__pageInfo {
-    @include body-medium;
+  &__prCount {
+    @include body-small;
     color: $text-secondary;
+    background-color: rgba($primary-color, 0.1);
+    padding: 4px 12px;
+    border-radius: 16px;
+  }
+
+  &__metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
   }
 }
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
+.metric {
+  text-align: center;
 
-  thead {
-    background-color: $black-bg-dark;
+  &__value {
+    @include heading-1;
+    color: $accent-green-light;
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 8px;
   }
 
-  th {
-    @include label;
-    text-align: left;
-    padding: 12px 16px;
-    color: $text-secondary;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-  }
-
-  &__header--sortable {
-    cursor: pointer;
-    user-select: none;
-    transition: color 0.2s;
-
-    &:hover {
-      color: $text-primary;
-    }
-  }
-
-  tbody tr {
-    border-top: 1px solid $border-color;
-    transition: background-color 0.2s;
-
-    &:hover {
-      background-color: $background-hover;
-    }
-  }
-
-  &__cell {
+  &__label {
     @include body-medium;
-    padding: 16px;
     color: $text-primary;
+    margin-bottom: 4px;
+  }
+
+  &__sublabel {
+    @include body-small;
+    color: $text-secondary;
   }
 }
 
@@ -185,21 +165,21 @@
       width: 100%;
     }
 
-    &__table {
-      overflow-x: auto;
-    }
-
-    &__pagination {
-      flex-wrap: wrap;
+    &__developers {
+      grid-template-columns: 1fr;
     }
   }
 
-  .table {
-    min-width: 600px;
+  .developerCard {
+    &__metrics {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
 
-    th,
-    &__cell {
-      padding: 8px 12px;
+  .metric {
+    &__value {
+      font-size: 36px;
     }
   }
 }

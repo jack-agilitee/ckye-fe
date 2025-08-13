@@ -93,25 +93,52 @@ describe('DeveloperStatsPageClient', () => {
     expect(screen.getByText('8h')).toBeInTheDocument();
   });
 
-  it('handles sorting when column headers are clicked', async () => {
+  it('groups statistics by developer correctly', async () => {
+    // Mock data with multiple PRs per developer
+    const multipleStats = [
+      {
+        id: 1,
+        user: 'jack.nichols',
+        prNumber: 123,
+        mergedDate: '2024-03-15T10:30:00Z',
+        estimatedTime: 8,
+      },
+      {
+        id: 2,
+        user: 'jack.nichols',
+        prNumber: 125,
+        mergedDate: '2024-03-16T10:30:00Z',
+        estimatedTime: 4,
+      },
+      {
+        id: 3,
+        user: 'andrew.vonn',
+        prNumber: 124,
+        mergedDate: '2024-03-15T14:45:00Z',
+        estimatedTime: 12,
+      },
+    ];
+    
+    getDeveloperStatsByWorkspace.mockResolvedValue({
+      data: multipleStats,
+    });
+    
     render(<DeveloperStatsPageClient workspaces={mockWorkspaces} />);
     
     const select = screen.getByLabelText('Select Workspace:');
     fireEvent.change(select, { target: { value: 'ws-1' } });
     
     await waitFor(() => {
-      expect(getDeveloperStatsByWorkspace).toHaveBeenCalled();
-    });
-    
-    // Click on Developer column to sort
-    const developerHeader = screen.getByText('Developer').closest('th');
-    fireEvent.click(developerHeader);
-    
-    await waitFor(() => {
-      // Sorting is now done client-side, so API call remains the same
-      expect(getDeveloperStatsByWorkspace).toHaveBeenCalledTimes(1);
       expect(getDeveloperStatsByWorkspace).toHaveBeenCalledWith('ws-1');
     });
+    
+    // Check jack.nichols has 2 PRs grouped
+    const jackCard = screen.getByText('jack.nichols').closest('div');
+    expect(jackCard).toHaveTextContent('2 PRs');
+    
+    // Check andrew.vonn has 1 PR
+    const andrewCard = screen.getByText('andrew.vonn').closest('div');
+    expect(andrewCard).toHaveTextContent('1 PR');
   });
 
   it('displays loading state while fetching data', async () => {
