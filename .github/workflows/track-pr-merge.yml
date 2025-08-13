@@ -147,8 +147,14 @@ jobs:
       
       - name: Save to Database via API
         run: |
-          # Get the estimated time from previous step (as string)
-          ESTIMATED_TIME="${{ steps.estimate.outputs.result }}"
+          # Get Claude's full response
+          CLAUDE_RESPONSE='${{ steps.estimate.outputs.body }}'
+          
+          # Extract the number from the response (looking for a standalone number line)
+          # Claude outputs "**Result:**" followed by the number on its own line
+          ESTIMATED_TIME=$(echo "$CLAUDE_RESPONSE" | grep -A 2 "\*\*Result:\*\*" | tail -1 | grep -o '[0-9.]*' | head -1)
+          
+          echo "Extracted estimated time: ${ESTIMATED_TIME}"
           
           # Call the API endpoint with estimatedTime as string
           curl -X POST "${{ secrets.API_URL || 'https://ckye-fe.vercel.app' }}/api/developer-statistics" \
