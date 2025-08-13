@@ -1,0 +1,139 @@
+name: Track PR Merge Statistics
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  track-developer-stats:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      pull-requests: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install Claude Code CLI
+        run: |
+          npm install -g @anthropic/claude-code
+      
+      - name: Extract PR Details
+        id: pr_details
+        run: |
+          # Extract PR information from GitHub context
+          cat << EOF > pr-details.json
+          {
+            "prNumber": ${{ github.event.pull_request.number }},
+            "user": "${{ github.event.pull_request.user.login }}",
+            "mergedDate": "${{ github.event.pull_request.merged_at }}",
+            "title": "${{ github.event.pull_request.title }}",
+            "body": $(echo '${{ github.event.pull_request.body }}' | jq -Rs .),
+            "filesChanged": ${{ github.event.pull_request.changed_files }},
+            "additions": ${{ github.event.pull_request.additions }},
+            "deletions": ${{ github.event.pull_request.deletions }},
+            "mergedBy": "${{ github.event.pull_request.merged_by.login }}",
+            "repository": "${{ github.repository }}",
+            "headSha": "${{ github.event.pull_request.head.sha }}",
+            "baseSha": "${{ github.event.pull_request.base.sha }}"
+          }
+          EOF
+          
+          echo "PR Details extracted:"
+          cat pr-details.json
+      
+      - name: Get Changed Files List
+        id: changed_files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Fetch the list of changed files
+          curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" \
+            > changed-files.json
+          
+          # Extract just the necessary file information
+          jq '[.[] | {filename: .filename, additions: .additions, deletions: .deletions, changes: .changes, status: .status}]' changed-files.json > files-summary.json
+          
+          echo "Changed files:"
+          cat files-summary.json
+      
+      - name: Combine PR Data
+        run: |
+          # Merge PR details with changed files
+          jq -s '.[0] + {changedFiles: .[1]}' pr-details.json files-summary.json > complete-pr-data.json
+          
+          echo "Complete PR data:"
+          cat complete-pr-data.json
+      
+      - name: Estimate Development Time
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          # Run Claude command with PR data
+          PR_DATA=$(cat complete-pr-data.json)
+          
+          claude code << EOF
+          Execute the estimate-pr-time command with the following PR data and database connection:
+          
+          DATABASE_URL: $DATABASE_URL
+          
+          PR_DATA:
+          $PR_DATA
+          
+          Steps:
+          1. Parse the provided PR data
+          2. Calculate estimated development time based on:
+             - Total lines changed (additions + deletions)
+             - File types modified
+             - PR type from title (feat/fix/refactor)
+             - Presence of tests and documentation
+          3. Write directly to PostgreSQL database using the provided DATABASE_URL:
+             - Connect to PostgreSQL
+             - Insert into developer_stats table:
+               - user: from PR data
+               - workspace_id: "cme3e54et00028onui9epyx4w"
+               - pr_number: from PR data
+               - merged_date: from PR data
+               - estimated_time: calculated hours
+          4. Return the estimation breakdown and confirm database write
+          
+          Use SQL INSERT to write the record directly to PostgreSQL.
+          EOF
+      
+      - name: Create Summary
+        if: always()
+        run: |
+          echo "## PR Development Time Tracking" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **PR**: #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Title**: ${{ github.event.pull_request.title }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Author**: @${{ github.event.pull_request.user.login }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Merged By**: @${{ github.event.pull_request.merged_by.login }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Files Changed**: ${{ github.event.pull_request.changed_files }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Lines Added**: ${{ github.event.pull_request.additions }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Lines Deleted**: ${{ github.event.pull_request.deletions }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the logs above for the estimated development time and breakdown." >> $GITHUB_STEP_SUMMARY
+      
+      - name: Report Error
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Create a comment on the PR if tracking failed
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ github.event.pull_request.number }},
+              body: `⚠️ Failed to track development time for this PR. Please check the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.`
+            });

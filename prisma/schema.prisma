@@ -120,3 +120,19 @@ model PR {
 
   @@map("pr")
 }
+
+model DeveloperStats {
+  id            String   @id @default(cuid())
+  user          String   // GitHub username
+  workspaceId   String   // Reference to workspace
+  prNumber      Int      // PR number
+  mergedDate    DateTime // When the PR was merged
+  estimatedTime Float?   // Estimated time in hours (optional)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([user])
+  @@index([workspaceId])
+  @@index([mergedDate])
+  @@map("developer_stats")
+}
