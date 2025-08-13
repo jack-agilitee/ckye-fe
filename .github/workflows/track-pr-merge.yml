@@ -54,6 +54,7 @@ jobs:
         run: |
           # Fetch the list of changed files
           curl -s -H "Authorization: token $GITHUB_TOKEN" \
+               -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" \
             > changed-files.json
 
@@ -138,69 +139,17 @@ jobs:
       - name: Extract hours from Claude execution log
         id: extract_hours
         run: |
+          set -euo pipefail
+
           LOG="${{ steps.estimate.outputs.execution_file }}"
+          if [ -z "${LOG:-}" ]; then
+            LOG="/home/runner/work/_temp/claude-execution-output.json"
+          fi
+
           echo "Execution log: $LOG"
           if [ ! -f "$LOG" ]; then
             echo "Execution file not found: $LOG"
             exit 1
           fi
 
-          # Pull the last bare decimal number from assistant text messages
-          HOURS=$(jq -r '
-            .. | objects
-            | select(.type?=="assistant_message" or .role?=="assistant")
-            | .content? // []
-            | map(select(.type=="text") | .text) | .[]
-            | capture("(?<n>^[0-9]+(\\.[0-9]+)?)$")?.n
-          ' "$LOG" | tail -n1)
-
-          if [ -z "$HOURS" ] || ! echo "$HOURS" | grep -Eq '^[0-9]+(\.[0-9]+)?$'; then
-            echo "Could not parse hours from Claude output. Full log follows:"
-            cat "$LOG"
-            exit 1
-          fi
-
-          echo "Parsed hours: $HOURS"
-          echo "hours=$HOURS" >> "$GITHUB_OUTPUT"
-
-      - name: Save to Database via API
-        run: |
-          ESTIMATED_TIME="${{ steps.extract_hours.outputs.hours }}"
-
-          # Allow a default API base if secret not set
-          API_URL="${{ secrets.API_URL }}"
-          if [ -z "$API_URL" ]; then
-            API_URL="https://ckye-fe.vercel.app"
-          fi
-
-          echo "Posting to $API_URL/api/developer-statistics with estimatedTime=$ESTIMATED_TIME"
-
-          curl -sS -X POST "$API_URL/api/developer-statistics" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"user\": \"${{ github.event.pull_request.user.login }}\",
-              \"workspaceId\": \"cme3e54et00028onui9epyx4w\",
-              \"prNumber\": ${{ github.event.pull_request.number }},
-              \"mergedDate\": \"${{ github.event.pull_request.merged_at }}\",
-              \"estimatedTime\": \"${ESTIMATED_TIME}\"
-            }"
-
-          echo
-          echo "Developer statistics saved successfully"
-
-      - name: Create Summary
-        if: always()
-        run: |
-          echo "## PR Development Time Tracking" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **PR**: #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Title**: ${{ github.event.pull_request.title }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Author**: @${{ github.event.pull_request.user.login }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Merged By**: @${{ github.event.pull_request.merged_by.login }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Files Changed**: ${{ github.event.pull_request.changed_files }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Lines Added**: ${{ github.event.pull_request.additions }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Lines Deleted**: ${{ github.event.pull_request.deletions }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Estimated Hours**: ${{ steps.extract_hours.outputs.hours }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Check the logs above for the estimated development time and breakdown." >> $GITHUB_STEP_SUMMARY
-
+          # Pref
