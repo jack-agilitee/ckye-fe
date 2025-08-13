@@ -1883,9 +1883,23 @@ const [searchValue, setSearchValue] = useState('');
               </div>
               
               <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Long Text (Truncation Test)</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  <KpiCard 
+                    title="This is a very long title that should be truncated when it exceeds the available space"
+                    chipText="999,999 Pull Requests Merged Successfully"
+                    metrics={[
+                      { value: 9999, label: 'Developers Using Ckye Platform Extensively' },
+                      { value: 102345, label: 'Total Workdays Saved Through Automation' }
+                    ]}
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Grid Layout</h4>
                 <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
                     <KpiCard 
                       title="Past 30 Days"
                       chipText="66 PRs"
@@ -1935,7 +1949,7 @@ const [searchValue, setSearchValue] = useState('');
 />
 
 // Grid layout for dashboards
-<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
   <KpiCard {...card1Props} />
   <KpiCard {...card2Props} />
 </div>`}

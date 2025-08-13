@@ -8,6 +8,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0; // Allow card to shrink
+  overflow: hidden;
 
   &__header {
     display: flex;
@@ -22,6 +24,9 @@
     margin: 0;
     font-size: 20px;
     font-weight: 700;
+    @include truncate;
+    flex: 1;
+    margin-right: 8px;
   }
 
   &__chip {
@@ -31,6 +36,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
   }
 
   &__chip-text {
@@ -40,6 +46,8 @@
     font-weight: 600;
     letter-spacing: 0.2px;
     white-space: nowrap;
+    @include truncate;
+    max-width: 100px;
   }
 
   &__divider {
@@ -85,6 +93,9 @@
     font-weight: 600;
     line-height: 1.2;
     letter-spacing: 0.2px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   // Responsive design
