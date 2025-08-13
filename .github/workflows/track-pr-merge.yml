@@ -181,7 +181,7 @@ jobs:
           echo "Parsed hours: $HOURS"
           echo "hours=$HOURS" >> "$GITHUB_OUTPUT"
 
-      - name: Save to Database via API
+      - name: Save Developer Statistics
         run: |
           set -euo pipefail
 
@@ -207,6 +207,58 @@ jobs:
           echo
           echo "Developer statistics saved successfully"
 
+      - name: Check for Claude Page ID in Comments
+        id: check_claude
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          
+          echo "Fetching PR comments..."
+          COMMENTS=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments")
+          
+          # Extract Page ID from comments (looking for pattern: "Page ID: <id>")
+          PAGE_ID=$(echo "$COMMENTS" | jq -r '.[].body' | grep -oP 'Page ID:\s*\K[a-z0-9]+' | head -n1 || true)
+          
+          if [ -n "$PAGE_ID" ]; then
+            echo "Found Claude Page ID: $PAGE_ID"
+            echo "page_id=$PAGE_ID" >> "$GITHUB_OUTPUT"
+            echo "is_claude=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No Claude Page ID found in comments"
+            echo "is_claude=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update Page Statistics
+        if: steps.check_claude.outputs.is_claude == 'true'
+        run: |
+          set -euo pipefail
+
+          PAGE_ID="${{ steps.check_claude.outputs.page_id }}"
+          COMMIT_COUNT=$(git rev-list --count ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }})
+
+          API_URL="${{ secrets.API_URL }}"
+          if [ -z "${API_URL:-}" ]; then
+            API_URL="https://ckye-fe.vercel.app"
+          fi
+
+          echo "Updating page statistics for Page ID: $PAGE_ID"
+          echo "PR Number: ${{ github.event.pull_request.number }}"
+          echo "Commit Count: $COMMIT_COUNT"
+
+          # Call API to update page statistics
+          RESPONSE=$(curl -sS -X POST "$API_URL/api/page-statistics" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"pageId\": \"$PAGE_ID\",
+              \"commitCount\": $COMMIT_COUNT
+            }")
+
+          echo "API Response: $RESPONSE"
+          echo "Page statistics updated successfully"
+
       - name: Create Summary
         if: always()
         run: |
@@ -220,5 +272,10 @@ jobs:
           echo "- **Lines Added**: ${{ github.event.pull_request.additions }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Lines Deleted**: ${{ github.event.pull_request.deletions }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Estimated Hours**: ${{ steps.extract_hours.outputs.hours }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.check_claude.outputs.is_claude }}" == "true" ]; then
+            echo "- **Claude Contribution**: Yes (Page ID: ${{ steps.check_claude.outputs.page_id }})" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Claude Contribution**: No" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Check the logs above for the estimated development time and breakdown." >> $GITHUB_STEP_SUMMARY
