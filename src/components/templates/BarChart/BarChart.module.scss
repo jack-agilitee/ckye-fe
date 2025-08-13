@@ -1,0 +1,111 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.bar-chart {
+  background-color: $black-bg-dark;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  min-height: 400px;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__title {
+    @include heading-2;
+    color: $white-primary;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  &__date-range {
+    @include body-small;
+    color: $white-secondary;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 350px;
+  }
+
+  &__x-label {
+    @include body-small;
+    color: $white-secondary;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: -20px;
+  }
+
+  &__tooltip {
+    background-color: rgba($black-bg-dark, 0.95);
+    border: 1px solid rgba($white-primary, 0.2);
+    border-radius: 4px;
+    padding: 8px 12px;
+  }
+
+  &__tooltip-label {
+    @include body-small;
+    color: $white-primary;
+    font-size: 12px;
+    margin: 0;
+  }
+
+  // Recharts overrides for dark theme
+  :global {
+    .recharts-cartesian-axis-tick-value {
+      fill: $white-primary;
+    }
+
+    .recharts-cartesian-grid-horizontal line {
+      stroke-dasharray: 3 3;
+    }
+
+    .recharts-tooltip-wrapper {
+      outline: none;
+    }
+
+    .recharts-bar-rectangle {
+      &:hover {
+        opacity: 0.85;
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    padding: 12px;
+    min-height: 300px;
+
+    &__body {
+      min-height: 250px;
+    }
+
+    &__title {
+      font-size: 16px;
+    }
+
+    &__date-range {
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__x-label {
+      font-size: 11px;
+    }
+  }
+}

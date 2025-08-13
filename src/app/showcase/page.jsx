@@ -27,6 +27,7 @@ import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import WorkspacesTable from '@/components/templates/WorkspacesTable/WorkspacesTable';
 import VariantsTable from '@/components/templates/VariantsTable/VariantsTable';
 import ExperimentsTable from '@/components/templates/ExperimentsTable/ExperimentsTable';
+import BarChart from '@/components/templates/BarChart/BarChart';
 import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import styles from './page.module.scss';
 
@@ -3642,6 +3643,112 @@ const experiments = [
             </div>
           </div>
 
+          {/* BarChart Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>BarChart</h3>
+            <p className={styles.showcase__componentDescription}>
+              A data visualization template component that displays bar charts with customizable data, labels, and styling
+            </p>
+            
+            <div className={`${styles.showcase__demo} ${styles['showcase__demo--templates']}`}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default BarChart (Development Hours)</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', height: '500px' }}>
+                  <BarChart />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Data - Weekly Stats</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', height: '500px' }}>
+                  <BarChart 
+                    title="Weekly Active Users"
+                    dateRange="Week of Jan 1-7, 2024"
+                    data={[
+                      { date: 'Mon', value: 45 },
+                      { date: '', value: 48 },
+                      { date: 'Tue', value: 52 },
+                      { date: '', value: 55 },
+                      { date: 'Wed', value: 48 },
+                      { date: '', value: 51 },
+                      { date: 'Thu', value: 70 },
+                      { date: '', value: 68 },
+                      { date: 'Fri', value: 65 },
+                      { date: '', value: 60 },
+                      { date: 'Sat', value: 35 },
+                      { date: '', value: 32 },
+                      { date: 'Sun', value: 30 },
+                      { date: '', value: 28 }
+                    ]}
+                    maxValue={100}
+                    yAxisLabel="Users"
+                    xAxisLabel="Day of Week"
+                    barColor="#4CAF50"
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Monthly Performance</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px', height: '500px' }}>
+                  <BarChart 
+                    title="API Response Times"
+                    dateRange="Past 30 Days"
+                    data={Array.from({ length: 30 }, (_, i) => ({
+                      date: i % 3 === 0 ? `${Math.floor(i/3) + 1}` : '',
+                      value: Math.floor(Math.random() * 200) + 50
+                    }))}
+                    maxValue={300}
+                    yAxisLabel="Time (ms)"
+                    xAxisLabel="Day"
+                    barColor="#FF9800"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import BarChart from '@/components/templates/BarChart/BarChart';
+
+// Default usage (30 bars with spaced labels)
+<BarChart />
+
+// Custom data with selective labels
+// Provide empty date strings for bars without labels
+<BarChart 
+  title="Weekly Stats"
+  dateRange="This Week"
+  data={[
+    { date: 'Mon', value: 45 },
+    { date: '', value: 48 },  // No label
+    { date: 'Wed', value: 52 },
+    { date: '', value: 55 },  // No label
+    { date: 'Fri', value: 65 }
+  ]}
+  maxValue={100}
+  yAxisLabel="Count"
+  xAxisLabel="Day"
+  barColor="#4CAF50"
+/>
+
+// Monthly data (30 bars with labels every 3rd bar)
+<BarChart 
+  title="Monthly Metrics"
+  dateRange="Past 30 Days"
+  data={Array.from({ length: 30 }, (_, i) => ({
+    date: i % 3 === 0 ? \`Day \${i + 1}\` : '',
+    value: Math.random() * 100
+  }))}
+  maxValue={150}
+  yAxisLabel="Value"
+  xAxisLabel="Date"
+  barColor="#2196F3"
+/>`}
+              </pre>
+            </div>
+          </div>
         </section>
 
         {/* Pages Section */}
