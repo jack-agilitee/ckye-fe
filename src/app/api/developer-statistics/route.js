@@ -108,12 +108,10 @@ export async function POST(request) {
       );
     }
 
-    // Validate estimatedTime if provided
-    if (body.estimatedTime !== undefined && typeof body.estimatedTime !== 'number') {
-      return NextResponse.json(
-        { error: 'Estimated time must be a number' },
-        { status: 400 }
-      );
+    // Validate estimatedTime if provided (now accepts string or number)
+    if (body.estimatedTime !== undefined && body.estimatedTime !== null) {
+      // Convert to string if it's a number
+      body.estimatedTime = String(body.estimatedTime);
     }
 
     const stat = await prisma.developerStats.create({
@@ -122,7 +120,7 @@ export async function POST(request) {
         workspaceId: body.workspaceId,
         prNumber: body.prNumber,
         mergedDate,
-        estimatedTime: body.estimatedTime || null
+        estimatedTime: body.estimatedTime ? String(body.estimatedTime) : null
       },
       select: {
         id: true,

@@ -127,7 +127,7 @@ model DeveloperStats {
   workspaceId   String   // Reference to workspace
   prNumber      Int      // PR number
   mergedDate    DateTime // When the PR was merged
-  estimatedTime Float?   // Estimated time in hours (optional)
+  estimatedTime String?  // Estimated time as text (optional)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

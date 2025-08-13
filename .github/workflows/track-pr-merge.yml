@@ -147,10 +147,10 @@ jobs:
       
       - name: Save to Database via API
         run: |
-          # Get the estimated time from previous step
+          # Get the estimated time from previous step (as string)
           ESTIMATED_TIME="${{ steps.estimate.outputs.result }}"
           
-          # Call the API endpoint
+          # Call the API endpoint with estimatedTime as string
           curl -X POST "${{ secrets.API_URL || 'https://ckye-fe.vercel.app' }}/api/developer-statistics" \
             -H "Content-Type: application/json" \
             -d "{
@@ -158,7 +158,7 @@ jobs:
               \"workspaceId\": \"cme3e54et00028onui9epyx4w\",
               \"prNumber\": ${{ github.event.pull_request.number }},
               \"mergedDate\": \"${{ github.event.pull_request.merged_at }}\",
-              \"estimatedTime\": ${ESTIMATED_TIME:-null}
+              \"estimatedTime\": \"${ESTIMATED_TIME}\"
             }"
           
           echo "Developer statistics saved successfully"
