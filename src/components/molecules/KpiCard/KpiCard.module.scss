@@ -1,0 +1,117 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.kpi-card {
+  background-color: $black-bg-dark;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0; // Allow card to shrink
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__title {
+    @include heading-3;
+    color: $white-primary;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    @include truncate;
+    flex: 1;
+    margin-right: 8px;
+  }
+
+  &__chip {
+    background-color: #262b35; // Accent/Blue Dark from Figma
+    border-radius: 40px;
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__chip-text {
+    @include body-small;
+    color: $white-primary;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    @include truncate;
+    max-width: 100px;
+  }
+
+  &__divider {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, 
+      rgba($white-primary, 0) 0%, 
+      rgba($white-primary, 0.2) 50%, 
+      rgba($white-primary, 0) 100%
+    );
+  }
+
+  &__stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 24px;
+  }
+
+  &__metric {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    padding: 0 16px;
+  }
+
+  &__metric-value {
+    @include heading-1;
+    color: $accent-green-light;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  &__metric-label {
+    @include body-small;
+    color: $white-secondary;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.2px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  // Responsive design
+  @media (max-width: 480px) {
+    &__stats {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    &__metric {
+      padding: 0;
+      width: 100%;
+    }
+
+    &__metric-value {
+      font-size: 32px;
+    }
+  }
+}
