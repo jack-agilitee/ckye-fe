@@ -1,0 +1,205 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.page {
+  padding: 32px;
+  max-width: 1200px;
+
+  &__header {
+    margin-bottom: 32px;
+  }
+
+  &__title {
+    @include heading-2;
+    margin-bottom: 24px;
+    color: $text-primary;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  &__dropdown {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__label {
+    @include body-medium;
+    color: $text-secondary;
+  }
+
+  &__select {
+    @include body-medium;
+    padding: 8px 12px;
+    border: 1px solid $border-color;
+    border-radius: 6px;
+    background-color: $background-primary;
+    color: $text-primary;
+    min-width: 200px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+
+    &:hover {
+      border-color: $primary-color;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+  }
+
+  &__content {
+    margin-top: 32px;
+  }
+
+  &__loading,
+  &__error,
+  &__empty {
+    @include body-medium;
+    padding: 48px;
+    text-align: center;
+    color: $text-secondary;
+    background-color: $background-secondary;
+    border-radius: 8px;
+  }
+
+  &__error {
+    color: $error-color;
+    background-color: rgba($error-color, 0.05);
+  }
+
+  &__table {
+    background-color: $background-primary;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  &__sort-indicator {
+    margin-left: 4px;
+    opacity: 0.6;
+    font-size: 12px;
+  }
+
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  &__button {
+    @include button-text;
+    padding: 8px 16px;
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover:not(:disabled) {
+      background-color: darken($primary-color, 10%);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__pageInfo {
+    @include body-medium;
+    color: $text-secondary;
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    background-color: $background-secondary;
+  }
+
+  th {
+    @include label;
+    text-align: left;
+    padding: 12px 16px;
+    color: $text-secondary;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  &__header--sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: $text-primary;
+    }
+  }
+
+  tbody tr {
+    border-top: 1px solid $border-color;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: $background-hover;
+    }
+  }
+
+  &__cell {
+    @include body-medium;
+    padding: 16px;
+    color: $text-primary;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .page {
+    padding: 16px;
+
+    &__controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__dropdown {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__select {
+      width: 100%;
+    }
+
+    &__table {
+      overflow-x: auto;
+    }
+
+    &__pagination {
+      flex-wrap: wrap;
+    }
+  }
+
+  .table {
+    min-width: 600px;
+
+    th,
+    &__cell {
+      padding: 8px 12px;
+    }
+  }
+}
