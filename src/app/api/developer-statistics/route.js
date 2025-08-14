@@ -32,6 +32,7 @@ export async function GET(request) {
         prNumber: true,
         mergedDate: true,
         estimatedTime: true,
+        firstTry: true,
         createdAt: true,
         updatedAt: true
       }
@@ -104,7 +105,8 @@ export async function POST(request) {
         workspaceId: body.workspaceId,
         prNumber: body.prNumber,
         mergedDate,
-        estimatedTime: body.estimatedTime ? String(body.estimatedTime) : null
+        estimatedTime: body.estimatedTime ? String(body.estimatedTime) : null,
+        firstTry: body.firstTry === true || body.firstTry === 'true'
       },
       select: {
         id: true,
@@ -113,6 +115,7 @@ export async function POST(request) {
         prNumber: true,
         mergedDate: true,
         estimatedTime: true,
+        firstTry: true,
         createdAt: true,
         updatedAt: true
       }

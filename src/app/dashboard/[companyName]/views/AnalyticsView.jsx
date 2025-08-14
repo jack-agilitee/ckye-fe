@@ -61,11 +61,19 @@ const AnalyticsView = ({ companyName }) => {
           user: stat.user,
           prs: [],
           uniqueDays: new Set(),
-          totalEstimatedHours: 0
+          totalEstimatedHours: 0,
+          firstTryCount: 0,
+          totalPRCount: 0
         };
       }
       
       statsByDeveloper[stat.user].prs.push(stat);
+      statsByDeveloper[stat.user].totalPRCount++;
+      
+      // Count first-try PRs
+      if (stat.firstTry) {
+        statsByDeveloper[stat.user].firstTryCount++;
+      }
       
       // Add unique day (ignore time, just get the date)
       if (stat.mergedDate) {
@@ -85,6 +93,7 @@ const AnalyticsView = ({ companyName }) => {
       const workdaysWithoutCkye = dev.totalEstimatedHours / 8;
       // Workdays saved = time it would have taken - actual days spent
       const workdaysSaved = Math.max(0, Math.round((workdaysWithoutCkye - daysUsingCkye) * 10) / 10);
+      const firstTryRate = dev.totalPRCount > 0 ? Math.round((dev.firstTryCount / dev.totalPRCount) * 100) : 0;
       
       return {
         user: dev.user,
@@ -92,6 +101,8 @@ const AnalyticsView = ({ companyName }) => {
         totalPRs: dev.prs.length,
         totalEstimatedHours: dev.totalEstimatedHours,
         workdaysSaved,
+        firstTryCount: dev.firstTryCount,
+        firstTryRate,
         prs: dev.prs.sort((a, b) => {
           const dateA = new Date(a.mergedDate || 0).getTime();
           const dateB = new Date(b.mergedDate || 0).getTime();
@@ -117,11 +128,15 @@ const AnalyticsView = ({ companyName }) => {
 
       const uniqueDevs = new Set();
       let totalHours = 0;
+      let firstTryCount = 0;
       const uniqueDays = new Set();
 
       periodStats.forEach(stat => {
         uniqueDevs.add(stat.user);
         totalHours += parseFloat(stat.estimatedTime) || 0;
+        if (stat.firstTry) {
+          firstTryCount++;
+        }
         if (stat.mergedDate) {
           uniqueDays.add(new Date(stat.mergedDate).toDateString());
         }
@@ -129,11 +144,14 @@ const AnalyticsView = ({ companyName }) => {
 
       const workdaysWithoutCkye = totalHours / 8;
       const workdaysSaved = Math.max(0, Math.round((workdaysWithoutCkye - uniqueDays.size) * 10) / 10);
+      const firstTryRate = periodStats.length > 0 ? Math.round((firstTryCount / periodStats.length) * 100) : 0;
 
       return {
         developers: uniqueDevs.size,
         workdaysSaved,
-        totalPRs: periodStats.length
+        totalPRs: periodStats.length,
+        firstTryCount,
+        firstTryRate
       };
     };
 
@@ -197,7 +215,7 @@ const AnalyticsView = ({ companyName }) => {
 
   return (
     <div className={styles.view}>
-      {/* KPI Cards Section */}
+      {/* KPI Cards Section - Time Savings */}
       <div className={styles.view__kpiSection}>
         <KpiCard 
           title="Past 30 Days"
@@ -225,6 +243,34 @@ const AnalyticsView = ({ companyName }) => {
         />
       </div>
 
+      {/* KPI Cards Section - First Try Acceptance */}
+      <div className={styles.view__kpiSection}>
+        <KpiCard 
+          title="First Try - 30 Days"
+          chipText={`${summaryStats.past30.firstTryRate}%`}
+          metrics={[
+            { value: summaryStats.past30.firstTryCount, label: 'First Try PRs' },
+            { value: summaryStats.past30.totalPRs - summaryStats.past30.firstTryCount, label: 'Multi-Try PRs' }
+          ]}
+        />
+        <KpiCard 
+          title="First Try - 90 Days"
+          chipText={`${summaryStats.past90.firstTryRate}%`}
+          metrics={[
+            { value: summaryStats.past90.firstTryCount, label: 'First Try PRs' },
+            { value: summaryStats.past90.totalPRs - summaryStats.past90.firstTryCount, label: 'Multi-Try PRs' }
+          ]}
+        />
+        <KpiCard 
+          title="First Try - Year"
+          chipText={`${summaryStats.pastYear.firstTryRate}%`}
+          metrics={[
+            { value: summaryStats.pastYear.firstTryCount, label: 'First Try PRs' },
+            { value: summaryStats.pastYear.totalPRs - summaryStats.pastYear.firstTryCount, label: 'Multi-Try PRs' }
+          ]}
+        />
+      </div>
+
       {/* Bar Chart Section */}
       <div className={styles.view__chartSection}>
         <BarChart 
@@ -238,15 +284,48 @@ const AnalyticsView = ({ companyName }) => {
         />
       </div>
 
+      {/* Developer Performance Table */}
+      <div className={styles.view__table}>
+        <h2 className={styles.view__tableTitle}>Developer Performance</h2>
+        <table className={styles.view__performanceTable}>
+          <thead>
+            <tr>
+              <th>Developer</th>
+              <th>Total PRs</th>
+              <th>First Try</th>
+              <th>Success Rate</th>
+              <th>Days Using</th>
+              <th>Days Saved</th>
+            </tr>
+          </thead>
+          <tbody>
+            {developerStats.map((dev) => (
+              <tr key={dev.user}>
+                <td>{dev.user}</td>
+                <td>{dev.totalPRs}</td>
+                <td>{dev.firstTryCount}</td>
+                <td>
+                  <span className={dev.firstTryRate >= 70 ? styles['view__rate--high'] : dev.firstTryRate >= 40 ? styles['view__rate--medium'] : styles['view__rate--low']}>
+                    {dev.firstTryRate}%
+                  </span>
+                </td>
+                <td>{dev.daysUsingCkye}</td>
+                <td>{dev.workdaysSaved}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
       {/* Individual Developer Cards */}
       <div className={styles.view__developers}>
         {developerStats.map((dev) => (
           <KpiCard 
             key={dev.user}
             title={dev.user}
-            chipText={`${dev.totalPRs} PRs`}
+            chipText={`${dev.firstTryRate}% First Try`}
             metrics={[
-              { value: dev.daysUsingCkye, label: `Day${dev.daysUsingCkye !== 1 ? 's' : ''} using Ckye` },
+              { value: dev.totalPRs, label: 'Total PRs' },
               { value: dev.workdaysSaved, label: 'Workdays Saved' }
             ]}
           />

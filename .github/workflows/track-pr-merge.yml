@@ -184,17 +184,35 @@ jobs:
           echo "hours=$HOURS" >> "$GITHUB_OUTPUT"
 
       - name: Save Developer Statistics
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
           ESTIMATED_TIME="${{ steps.extract_hours.outputs.hours }}"
+
+          # Get commit count to determine if this is a "first try" (≤2 commits)
+          COMPARE_JSON=$(curl -sS \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/compare/${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}")
+
+          COMMIT_COUNT=$(echo "$COMPARE_JSON" | jq -r '.ahead_by // 0')
+          
+          # Determine if this is a "first try" PR (2 or fewer commits)
+          if [ "$COMMIT_COUNT" -le 2 ]; then
+            FIRST_TRY="true"
+          else
+            FIRST_TRY="false"
+          fi
 
           API_URL="${{ secrets.API_URL }}"
           if [ -z "${API_URL:-}" ]; then
             API_URL="https://ckye-fe.vercel.app"
           fi
 
-          echo "Posting to $API_URL/api/developer-statistics with estimatedTime=$ESTIMATED_TIME"
+          echo "Posting to $API_URL/api/developer-statistics with estimatedTime=$ESTIMATED_TIME and firstTry=$FIRST_TRY"
+          echo "Commit count: $COMMIT_COUNT"
 
           curl -sS -X POST "$API_URL/api/developer-statistics" \
             -H "Content-Type: application/json" \
@@ -203,11 +221,12 @@ jobs:
               \"workspaceId\": \"cme3e54et00028onui9epyx4w\",
               \"prNumber\": ${{ github.event.pull_request.number }},
               \"mergedDate\": \"${{ github.event.pull_request.merged_at }}\",
-              \"estimatedTime\": \"${ESTIMATED_TIME}\"
+              \"estimatedTime\": \"${ESTIMATED_TIME}\",
+              \"firstTry\": ${FIRST_TRY}
             }"
 
           echo
-          echo "Developer statistics saved successfully"
+          echo "Developer statistics saved successfully (firstTry: $FIRST_TRY)"
 
       - name: Check for Claude Page ID in Comments
         id: check_claude
