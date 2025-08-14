@@ -3,7 +3,6 @@
 
 .users-table {
   width: 100%;
-  background-color: $background-dark;
   border-radius: 8px;
   overflow: hidden;
   table-layout: fixed; // Prevent columns from expanding
@@ -11,7 +10,6 @@
   &__header {
     display: flex;
     padding: 8px 0;
-    border-bottom: 1px solid rgba($white-primary, 0.1);
   }
 
   &__header-text {
@@ -27,11 +25,7 @@
   &__row {
     display: flex;
     padding: 8px 0;
-    border-bottom: 1px solid rgba($white-primary, 0.05);
     
-    &:last-child {
-      border-bottom: none;
-    }
   }
 
   &__column {

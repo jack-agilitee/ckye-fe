@@ -3,13 +3,11 @@
 
 .workspaces-table {
   width: 100%;
-  background-color: $background-dark;
   border-radius: 8px;
   overflow: hidden;
 
   &__header {
     padding: 16px 20px;
-    border-bottom: 1px solid rgba($white-primary, 0.1);
   }
 
   &__header-text {
