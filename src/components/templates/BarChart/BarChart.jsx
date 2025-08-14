@@ -73,8 +73,9 @@ const BarChart = ({
   };
 
   // Custom tick for rotated x-axis labels
-  const CustomXAxisTick = ({ x, y, payload }) => {
-    if (!payload.value) return null;
+  const CustomXAxisTick = ({ x, y, payload, index }) => {
+    // Show every 2nd label to match Figma
+    if (index % 2 !== 0) return null;
     
     return (
       <g transform={`translate(${x},${y})`}>
