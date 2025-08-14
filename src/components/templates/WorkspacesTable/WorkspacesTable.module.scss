@@ -6,28 +6,37 @@
   border-radius: 8px;
   overflow: hidden;
 
-  &__header {
-    padding: 16px 20px;
-  }
-
-  &__header-text {
-    @include label;
-    color: $white-primary;
-  }
-
   &__body {
-    padding: 12px;
+    display: flex;
+    flex-direction: column;
   }
 
   &__row {
-    margin-bottom: 4px;
-    
-    &:last-child {
-      margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba($white-primary, 0.02);
     }
   }
 
-  &__item {
-    // ListItem is used here in non-interactive context
+  &__name {
+    @include body-large;
+    color: $white-primary;
+    font-weight: 500;
+  }
+
+  &__chevron {
+    opacity: 0.6;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    
+    .workspaces-table__row:hover & {
+      opacity: 1;
+      transform: translateX(2px);
+    }
   }
 }
