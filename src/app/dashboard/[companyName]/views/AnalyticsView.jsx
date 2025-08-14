@@ -211,7 +211,11 @@ const AnalyticsView = ({ companyName }) => {
       value: totalByDay[date] > 0 ? Math.round((firstTry / totalByDay[date]) * 100) : 0
     }));
 
-    return { hoursChart, firstTryChart };
+    // Calculate max value for hours chart, round up to nearest 25
+    const maxHoursValue = Math.max(...hoursChart.map(d => d.value || 0), 1);
+    const maxHoursRounded = Math.ceil(maxHoursValue / 25) * 25;
+
+    return { hoursChart, firstTryChart, maxHours: maxHoursRounded };
   }, [allStats]);
 
   if (loading) {
@@ -279,7 +283,7 @@ const AnalyticsView = ({ companyName }) => {
             title="Development Hours Saved"
             dateRange={`Past 30 Days: ${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}
             data={chartData.hoursChart}
-            maxValue={150}
+            maxValue={chartData.maxHours}
             yAxisLabel="Hours"
             xAxisLabel="Date"
             barColor="#8ED09C"

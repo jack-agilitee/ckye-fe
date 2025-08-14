@@ -137,7 +137,17 @@ const BarChart = ({
             />
             <YAxis 
               domain={[0, maxValue]}
-              ticks={maxValue === 100 ? [0, 20, 40, 60, 80, 100] : [0, 25, 50, 75, 100, 125, 150]}
+              ticks={(() => {
+                if (maxValue === 100) {
+                  return [0, 20, 40, 60, 80, 100];
+                }
+                // Generate ticks in increments of 25 up to maxValue
+                const ticks = [];
+                for (let i = 0; i <= maxValue; i += 25) {
+                  ticks.push(i);
+                }
+                return ticks;
+              })()}
               axisLine={{ stroke: '#9B9B9B' }}
               tickLine={false}
               tick={{ fill: '#D5D5D5', fontSize: 10, fontWeight: 600 }}
