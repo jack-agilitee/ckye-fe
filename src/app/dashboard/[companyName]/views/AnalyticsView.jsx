@@ -114,7 +114,7 @@ const AnalyticsView = ({ companyName }) => {
 
   // Calculate summary statistics for different time periods
   const summaryStats = useMemo(() => {
-    if (allStats.length === 0) return { past30: {}, past90: {}, pastYear: {} };
+    if (allStats.length === 0) return { past30: {}, past90: {}, pastYear: {}, allTime: {} };
 
     const now = new Date();
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
@@ -122,9 +122,9 @@ const AnalyticsView = ({ companyName }) => {
     const oneYearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
 
     const calculatePeriodStats = (startDate) => {
-      const periodStats = allStats.filter(stat => 
+      const periodStats = startDate ? allStats.filter(stat => 
         stat.mergedDate && new Date(stat.mergedDate) >= startDate
-      );
+      ) : allStats;
 
       const uniqueDevs = new Set();
       let totalHours = 0;
@@ -151,50 +151,67 @@ const AnalyticsView = ({ companyName }) => {
         workdaysSaved,
         totalPRs: periodStats.length,
         firstTryCount,
-        firstTryRate
+        firstTryRate,
+        totalHours: Math.round(totalHours)
       };
     };
 
     return {
       past30: calculatePeriodStats(thirtyDaysAgo),
       past90: calculatePeriodStats(ninetyDaysAgo),
-      pastYear: calculatePeriodStats(oneYearAgo)
+      pastYear: calculatePeriodStats(oneYearAgo),
+      allTime: calculatePeriodStats(null)
     };
   }, [allStats]);
 
-  // Prepare data for bar chart (last 30 days)
+  // Prepare data for bar charts
   const chartData = useMemo(() => {
-    if (allStats.length === 0) return [];
+    if (allStats.length === 0) return { hoursChart: [], firstTryChart: [] };
 
     const now = new Date();
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     
-    // Create an object to store hours by day
+    // Create objects to store data by day
     const hoursByDay = {};
+    const firstTryByDay = {};
+    const totalByDay = {};
     
-    // Initialize all days with 0 hours
+    // Initialize all days with 0 values
     for (let i = 0; i < 30; i++) {
       const date = new Date(thirtyDaysAgo.getTime() + i * 24 * 60 * 60 * 1000);
       const dateKey = `${date.getMonth() + 1}/${date.getDate()}`;
       hoursByDay[dateKey] = 0;
+      firstTryByDay[dateKey] = 0;
+      totalByDay[dateKey] = 0;
     }
 
-    // Sum up hours for each day
+    // Sum up data for each day
     allStats.forEach(stat => {
       if (stat.mergedDate && new Date(stat.mergedDate) >= thirtyDaysAgo) {
         const date = new Date(stat.mergedDate);
         const dateKey = `${date.getMonth() + 1}/${date.getDate()}`;
         if (hoursByDay[dateKey] !== undefined) {
           hoursByDay[dateKey] += parseFloat(stat.estimatedTime) || 0;
+          totalByDay[dateKey]++;
+          if (stat.firstTry) {
+            firstTryByDay[dateKey]++;
+          }
         }
       }
     });
 
     // Convert to array format for BarChart
-    return Object.entries(hoursByDay).map(([date, hours]) => ({
+    const hoursChart = Object.entries(hoursByDay).map(([date, hours]) => ({
       date: date,
       value: Math.round(hours)
     }));
+
+    const firstTryChart = Object.entries(firstTryByDay).map(([date, firstTry]) => ({
+      date: date,
+      value: totalByDay[date] > 0 ? Math.round((firstTry / totalByDay[date]) * 100) : 0
+    }));
+
+    return { hoursChart, firstTryChart };
   }, [allStats]);
 
   if (loading) {
@@ -215,13 +232,14 @@ const AnalyticsView = ({ companyName }) => {
 
   return (
     <div className={styles.view}>
-      {/* KPI Cards Section - Time Savings */}
-      <div className={styles.view__kpiSection}>
+      {/* 4 KPI Cards Section with 3 metrics each */}
+      <div className={styles.view__kpiGrid}>
         <KpiCard 
           title="Past 30 Days"
           chipText={`${summaryStats.past30.totalPRs} PRs`}
           metrics={[
-            { value: summaryStats.past30.developers, label: 'Developers Using Ckye' },
+            { value: summaryStats.past30.developers, label: 'Active Developers' },
+            { value: summaryStats.past30.firstTryRate, label: 'First Try Rate %' },
             { value: summaryStats.past30.workdaysSaved, label: 'Workdays Saved' }
           ]}
         />
@@ -229,7 +247,8 @@ const AnalyticsView = ({ companyName }) => {
           title="Past 90 Days"
           chipText={`${summaryStats.past90.totalPRs} PRs`}
           metrics={[
-            { value: summaryStats.past90.developers, label: 'Developers Using Ckye' },
+            { value: summaryStats.past90.developers, label: 'Active Developers' },
+            { value: summaryStats.past90.firstTryRate, label: 'First Try Rate %' },
             { value: summaryStats.past90.workdaysSaved, label: 'Workdays Saved' }
           ]}
         />
@@ -237,84 +256,46 @@ const AnalyticsView = ({ companyName }) => {
           title="Past Year"
           chipText={`${summaryStats.pastYear.totalPRs} PRs`}
           metrics={[
-            { value: summaryStats.pastYear.developers, label: 'Developers Using Ckye' },
+            { value: summaryStats.pastYear.developers, label: 'Active Developers' },
+            { value: summaryStats.pastYear.firstTryRate, label: 'First Try Rate %' },
             { value: summaryStats.pastYear.workdaysSaved, label: 'Workdays Saved' }
           ]}
         />
-      </div>
-
-      {/* KPI Cards Section - First Try Acceptance */}
-      <div className={styles.view__kpiSection}>
         <KpiCard 
-          title="First Try - 30 Days"
-          chipText={`${summaryStats.past30.firstTryRate}%`}
+          title="All Time"
+          chipText={`${summaryStats.allTime.totalPRs} PRs`}
           metrics={[
-            { value: summaryStats.past30.firstTryCount, label: 'First Try PRs' },
-            { value: summaryStats.past30.totalPRs - summaryStats.past30.firstTryCount, label: 'Multi-Try PRs' }
-          ]}
-        />
-        <KpiCard 
-          title="First Try - 90 Days"
-          chipText={`${summaryStats.past90.firstTryRate}%`}
-          metrics={[
-            { value: summaryStats.past90.firstTryCount, label: 'First Try PRs' },
-            { value: summaryStats.past90.totalPRs - summaryStats.past90.firstTryCount, label: 'Multi-Try PRs' }
-          ]}
-        />
-        <KpiCard 
-          title="First Try - Year"
-          chipText={`${summaryStats.pastYear.firstTryRate}%`}
-          metrics={[
-            { value: summaryStats.pastYear.firstTryCount, label: 'First Try PRs' },
-            { value: summaryStats.pastYear.totalPRs - summaryStats.pastYear.firstTryCount, label: 'Multi-Try PRs' }
+            { value: summaryStats.allTime.developers, label: 'Total Developers' },
+            { value: summaryStats.allTime.firstTryRate, label: 'First Try Rate %' },
+            { value: summaryStats.allTime.workdaysSaved, label: 'Workdays Saved' }
           ]}
         />
       </div>
 
-      {/* Bar Chart Section */}
-      <div className={styles.view__chartSection}>
-        <BarChart 
-          title="Development Hours Saved"
-          dateRange={`Past 30 Days: ${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}
-          data={chartData}
-          maxValue={150}
-          yAxisLabel="Hours"
-          xAxisLabel="Date"
-          barColor="#8ED09C"
-        />
-      </div>
-
-      {/* Developer Performance Table */}
-      <div className={styles.view__table}>
-        <h2 className={styles.view__tableTitle}>Developer Performance</h2>
-        <table className={styles.view__performanceTable}>
-          <thead>
-            <tr>
-              <th>Developer</th>
-              <th>Total PRs</th>
-              <th>First Try</th>
-              <th>Success Rate</th>
-              <th>Days Using</th>
-              <th>Days Saved</th>
-            </tr>
-          </thead>
-          <tbody>
-            {developerStats.map((dev) => (
-              <tr key={dev.user}>
-                <td>{dev.user}</td>
-                <td>{dev.totalPRs}</td>
-                <td>{dev.firstTryCount}</td>
-                <td>
-                  <span className={dev.firstTryRate >= 70 ? styles['view__rate--high'] : dev.firstTryRate >= 40 ? styles['view__rate--medium'] : styles['view__rate--low']}>
-                    {dev.firstTryRate}%
-                  </span>
-                </td>
-                <td>{dev.daysUsingCkye}</td>
-                <td>{dev.workdaysSaved}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Two Bar Chart Sections */}
+      <div className={styles.view__chartsGrid}>
+        <div className={styles.view__chartSection}>
+          <BarChart 
+            title="Development Hours Saved"
+            dateRange={`Past 30 Days: ${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}
+            data={chartData.hoursChart}
+            maxValue={150}
+            yAxisLabel="Hours"
+            xAxisLabel="Date"
+            barColor="#8ED09C"
+          />
+        </div>
+        <div className={styles.view__chartSection}>
+          <BarChart 
+            title="First Try Acceptance Rate"
+            dateRange={`Past 30 Days: ${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}
+            data={chartData.firstTryChart}
+            maxValue={100}
+            yAxisLabel="Percentage"
+            xAxisLabel="Date"
+            barColor="#74A0C8"
+          />
+        </div>
       </div>
 
       {/* Individual Developer Cards */}

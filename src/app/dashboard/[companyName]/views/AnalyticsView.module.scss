@@ -2,15 +2,22 @@
 @import '../../../../styles/mixins';
 
 .view {
-  &__kpiSection {
+  &__kpiGrid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  &__chartsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
     margin-bottom: 32px;
   }
 
   &__chartSection {
-    margin-bottom: 32px;
+    // Each chart takes up half the width in the grid
   }
 
   &__table {
