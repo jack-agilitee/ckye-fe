@@ -2,7 +2,6 @@
 @import '../../../styles/mixins';
 
 .variants-table {
-  background-color: $background-dark;
   border-radius: 8px;
   overflow-x: auto;
   overflow-y: hidden;
@@ -22,7 +21,6 @@
     grid-template-columns: 200px 150px 250px minmax(300px, 1fr) 60px;
     gap: 16px;
     padding: 8px 0;
-    border-bottom: 1px solid rgba($white-secondary, 0.1);
   }
 
   &__header-cell {
@@ -52,7 +50,6 @@
     grid-template-columns: 200px 150px 250px minmax(300px, 1fr) 60px;
     gap: 16px;
     padding: 14px 0;
-    border-bottom: 1px solid rgba($white-secondary, 0.05);
     cursor: pointer;
     transition: background-color 0.2s ease;
 
@@ -64,9 +61,6 @@
       background-color: rgba($white-primary, 0.02);
     }
 
-    &:last-child {
-      border-bottom: none;
-    }
   }
 
   &__cell {

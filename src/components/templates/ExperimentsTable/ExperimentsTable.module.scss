@@ -2,7 +2,6 @@
 @import '../../../styles/mixins';
 
 .experiments-table {
-  background-color: $background-dark;
   border-radius: 8px;
   overflow-x: auto;
   overflow-y: hidden;
@@ -22,7 +21,6 @@
     grid-template-columns: 280px 100px 150px 200px auto;
     gap: 24px;
     padding: 12px 0;
-    border-bottom: 1px solid rgba($white-secondary, 0.1);
   }
 
   &__header-cell {
@@ -52,7 +50,6 @@
     grid-template-columns: 280px 100px 150px 200px auto;
     gap: 24px;
     padding: 16px 0;
-    border-bottom: 1px solid rgba($white-secondary, 0.05);
     transition: background-color 0.2s ease;
 
     &:hover {
@@ -63,9 +60,6 @@
       background-color: rgba($white-primary, 0.02);
     }
 
-    &:last-child {
-      border-bottom: none;
-    }
   }
 
   &__cell {

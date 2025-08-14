@@ -2,7 +2,7 @@
 @import '../../../styles/mixins';
 
 .markdown-editor {
-  background-color: $background-dark;
+  background-color: $black-bg-extra-dark;
   border-radius: 8px;
   height: 100%;
   overflow: hidden;
@@ -13,7 +13,7 @@
   // Override MDXEditor styles to match our theme
   :global {
     .mdxeditor {
-      background-color: $background-dark;
+      background-color: $black-bg-extra-dark;
       color: $white-primary;
       font-family: inherit;
       height: 100%;
@@ -22,8 +22,7 @@
 
       // Toolbar styling
       .mdxeditor-toolbar {
-        background-color: $black-bg-light;
-        border-bottom: 1px solid $border-color;
+        background-color: transparent;
         padding: 8px 16px;
         gap: 8px;
         flex-wrap: wrap;
@@ -80,7 +79,7 @@
       .mdxeditor-root-contenteditable {
         padding: 24px;
         color: $white-primary;
-        background-color: $background-dark;
+        background-color: $black-bg-extra-dark;
         overflow-y: auto;
         flex: 1;
         min-height: 0;
@@ -124,7 +123,7 @@
         }
 
         code {
-          background-color: $black-bg-light;
+          background-color: $black-bg-dark;
           color: $code-red;
           padding: 2px 4px;
           border-radius: 3px;
@@ -138,7 +137,7 @@
         }
 
         pre {
-          background-color: $black-bg-light;
+          background-color: $black-bg-dark;
           border: 1px solid $border-color;
           border-radius: 4px;
           padding: 16px;
@@ -181,7 +180,7 @@
           }
 
           th {
-            background-color: $black-bg-light;
+            background-color: $black-bg-dark;
             font-weight: 600;
           }
 
@@ -199,10 +198,10 @@
 
       // CodeMirror styling
       .cm-editor {
-        background-color: $black-bg-light;
+        background-color: $black-bg-dark;
 
         .cm-gutters {
-          background-color: $black-bg-light;
+          background-color: $black-bg-dark;
           border-right: 1px solid $border-color;
           color: $white-secondary;
         }
@@ -223,7 +222,7 @@
         color: $white-primary;
 
         input {
-          background-color: $black-bg-light;
+          background-color: $black-bg-dark;
           border: 1px solid $border-color;
           color: $white-primary;
           padding: 8px;
