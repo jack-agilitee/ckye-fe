@@ -92,9 +92,6 @@ const Sidebar = ({
     router.push('/admin/users');
   };
 
-  const handleDeveloperStatsClick = () => {
-    router.push('/admin/developer-stats');
-  };
 
   const handleAdminBack = () => {
     if (onAdminBack) {
@@ -135,12 +132,6 @@ const Sidebar = ({
                   icon="/person.svg"
                   selected={pathname === '/admin/users'}
                   onClick={handleUsersClick}
-                />
-                <ListItem
-                  text="Developer Statistics"
-                  icon="/file.svg"
-                  selected={pathname === '/admin/developer-stats'}
-                  onClick={handleDeveloperStatsClick}
                 />
               </div>
             </div>
@@ -200,6 +191,15 @@ const Sidebar = ({
                     onClick={() => {
                       setCurrentView('experiments');
                       router.push(`/dashboard/${accountName.toLowerCase()}?view=experiments`);
+                    }}
+                  />
+                  <ListItem
+                    text="Analytics"
+                    icon="/report.svg"
+                    selected={currentView === 'analytics'}
+                    onClick={() => {
+                      setCurrentView('analytics');
+                      router.push(`/dashboard/${accountName.toLowerCase()}?view=analytics`);
                     }}
                   />
                   {/* Temporarily hidden - features not yet implemented (CKYE-2)

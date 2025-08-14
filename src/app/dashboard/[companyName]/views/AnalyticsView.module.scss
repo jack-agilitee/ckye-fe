@@ -1,0 +1,51 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.view {
+  &__kpiSection {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  &__chartSection {
+    margin-bottom: 32px;
+  }
+
+  &__developers {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  &__loading,
+  &__error,
+  &__empty {
+    @include body-medium;
+    padding: 48px;
+    text-align: center;
+    color: $text-secondary;
+    background-color: $black-bg-dark;
+    border-radius: 8px;
+  }
+
+  &__error {
+    color: $code-red;
+    background-color: rgba($code-red, 0.05);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .view {
+    &__kpiSection {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    &__developers {
+      grid-template-columns: 1fr;
+    }
+  }
+}

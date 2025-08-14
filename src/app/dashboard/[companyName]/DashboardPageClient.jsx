@@ -7,6 +7,7 @@ import { upsertPage } from '@/lib/api/pages';
 import { useDashboard } from '@/context/DashboardContext';
 import VariantsView from './views/VariantsView';
 import ExperimentsView from './views/ExperimentsView';
+import AnalyticsView from './views/AnalyticsView';
 import styles from './DashboardPageClient.module.scss';
 
 const MarkdownEditor = dynamic(
@@ -92,6 +93,10 @@ export default function DashboardPageClient() {
 
   if (view === 'experiments') {
     return <ExperimentsView companyName={companyName} pages={pages} />;
+  }
+
+  if (view === 'analytics') {
+    return <AnalyticsView companyName={companyName} />;
   }
 
   // Default pages view with MarkdownEditor
