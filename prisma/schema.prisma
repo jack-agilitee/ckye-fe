@@ -119,6 +119,7 @@ model DeveloperStats {
   prNumber      Int      // PR number
   mergedDate    DateTime // When the PR was merged
   estimatedTime String?  // Estimated time as text (optional)
+  firstTry      Boolean  @default(false) // True if PR was accepted with ≤2 commits
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
