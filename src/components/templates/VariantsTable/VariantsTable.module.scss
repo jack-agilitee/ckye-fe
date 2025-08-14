@@ -24,7 +24,7 @@
   }
 
   &__header-cell {
-    @include heading-3;
+    @include table-header;
     color: $white-primary;
     padding: 0 12px;
     display: flex;

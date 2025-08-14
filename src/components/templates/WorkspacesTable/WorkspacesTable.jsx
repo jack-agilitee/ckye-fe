@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import ListItem from '../../molecules/ListItem/ListItem';
+import Image from 'next/image';
 import styles from './WorkspacesTable.module.scss';
 
 const WorkspacesTable = ({ workspaces = [] }) => {
@@ -15,25 +15,23 @@ const WorkspacesTable = ({ workspaces = [] }) => {
 
   return (
     <div className={styles['workspaces-table']}>
-      {/* Table Header */}
-      <div className={styles['workspaces-table__header']}>
-        <span className={styles['workspaces-table__header-text']}>Workspaces</span>
-      </div>
-
-      {/* Table Body */}
+      {/* Table Body - No header */}
       <div className={styles['workspaces-table__body']}>
         {workspaces.map((workspace, index) => (
           <div 
             key={workspace.id || index} 
             className={styles['workspaces-table__row']}
             onClick={() => handleRowClick(workspace)}
-            style={{ cursor: 'pointer' }}
           >
-            <ListItem 
-              text={workspace.name}
-              icon="/document.svg"
-              selected={false}
-              className={styles['workspaces-table__item']}
+            <span className={styles['workspaces-table__name']}>
+              {workspace.name}
+            </span>
+            <Image 
+              src="/chevron-right.svg"
+              alt="Navigate"
+              width={16}
+              height={16}
+              className={styles['workspaces-table__chevron']}
             />
           </div>
         ))}

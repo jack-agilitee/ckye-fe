@@ -51,6 +51,16 @@
   @include typography($typography-nav-item);
 }
 
+// Table Header Typography
+// Based on Figma design specs for table headers
+@mixin table-header {
+  font-family: $font-family-secondary;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.2px;
+}
+
 // Monospace Typography
 @mixin text-mono {
   font-family: $font-family-mono;
