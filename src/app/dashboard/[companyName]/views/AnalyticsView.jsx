@@ -291,7 +291,7 @@ const AnalyticsView = ({ companyName }) => {
             dateRange={`Past 30 Days: ${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}
             data={chartData.firstTryChart}
             maxValue={100}
-            yAxisLabel="Percentage"
+            yAxisLabel="Percentage (%)"
             xAxisLabel="Date"
             barColor="#74A0C8"
           />
