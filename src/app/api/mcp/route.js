@@ -87,7 +87,7 @@ const handler = createMcpHandler(
         VALUES (gen_random_uuid(), $1, $2, NOW(), NOW())
         RETURNING id, "workspaceId", "createdAt"
       `;
-                    
+
                     const result = await client.query(insertQuery, [content, workspaceId]);
                     const suggestion = result.rows[0];
 
@@ -97,7 +97,7 @@ const handler = createMcpHandler(
         FROM suggestions
         WHERE "workspaceId" = $1
       `;
-                    
+
                     const countResult = await client.query(countQuery, [workspaceId]);
                     const count = parseInt(countResult.rows[0].count);
 
@@ -142,7 +142,7 @@ const handler = createMcpHandler(
         FROM suggestions
         WHERE "workspaceId" = $1
       `;
-                    
+
                     const countResult = await client.query(countQuery, [workspaceId]);
                     const count = parseInt(countResult.rows[0].count);
 
@@ -163,7 +163,7 @@ const handler = createMcpHandler(
         ORDER BY "createdAt" DESC
         LIMIT 50
       `;
-                    
+
                     const suggestionsResult = await client.query(suggestionsQuery, [workspaceId]);
                     const suggestions = suggestionsResult.rows;
 
@@ -222,7 +222,7 @@ const handler = createMcpHandler(
         VALUES (gen_random_uuid(), $1, $2, $3, NOW(), NOW())
         RETURNING id, summary, "workspaceId", "createdAt"
       `;
-                    
+
                     const result = await client.query(insertQuery, [content, summary, workspaceId]);
                     const variant = result.rows[0];
 
@@ -267,7 +267,7 @@ const handler = createMcpHandler(
         WHERE "workspaceId" = $1
         RETURNING id
       `;
-                    
+
                     const result = await client.query(deleteQuery, [workspaceId]);
                     const deletedCount = result.rowCount;
 
@@ -283,6 +283,200 @@ const handler = createMcpHandler(
                         content: [{
                             type: "text",
                             text: `Error deleting suggestions: ${error instanceof Error ? error.message : "Unknown error"}`
+                        }]
+                    };
+                } finally {
+                    await client.end();
+                }
+            }
+        );
+
+        // Add this tool after your existing tools, before the closing of createMcpHandler
+        server.tool(
+            'query-database',
+            'Execute a read-only SQL query on the PostgreSQL database for analysis and exploration',
+            {
+                sql: z.string().describe("The SQL query to execute (SELECT, WITH, or read-only operations only)"),
+                limit: z.number().optional().default(100).describe("Maximum number of rows to return (default: 100, max: 1000)")
+            },
+            async ({ sql, limit = 100 }) => {
+                console.log('Debug: Executing query at', new Date().toISOString());
+
+                const client = new Client({
+                    connectionString: process.env.DATABASE_URL,
+                });
+
+                try {
+                    await client.connect();
+
+                    // Security: Only allow read operations
+                    const normalizedSql = sql.trim().toUpperCase();
+                    const readOnlyPrefixes = ['SELECT', 'WITH', 'SHOW', 'DESCRIBE', 'EXPLAIN'];
+                    const isReadOnly = readOnlyPrefixes.some(prefix => normalizedSql.startsWith(prefix));
+
+                    if (!isReadOnly) {
+                        return {
+                            content: [{
+                                type: "text",
+                                text: `Error: Only read-only queries are allowed (SELECT, WITH, SHOW, DESCRIBE, EXPLAIN). Your query starts with: ${normalizedSql.split(' ')[0]}`
+                            }]
+                        };
+                    }
+
+                    // Add LIMIT if not present and it's a SELECT query
+                    let finalQuery = sql;
+                    const maxLimit = Math.min(limit, 1000); // Cap at 1000 for safety
+
+                    if (normalizedSql.startsWith('SELECT') && !normalizedSql.includes('LIMIT')) {
+                        finalQuery = `${sql} LIMIT ${maxLimit}`;
+                    }
+
+                    const result = await client.query(finalQuery);
+
+                    // Format response based on result size
+                    if (result.rows.length === 0) {
+                        return {
+                            content: [{
+                                type: "text",
+                                text: "Query executed successfully but returned no rows."
+                            }]
+                        };
+                    }
+
+                    // For large results, provide summary
+                    let responseText = `Query returned ${result.rowCount} rows.\n\n`;
+
+                    if (result.rowCount <= 10) {
+                        // For small results, show full data
+                        responseText += JSON.stringify(result.rows, null, 2);
+                    } else {
+                        // For larger results, show sample and structure
+                        responseText += `Showing first 5 rows as sample:\n`;
+                        responseText += JSON.stringify(result.rows.slice(0, 5), null, 2);
+                        responseText += `\n\n... and ${result.rowCount - 5} more rows`;
+
+                        // Add column information
+                        if (result.fields && result.fields.length > 0) {
+                            responseText += `\n\nColumns (${result.fields.length}):\n`;
+                            result.fields.forEach(field => {
+                                responseText += `- ${field.name}\n`;
+                            });
+                        }
+                    }
+
+                    return {
+                        content: [{
+                            type: "text",
+                            text: responseText
+                        }]
+                    };
+                } catch (error) {
+                    console.error("Error executing query:", error);
+                    return {
+                        content: [{
+                            type: "text",
+                            text: `Error executing query: ${error instanceof Error ? error.message : "Unknown error"}`
+                        }]
+                    };
+                } finally {
+                    await client.end();
+                }
+            }
+        );
+
+        // Add schema exploration tool
+        server.tool(
+            'explore-database-schema',
+            'Explore database schema, tables, and columns',
+            {
+                action: z.enum(['list_tables', 'describe_table', 'list_columns']).describe("Action to perform"),
+                tableName: z.string().optional().describe("Table name (required for describe_table and list_columns)")
+            },
+            async ({ action, tableName }) => {
+                const client = new Client({
+                    connectionString: process.env.DATABASE_URL,
+                });
+
+                try {
+                    await client.connect();
+
+                    let query;
+                    let queryParams = [];
+
+                    switch (action) {
+                        case 'list_tables':
+                            query = `
+                        SELECT 
+                            schemaname as schema,
+                            tablename as table_name,
+                            pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size
+                        FROM pg_tables
+                        WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
+                        ORDER BY schemaname, tablename;
+                    `;
+                            break;
+
+                        case 'describe_table':
+                            if (!tableName) {
+                                return {
+                                    content: [{
+                                        type: "text",
+                                        text: "Error: tableName is required for describe_table action"
+                                    }]
+                                };
+                            }
+                            query = `
+                        SELECT 
+                            column_name,
+                            data_type,
+                            character_maximum_length,
+                            is_nullable,
+                            column_default
+                        FROM information_schema.columns
+                        WHERE table_name = $1
+                        ORDER BY ordinal_position;
+                    `;
+                            queryParams = [tableName];
+                            break;
+
+                        case 'list_columns':
+                            if (!tableName) {
+                                return {
+                                    content: [{
+                                        type: "text",
+                                        text: "Error: tableName is required for list_columns action"
+                                    }]
+                                };
+                            }
+                            query = `
+                        SELECT 
+                            column_name,
+                            data_type
+                        FROM information_schema.columns
+                        WHERE table_name = $1
+                        ORDER BY ordinal_position;
+                    `;
+                            queryParams = [tableName];
+                            break;
+                    }
+
+                    const result = await client.query(query, queryParams);
+
+                    let responseText = `${action} results:\n\n`;
+                    responseText += JSON.stringify(result.rows, null, 2);
+
+                    return {
+                        content: [{
+                            type: "text",
+                            text: responseText
+                        }]
+                    };
+                } catch (error) {
+                    console.error("Error exploring schema:", error);
+                    return {
+                        content: [{
+                            type: "text",
+                            text: `Error: ${error instanceof Error ? error.message : "Unknown error"}`
                         }]
                     };
                 } finally {
