@@ -6,17 +6,17 @@ import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import Button from '@/components/atoms/Button/Button';
 import styles from './AddUserModal.module.scss';
 
-const AddUserModal = ({ closeModal, workspaces = [], addUsers }) => {
+const AddUserModal = ({ closeModal, workspaces = [], addUsers, workspace = null }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [selectedWorkspace, setSelectedWorkspace] = useState('');
+  const [selectedWorkspace, setSelectedWorkspace] = useState(workspace || '');
 
   const handleInviteMembers = () => {
     if (addUsers) {
       addUsers({
         name,
         email, 
-        selectedWorkspace
+        selectedWorkspace: workspace || selectedWorkspace
       })
     }
   };
@@ -60,15 +60,17 @@ const AddUserModal = ({ closeModal, workspaces = [], addUsers }) => {
               />
             </div>
             
-            <div className={styles['add-user-modal__field']}>
-              <Dropdown
-                label="Workspace"
-                value={selectedWorkspace}
-                onChange={handleWorkspaceChange}
-                options={workspaceOptions}
-                placeholder="Select Workspace"
-              />
-            </div>
+            {!workspace && (
+              <div className={styles['add-user-modal__field']}>
+                <Dropdown
+                  label="Workspace"
+                  value={selectedWorkspace}
+                  onChange={handleWorkspaceChange}
+                  options={workspaceOptions}
+                  placeholder="Select Workspace"
+                />
+              </div>
+            )}
           </div>
           
           <div className={styles['add-user-modal__actions']}>
