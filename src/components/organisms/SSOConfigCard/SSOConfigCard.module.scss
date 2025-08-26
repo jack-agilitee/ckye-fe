@@ -1,0 +1,188 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.sso-config-card {
+  background-color: #252525;
+  border: 1px solid #353535;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  width: 100%;
+  
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  &__header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+  }
+  
+  &__title {
+    font-family: 'Overpass', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    color: #d5d5d5;
+    margin: 0;
+  }
+  
+  &__description {
+    @include font-medium;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    color: #9b9b9b;
+    margin: 0;
+  }
+  
+  // Empty state styles
+  &__empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  &__icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    background-color: #353535;
+    border-radius: 40px;
+    padding: 16px;
+  }
+  
+  &__icon {
+    width: 40px;
+    height: 40px;
+    filter: brightness(0) saturate(100%) invert(87%) sepia(3%) saturate(190%) hue-rotate(186deg) brightness(91%) contrast(89%);
+  }
+  
+  &__empty-title {
+    @include font-semibold;
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    color: #d5d5d5;
+    margin: 0;
+  }
+  
+  &__empty-description {
+    @include font-medium;
+    font-size: 14px;
+    line-height: 1.4;
+    letter-spacing: 0.2px;
+    color: #9b9b9b;
+    max-width: 640px;
+    margin: 0;
+  }
+  
+  &__enable-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 8px;
+    margin-top: 11px;
+    background-color: transparent;
+    border: 1px solid #74a0c8;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    @include font-semibold;
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    color: #74a0c8;
+    
+    &:hover {
+      background-color: rgba(#74a0c8, 0.1);
+      border-color: lighten(#74a0c8, 10%);
+    }
+    
+    &:focus-visible {
+      outline: 2px solid #74a0c8;
+      outline-offset: 2px;
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  // Connected state styles
+  &__connected-state {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  
+  &__sso-row {
+    background-color: #353535;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  &__metadata {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 8px;
+  }
+  
+  &__metadata-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    
+    @include font-medium;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    color: #9b9b9b;
+  }
+  
+  &__metadata-label {
+    @include font-semibold;
+    white-space: nowrap;
+  }
+  
+  &__metadata-value {
+    @include font-medium;
+    word-break: break-all;
+  }
+  
+  // Responsive design
+  @media (max-width: 768px) {
+    padding: 12px;
+    gap: 40px;
+    
+    &__title {
+      font-size: 18px;
+    }
+    
+    &__empty-description {
+      font-size: 13px;
+    }
+    
+    &__metadata {
+      padding: 8px;
+    }
+  }
+}
