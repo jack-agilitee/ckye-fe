@@ -56,4 +56,15 @@
   &--selected {
     background-color: $primary-color;
   }
+  
+  &--dark {
+    background-color: #262b35;
+    border-radius: 8px;
+    
+    .avatar__initial {
+      font-family: 'Overpass', sans-serif;
+      font-weight: 700;
+      color: #d5d5d5;
+    }
+  }
 }
