@@ -2055,16 +2055,16 @@ const [searchValue, setSearchValue] = useState('');
           </div>
 
           {/* WorkspaceSSOIndicatorRow Component */}
-          <div className={styles.showcase__component} style={{ maxWidth: '100%', width: '100%' }}>
+          <div className={styles.showcase__component}>
             <h3 className={styles.showcase__componentTitle}>WorkspaceSSOIndicatorRow</h3>
             <p className={styles.showcase__componentDescription}>
               A row component displaying SSO configuration for a workspace with company info, status, and action buttons
             </p>
             
-            <div className={styles.showcase__demo} style={{ maxWidth: '100%' }}>
-              <div className={styles.showcase__example} style={{ width: '100%' }}>
+            <div className={styles.showcase__demo} style={{ gridTemplateColumns: '1fr' }}>
+              <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Active SSO Configuration</h4>
-                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px', width: '100%' }}>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
                   <WorkspaceSSOIndicatorRow
                     companyName="Acme Corp"
                     avatarInitial="A"
@@ -2079,9 +2079,9 @@ const [searchValue, setSearchValue] = useState('');
                 </div>
               </div>
               
-              <div className={styles.showcase__example} style={{ width: '100%' }}>
+              <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Inactive SSO</h4>
-                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px', width: '100%' }}>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
                   <WorkspaceSSOIndicatorRow
                     companyName="TechStart Inc"
                     avatarInitial="T"
@@ -2096,9 +2096,9 @@ const [searchValue, setSearchValue] = useState('');
                 </div>
               </div>
               
-              <div className={styles.showcase__example} style={{ width: '100%' }}>
+              <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Pending Configuration</h4>
-                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px', width: '100%' }}>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
                   <WorkspaceSSOIndicatorRow
                     companyName="Global Solutions"
                     avatarInitial="GS"
@@ -2113,9 +2113,9 @@ const [searchValue, setSearchValue] = useState('');
                 </div>
               </div>
               
-              <div className={styles.showcase__example} style={{ width: '100%' }}>
+              <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Error State</h4>
-                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px', width: '100%' }}>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
                   <WorkspaceSSOIndicatorRow
                     companyName="Enterprise Systems"
                     avatarInitial="ES"
@@ -2130,9 +2130,9 @@ const [searchValue, setSearchValue] = useState('');
                 </div>
               </div>
               
-              <div className={styles.showcase__example} style={{ width: '100%' }}>
+              <div className={styles.showcase__example}>
                 <h4 className={styles.showcase__exampleTitle}>Multiple Workspaces</h4>
-                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px', width: '100%' }}>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
                   {(() => {
                     const workspaces = [
                       {
@@ -2165,7 +2165,7 @@ const [searchValue, setSearchValue] = useState('');
                     ];
                     
                     return (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         {workspaces.map((workspace) => (
                           <WorkspaceSSOIndicatorRow
                             key={workspace.companyName}
