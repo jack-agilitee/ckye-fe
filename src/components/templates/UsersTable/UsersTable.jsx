@@ -4,7 +4,7 @@ import User from '../../molecules/User/User';
 import SeatType from '../../molecules/SeatType/SeatType';
 import styles from './UsersTable.module.scss';
 
-const UsersTable = ({ users = [] }) => {
+const UsersTable = ({ users = [], showWorkspaces = true }) => {
   // Format workspaces for display
   const formatWorkspaces = (workspaces) => {
     if (!workspaces || workspaces.length === 0) return '';
@@ -21,9 +21,11 @@ const UsersTable = ({ users = [] }) => {
         <div className={styles['users-table__column']}>
           <span className={styles['users-table__header-text']}>User Type</span>
         </div>
-        <div className={styles['users-table__column']}>
-          <span className={styles['users-table__header-text']}>Workspaces</span>
-        </div>
+        {showWorkspaces && (
+          <div className={styles['users-table__column']}>
+            <span className={styles['users-table__header-text']}>Workspaces</span>
+          </div>
+        )}
       </div>
 
       {/* Table Body */}
@@ -43,11 +45,13 @@ const UsersTable = ({ users = [] }) => {
                 className={styles['users-table__seat-type']}
               />
             </div>
-            <div className={styles['users-table__column']}>
-              <span className={styles['users-table__workspaces']}>
-                {formatWorkspaces(user.workspaces)}
-              </span>
-            </div>
+            {showWorkspaces && (
+              <div className={styles['users-table__column']}>
+                <span className={styles['users-table__workspaces']}>
+                  {formatWorkspaces(user.workspaces)}
+                </span>
+              </div>
+            )}
           </div>
         ))}
       </div>
