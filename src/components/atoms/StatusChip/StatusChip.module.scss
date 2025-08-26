@@ -1,0 +1,51 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 40px;
+  transition: background-color 0.2s ease;
+  
+  &--active {
+    background-color: #4e6557;
+    
+    .status-chip__text {
+      color: #8ed09c;
+    }
+  }
+  
+  &--inactive {
+    background-color: rgba(#9b9b9b, 0.2);
+    
+    .status-chip__text {
+      color: #9b9b9b;
+    }
+  }
+  
+  &--pending {
+    background-color: rgba(#f5a623, 0.2);
+    
+    .status-chip__text {
+      color: #f5a623;
+    }
+  }
+  
+  &--error {
+    background-color: rgba(#eb5757, 0.2);
+    
+    .status-chip__text {
+      color: #eb5757;
+    }
+  }
+  
+  &__text {
+    @include font-semibold;
+    font-size: 10px;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+}

@@ -14,6 +14,7 @@ import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import SSOBanner from '@/components/molecules/SSOBanner/SSOBanner';
 import ChartSection from '@/components/molecules/ChartSection/ChartSection';
 import KpiCard from '@/components/molecules/KpiCard/KpiCard';
+import WorkspaceSSOIndicatorRow from '@/components/molecules/WorkspaceSSOIndicatorRow/WorkspaceSSOIndicatorRow';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import InteractiveIcon from '@/components/atoms/InteractiveIcon/InteractiveIcon';
@@ -2048,6 +2049,170 @@ const [searchValue, setSearchValue] = useState('');
   description="Please review our terms before proceeding. "
   linkText="Read Terms"
   linkUrl="/terms"
+/>`}
+              </pre>
+            </div>
+          </div>
+
+          {/* WorkspaceSSOIndicatorRow Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>WorkspaceSSOIndicatorRow</h3>
+            <p className={styles.showcase__componentDescription}>
+              A row component displaying SSO configuration for a workspace with company info, status, and action buttons
+            </p>
+            
+            <div className={styles.showcase__demo} style={{ gridTemplateColumns: '1fr' }}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Active SSO Configuration</h4>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
+                  <WorkspaceSSOIndicatorRow
+                    companyName="Acme Corp"
+                    avatarInitial="A"
+                    ssoProvider="Microsoft Entra ID"
+                    ssoType="SAML"
+                    domains={['@acmecorp.com', '@acme-contractors.com']}
+                    status="active"
+                    statusText="Active"
+                    onDisconnect={() => alert('Disconnecting SSO for Acme Corp')}
+                    dashboardUrl="https://dashboard.workos.com/organizations/org_123"
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Inactive SSO</h4>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
+                  <WorkspaceSSOIndicatorRow
+                    companyName="TechStart Inc"
+                    avatarInitial="T"
+                    ssoProvider="Okta"
+                    ssoType="OIDC"
+                    domains={['@techstart.io']}
+                    status="inactive"
+                    statusText="Inactive"
+                    onDisconnect={() => alert('Disconnecting SSO for TechStart Inc')}
+                    dashboardUrl="https://dashboard.workos.com/organizations/org_456"
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Pending Configuration</h4>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
+                  <WorkspaceSSOIndicatorRow
+                    companyName="Global Solutions"
+                    avatarInitial="GS"
+                    ssoProvider="Auth0"
+                    ssoType="SAML"
+                    domains={['@globalsolutions.com', '@gs-partners.com', '@gs-consultants.com']}
+                    status="pending"
+                    statusText="Pending Setup"
+                    onDisconnect={() => alert('Cannot disconnect pending configuration')}
+                    dashboardUrl="#"
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Error State</h4>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
+                  <WorkspaceSSOIndicatorRow
+                    companyName="Enterprise Systems"
+                    avatarInitial="ES"
+                    ssoProvider="Azure AD"
+                    ssoType="SAML"
+                    domains={['@enterprise-sys.org']}
+                    status="error"
+                    statusText="Configuration Error"
+                    onDisconnect={() => alert('Please fix configuration errors first')}
+                    dashboardUrl="https://dashboard.workos.com/organizations/org_789"
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Multiple Workspaces</h4>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
+                  {(() => {
+                    const workspaces = [
+                      {
+                        companyName: 'Alpha Industries',
+                        avatarInitial: 'AI',
+                        ssoProvider: 'Google Workspace',
+                        ssoType: 'OIDC',
+                        domains: ['@alpha-ind.com'],
+                        status: 'active',
+                        statusText: 'Active'
+                      },
+                      {
+                        companyName: 'Beta Technologies',
+                        avatarInitial: 'BT',
+                        ssoProvider: 'Okta',
+                        ssoType: 'SAML',
+                        domains: ['@betatech.io', '@beta-dev.io'],
+                        status: 'active',
+                        statusText: 'Active'
+                      },
+                      {
+                        companyName: 'Gamma Consulting',
+                        avatarInitial: 'GC',
+                        ssoProvider: 'Microsoft Entra ID',
+                        ssoType: 'SAML',
+                        domains: ['@gamma-consulting.com'],
+                        status: 'inactive',
+                        statusText: 'Inactive'
+                      }
+                    ];
+                    
+                    return (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {workspaces.map((workspace) => (
+                          <WorkspaceSSOIndicatorRow
+                            key={workspace.companyName}
+                            {...workspace}
+                            onDisconnect={() => alert(`Disconnecting SSO for ${workspace.companyName}`)}
+                            dashboardUrl={`https://dashboard.workos.com/org/${workspace.companyName.toLowerCase().replace(/\s+/g, '-')}`}
+                          />
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import WorkspaceSSOIndicatorRow from '@/components/molecules/WorkspaceSSOIndicatorRow/WorkspaceSSOIndicatorRow';
+
+function SSOManagement() {
+  const handleDisconnect = () => {
+    // Handle SSO disconnection logic
+    console.log('Disconnecting SSO...');
+  };
+
+  return (
+    <WorkspaceSSOIndicatorRow
+      companyName="Acme Corp"
+      avatarInitial="A"
+      ssoProvider="Microsoft Entra ID"
+      ssoType="SAML"
+      domains={['@acmecorp.com', '@acme-contractors.com']}
+      status="active"
+      statusText="Active"
+      onDisconnect={handleDisconnect}
+      dashboardUrl="https://dashboard.workos.com/organizations/org_123"
+    />
+  );
+}
+
+// Different status states
+<WorkspaceSSOIndicatorRow
+  status="active"    // Green status chip
+  status="inactive"  // Gray status chip
+  status="pending"   // Orange status chip
+  status="error"     // Red status chip
 />`}
               </pre>
             </div>
