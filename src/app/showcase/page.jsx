@@ -11,6 +11,7 @@ import ListItem from '@/components/molecules/ListItem/ListItem';
 import SeatType, { SEAT_TYPES } from '@/components/molecules/SeatType/SeatType';
 import WorkspaceSelector from '@/components/molecules/WorkspaceSelector/WorkspaceSelector';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
+import SSOBanner from '@/components/molecules/SSOBanner/SSOBanner';
 import ChartSection from '@/components/molecules/ChartSection/ChartSection';
 import KpiCard from '@/components/molecules/KpiCard/KpiCard';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
@@ -1954,6 +1955,100 @@ const [searchValue, setSearchValue] = useState('');
   <KpiCard {...card1Props} />
   <KpiCard {...card2Props} />
 </div>`}
+              </pre>
+            </div>
+          </div>
+
+          {/* SSOBanner Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>SSOBanner</h3>
+            <p className={styles.showcase__componentDescription}>
+              A configurable information banner for displaying SSO setup instructions or important messages with an optional link. 
+              All props are customizable including title, description, link text, URL, and target.
+            </p>
+            
+            <div className={styles.showcase__demo}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default SSO Banner</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <SSOBanner />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Content</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <SSOBanner
+                    title="Getting Started"
+                    description="Please complete the following setup before continuing: "
+                    linkText="View Setup Guide"
+                    linkUrl="https://docs.example.com/setup"
+                    linkTarget="_blank"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Internal Navigation</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <SSOBanner
+                    title="Account Required"
+                    description="You need to create an account to continue. "
+                    linkText="Sign up now"
+                    linkUrl="/signup"
+                    linkTarget="_self"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Important Notice</h4>
+                <div className={styles.showcase__exampleContent}>
+                  <SSOBanner
+                    title="Important Notice"
+                    description="Please review our terms before proceeding. "
+                    linkText="Read Terms"
+                    linkUrl="/terms"
+                    linkTarget="_self"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+                {`import SSOBanner from '@/components/molecules/SSOBanner/SSOBanner';
+
+// Default usage
+<SSOBanner />
+
+// Custom content
+<SSOBanner
+  title="Getting Started"
+  description="Please complete the following setup before continuing: "
+  linkText="View Setup Guide"
+  linkUrl="https://docs.example.com/setup"
+  linkTarget="_blank"
+/>
+
+// Internal navigation
+<SSOBanner
+  title="Account Required"
+  description="You need to create an account to continue. "
+  linkText="Sign up now"
+  linkUrl="/signup"
+  linkTarget="_self"
+/>
+
+// With custom styling
+<SSOBanner
+  className="my-custom-banner"
+  title="Important Notice"
+  description="Please review our terms before proceeding. "
+  linkText="Read Terms"
+  linkUrl="/terms"
+/>`}
               </pre>
             </div>
           </div>

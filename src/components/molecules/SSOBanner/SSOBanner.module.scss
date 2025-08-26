@@ -1,0 +1,46 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.sso-banner {
+  background-color: #262B35;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__title {
+    @include font-semibold;
+    color: $text-primary;
+    font-size: 12px;
+    line-height: 1;
+    margin: 0;
+    letter-spacing: 0.2px;
+  }
+
+  &__description {
+    @include font-medium;
+    color: $text-secondary;
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 0;
+    letter-spacing: 0.2px;
+  }
+
+  &__link {
+    color: #5193CF;
+    text-decoration: underline;
+    text-underline-position: from-font;
+    transition: opacity 0.2s ease;
+    
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:focus {
+      outline: 2px solid #5193CF;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+}
