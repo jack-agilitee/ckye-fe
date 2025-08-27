@@ -15,6 +15,7 @@ import SSOBanner from '@/components/molecules/SSOBanner/SSOBanner';
 import ChartSection from '@/components/molecules/ChartSection/ChartSection';
 import KpiCard from '@/components/molecules/KpiCard/KpiCard';
 import WorkspaceSSOIndicatorRow from '@/components/molecules/WorkspaceSSOIndicatorRow/WorkspaceSSOIndicatorRow';
+import SSOConfigCard from '@/components/organisms/SSOConfigCard/SSOConfigCard';
 import AccountChanger from '@/components/organisms/AccountChanger/AccountChanger';
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import InteractiveIcon from '@/components/atoms/InteractiveIcon/InteractiveIcon';
@@ -2335,6 +2336,182 @@ function SSOManagement() {
   isAdmin={true}
   onAdminBack={() => console.log('Exiting admin mode')}
 />`}
+              </pre>
+            </div>
+          </div>
+
+          {/* SSOConfigCard Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>SSOConfigCard</h3>
+            <p className={styles.showcase__componentDescription}>
+              SSO configuration card with two states: empty (not configured) and connected (SSO active)
+            </p>
+            
+            <div className={styles.showcase__demo} style={{ gridTemplateColumns: '1fr' }}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Empty State</h4>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
+                  <SSOConfigCard 
+                    state="empty"
+                    companyName="Acme Corp"
+                    onEnableSSO={() => alert('Enable SSO clicked! Would trigger SSO configuration flow.')}
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Connected State</h4>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
+                  <SSOConfigCard 
+                    state="connected"
+                    companyName="Acme Corp"
+                    avatarInitial="A"
+                    ssoProvider="Microsoft Entra ID"
+                    ssoType="SAML"
+                    domains={['@acmecorp.com', '@acme-contractors.com']}
+                    ssoStatus="active"
+                    ssoStatusText="Active"
+                    onDisconnect={() => alert('Disconnect SSO clicked!')}
+                    dashboardUrl="https://dashboard.workos.com"
+                    connectionId="con_01HQNFK5BN5TQHXP3S1P9HFMZG"
+                    createdDate="8/26/2025"
+                    loginUrl="ckye.ai/login/acme-corp?sso"
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>State Transition Example</h4>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
+                  {(() => {
+                    const [ssoState, setSSOState] = useState('empty');
+                    
+                    const handleEnableSSO = () => {
+                      alert('Enabling SSO...');
+                      setTimeout(() => {
+                        setSSOState('connected');
+                      }, 1000);
+                    };
+                    
+                    const handleDisconnect = () => {
+                      if (confirm('Are you sure you want to disconnect SSO?')) {
+                        setSSOState('empty');
+                      }
+                    };
+                    
+                    return (
+                      <SSOConfigCard 
+                        state={ssoState}
+                        companyName="Demo Company"
+                        avatarInitial="D"
+                        ssoProvider="Okta"
+                        ssoType="OIDC"
+                        domains={['@demo.com']}
+                        ssoStatus="active"
+                        ssoStatusText="Active"
+                        onEnableSSO={handleEnableSSO}
+                        onDisconnect={handleDisconnect}
+                        dashboardUrl="https://dashboard.workos.com/demo"
+                        connectionId="con_DEMO123456789"
+                        createdDate={new Date().toLocaleDateString()}
+                        loginUrl="ckye.ai/login/demo?sso"
+                      />
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Click "Enable SSO" to see the state transition</p>
+              </div>
+              
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Different SSO Providers</h4>
+                <div className={styles.showcase__exampleContent} style={{ padding: '16px', borderRadius: '4px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <SSOConfigCard 
+                      state="connected"
+                      companyName="Google Workspace"
+                      avatarInitial="G"
+                      ssoProvider="Google Workspace"
+                      ssoType="OIDC"
+                      domains={['@workspace.com']}
+                      ssoStatus="active"
+                      ssoStatusText="Active"
+                      onDisconnect={() => alert('Disconnect Google SSO')}
+                      connectionId="con_GOOGLE123"
+                      createdDate="7/15/2025"
+                      loginUrl="ckye.ai/login/google?sso"
+                    />
+                    
+                    <SSOConfigCard 
+                      state="connected"
+                      companyName="Auth0 Corp"
+                      avatarInitial="A0"
+                      ssoProvider="Auth0"
+                      ssoType="SAML"
+                      domains={['@auth0corp.com', '@auth0.dev']}
+                      ssoStatus="inactive"
+                      ssoStatusText="Inactive"
+                      onDisconnect={() => alert('Disconnect Auth0 SSO')}
+                      connectionId="con_AUTH0456"
+                      createdDate="6/1/2025"
+                      loginUrl="ckye.ai/login/auth0?sso"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.showcase__code}>
+              <h4 className={styles.showcase__codeTitle}>Usage</h4>
+              <pre className={styles.showcase__codeBlock}>
+{`import SSOConfigCard from '@/components/organisms/SSOConfigCard/SSOConfigCard';
+
+// Empty State
+<SSOConfigCard 
+  state="empty"
+  companyName="Acme Corp"
+  onEnableSSO={() => console.log('Enable SSO')}
+/>
+
+// Connected State
+<SSOConfigCard 
+  state="connected"
+  companyName="Acme Corp"
+  avatarInitial="A"
+  ssoProvider="Microsoft Entra ID"
+  ssoType="SAML"
+  domains={['@acmecorp.com', '@acme-contractors.com']}
+  ssoStatus="active"
+  ssoStatusText="Active"
+  onDisconnect={() => console.log('Disconnect SSO')}
+  dashboardUrl="https://dashboard.workos.com"
+  connectionId="con_01HQNFK5BN5TQHXP3S1P9HFMZG"
+  createdDate="8/26/2025"
+  loginUrl="ckye.ai/login/acme-corp?sso"
+/>
+
+// State Management Example
+function SSOSettings() {
+  const [state, setState] = useState('empty');
+  
+  const handleEnableSSO = async () => {
+    const config = await enableSSO();
+    setState('connected');
+  };
+  
+  const handleDisconnect = async () => {
+    await disconnectSSO();
+    setState('empty');
+  };
+  
+  return (
+    <SSOConfigCard 
+      state={state}
+      onEnableSSO={handleEnableSSO}
+      onDisconnect={handleDisconnect}
+      {...ssoConfig}
+    />
+  );
+}`}
               </pre>
             </div>
           </div>
