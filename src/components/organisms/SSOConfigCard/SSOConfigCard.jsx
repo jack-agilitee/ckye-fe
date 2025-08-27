@@ -45,31 +45,35 @@ const SSOConfigCard = ({
       </div>
 
       {state === 'empty' ? (
-        <div className={styles['sso-config-card__empty-state']}>
-          <div className={styles['sso-config-card__icon-wrapper']}>
-            <Image 
-              src="/lock.svg"
-              alt=""
-              width={40}
-              height={40}
-              className={styles['sso-config-card__icon']}
-            />
+        <>
+          <div className={styles['sso-config-card__empty-content']}>
+            <div className={styles['sso-config-card__icon-wrapper']}>
+              <Image 
+                src="/lock.svg"
+                alt=""
+                width={40}
+                height={40}
+                className={styles['sso-config-card__icon']}
+              />
+            </div>
+            <h3 className={styles['sso-config-card__empty-title']}>
+              Enable Single Sign-On for This Workspace
+            </h3>
+            <p className={styles['sso-config-card__empty-description']}>
+              Connect via SAML or OIDC to enable secure and fully managed SSO authentication. Users of this Workspace will be required to sign in using their company&apos;s identity provider.
+            </p>
           </div>
-          <h3 className={styles['sso-config-card__empty-title']}>
-            Enable Single Sign-On for This Workspace
-          </h3>
-          <p className={styles['sso-config-card__empty-description']}>
-            Connect via SAML or OIDC to enable secure and fully managed SSO authentication. Users of this Workspace will be required to sign in using their company&apos;s identity provider.
-          </p>
-          <button
-            className={styles['sso-config-card__enable-button']}
-            onClick={handleEnableClick}
-            type="button"
-            aria-label={`Enable SSO for ${companyName}`}
-          >
-            Enable SSO for {companyName}
-          </button>
-        </div>
+          <div className={styles['sso-config-card__ctas']}>
+            <button
+              className={styles['sso-config-card__enable-button']}
+              onClick={handleEnableClick}
+              type="button"
+              aria-label={`Enable SSO for ${companyName}`}
+            >
+              Enable SSO for {companyName}
+            </button>
+          </div>
+        </>
       ) : (
         <div className={styles['sso-config-card__connected-state']}>
           <div className={styles['sso-config-card__sso-row']}>

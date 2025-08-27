@@ -45,7 +45,7 @@
   }
   
   // Empty state styles
-  &__empty-state {
+  &__empty-content {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -53,6 +53,13 @@
     gap: 16px;
     width: 100%;
     text-align: center;
+  }
+  
+  &__ctas {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    width: 100%;
   }
   
   &__icon-wrapper {
@@ -69,7 +76,6 @@
   &__icon {
     width: 40px;
     height: 40px;
-    filter: brightness(0) saturate(100%) invert(87%) sepia(3%) saturate(190%) hue-rotate(186deg) brightness(91%) contrast(89%);
   }
   
   &__empty-title {
@@ -97,7 +103,6 @@
     justify-content: center;
     width: 100%;
     padding: 8px;
-    margin-top: 11px;
     background-color: transparent;
     border: 1px solid #74a0c8;
     border-radius: 8px;
