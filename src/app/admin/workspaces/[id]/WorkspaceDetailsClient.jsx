@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { createUser } from '@/lib/api/users';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import SSOConfigCard from '@/components/organisms/SSOConfigCard/SSOConfigCard';
@@ -25,21 +26,12 @@ const WorkspaceDetailsClient = ({ workspace }) => {
 
   const handleAddUser = async (userData) => {
     try {
-      const response = await fetch('/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...userData,
-          workspaceId: workspace.id
-        })
+      await createUser({
+        ...userData,
+        workspaceIds: [workspace.id]
       });
-
-      if (response.ok) {
-        setIsAddUserModalOpen(false);
-        router.refresh();
-      }
+      setIsAddUserModalOpen(false);
+      router.refresh();
     } catch (error) {
       console.error('Error adding user:', error);
     }
