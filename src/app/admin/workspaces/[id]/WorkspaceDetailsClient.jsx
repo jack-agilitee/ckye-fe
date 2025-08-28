@@ -66,49 +66,50 @@ const WorkspaceDetailsClient = ({ workspace }) => {
     <div className={styles['workspace-details']}>
       {/* Header */}
       <div className={styles['workspace-details__header']}>
-        <h1 className={styles['workspace-details__title']}>
-          {workspace.name} Settings
-        </h1>
-      </div>
-
-      {/* Tabs */}
-      <div className={styles['workspace-details__tabs']}>
-        <button
-          className={`${styles['workspace-details__tab']} ${
-            activeTab === 'users' ? styles['workspace-details__tab--active'] : ''
-          }`}
-          onClick={() => setActiveTab('users')}
-        >
-          Users
-        </button>
-        <button
-          className={`${styles['workspace-details__tab']} ${
-            activeTab === 'authentication' ? styles['workspace-details__tab--active'] : ''
-          }`}
-          onClick={() => setActiveTab('authentication')}
-        >
-          Authentication
-        </button>
+        <div>
+          <h1 className={styles['workspace-details__title']}>
+            {workspace.name} Settings
+          </h1>
+          {/* Tabs */}
+          <div className={styles['workspace-details__tabs']}>
+            <button
+              className={`${styles['workspace-details__tab']} ${
+                activeTab === 'users' ? styles['workspace-details__tab--active'] : ''
+              }`}
+              onClick={() => setActiveTab('users')}
+            >
+              Users
+            </button>
+            <button
+              className={`${styles['workspace-details__tab']} ${
+                activeTab === 'authentication' ? styles['workspace-details__tab--active'] : ''
+              }`}
+              onClick={() => setActiveTab('authentication')}
+            >
+              Authentication
+            </button>
+          </div>
+        </div>
+        {activeTab === 'users' && (
+          <Button
+            variant="primary"
+            onClick={() => setIsAddUserModalOpen(true)}
+            icon="/people-add.svg"
+          >
+            Add Users
+          </Button>
+        )}
       </div>
 
       {/* Tab Content */}
       <div className={styles['workspace-details__content']}>
         {activeTab === 'users' && (
           <div className={styles['workspace-details__users']}>
-            <div className={styles['workspace-details__users-header']}>
-              <SearchHeader
-                placeholder="Search Users"
-                value={searchQuery}
-                onChange={setSearchQuery}
-              />
-              <Button
-                variant="primary"
-                onClick={() => setIsAddUserModalOpen(true)}
-                icon="/people-add.svg"
-              >
-                Add Users
-              </Button>
-            </div>
+            <SearchHeader
+              placeholder="Search Users"
+              value={searchQuery}
+              onChange={setSearchQuery}
+            />
             <UsersTable 
               users={filteredUsers} 
               showWorkspaces={false}

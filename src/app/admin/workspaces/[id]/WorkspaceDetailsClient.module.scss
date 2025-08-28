@@ -7,20 +7,22 @@
   flex-direction: column;
 
   &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 32px;
   }
 
   &__title {
     @include heading-2;
     color: $white-primary;
-    margin: 0;
+    margin: 0 0 24px 0;
   }
 
   &__tabs {
     display: flex;
     gap: 32px;
     border-bottom: 1px solid $black-light;
-    margin-bottom: 32px;
   }
 
   &__tab {
@@ -67,20 +69,6 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-  }
-
-  &__users-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 20px;
-  }
-
-  &__section-title {
-    @include heading-3;
-    color: $white-primary;
-    margin: 0;
   }
 
   &__authentication {
