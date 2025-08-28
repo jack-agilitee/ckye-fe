@@ -2,27 +2,10 @@ import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
+import { getWorkspace } from '@/lib/api/workspaces';
 import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import WorkspaceDetailsClient from './WorkspaceDetailsClient';
-
-async function getWorkspace(id, cookieHeader) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-  const response = await fetch(`${baseUrl}/api/workspaces/${id}`, {
-    cache: 'no-store',
-    headers: {
-      'Content-Type': 'application/json',
-      'Cookie': cookieHeader,
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch workspace');
-  }
-
-  const data = await response.json();
-  return data.data;
-}
 
 export default async function WorkspaceDetailsPage({ params }) {
   const session = await getServerSession(authOptions);
@@ -37,7 +20,8 @@ export default async function WorkspaceDetailsPage({ params }) {
 
   let workspace;
   try {
-    workspace = await getWorkspace(params.id, cookieHeader);
+    const response = await getWorkspace(params.id, cookieHeader);
+    workspace = response.data;
   } catch (error) {
     console.error('Error fetching workspace:', error);
     redirect('/admin/workspaces');
