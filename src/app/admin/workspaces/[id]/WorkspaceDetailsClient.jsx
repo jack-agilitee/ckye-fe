@@ -7,7 +7,6 @@ import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import SSOConfigCard from '@/components/organisms/SSOConfigCard/SSOConfigCard';
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
 import SSOConnectionModal from '@/components/organisms/SSOConnectionModal/SSOConnectionModal';
-import Button from '@/components/atoms/Button/Button';
 import styles from './WorkspaceDetailsClient.module.scss';
 
 const WorkspaceDetailsClient = ({ workspace }) => {
@@ -66,39 +65,29 @@ const WorkspaceDetailsClient = ({ workspace }) => {
     <div className={styles['workspace-details']}>
       {/* Header */}
       <div className={styles['workspace-details__header']}>
-        <div>
-          <h1 className={styles['workspace-details__title']}>
-            {workspace.name} Settings
-          </h1>
-          {/* Tabs */}
-          <div className={styles['workspace-details__tabs']}>
-            <button
-              className={`${styles['workspace-details__tab']} ${
-                activeTab === 'users' ? styles['workspace-details__tab--active'] : ''
-              }`}
-              onClick={() => setActiveTab('users')}
-            >
-              Users
-            </button>
-            <button
-              className={`${styles['workspace-details__tab']} ${
-                activeTab === 'authentication' ? styles['workspace-details__tab--active'] : ''
-              }`}
-              onClick={() => setActiveTab('authentication')}
-            >
-              Authentication
-            </button>
-          </div>
-        </div>
-        {activeTab === 'users' && (
-          <Button
-            variant="primary"
-            onClick={() => setIsAddUserModalOpen(true)}
-            icon="/people-add.svg"
-          >
-            Add Users
-          </Button>
-        )}
+        <h1 className={styles['workspace-details__title']}>
+          {workspace.name} Settings
+        </h1>
+      </div>
+
+      {/* Tabs */}
+      <div className={styles['workspace-details__tabs']}>
+        <button
+          className={`${styles['workspace-details__tab']} ${
+            activeTab === 'users' ? styles['workspace-details__tab--active'] : ''
+          }`}
+          onClick={() => setActiveTab('users')}
+        >
+          Users
+        </button>
+        <button
+          className={`${styles['workspace-details__tab']} ${
+            activeTab === 'authentication' ? styles['workspace-details__tab--active'] : ''
+          }`}
+          onClick={() => setActiveTab('authentication')}
+        >
+          Authentication
+        </button>
       </div>
 
       {/* Tab Content */}
@@ -106,9 +95,12 @@ const WorkspaceDetailsClient = ({ workspace }) => {
         {activeTab === 'users' && (
           <div className={styles['workspace-details__users']}>
             <SearchHeader
-              placeholder="Search Users"
-              value={searchQuery}
-              onChange={setSearchQuery}
+              title="Users"
+              searchPlaceholder="Search Users"
+              searchValue={searchQuery}
+              onSearchChange={setSearchQuery}
+              buttonText="Add Users"
+              onButtonClick={() => setIsAddUserModalOpen(true)}
             />
             <UsersTable 
               users={filteredUsers} 
