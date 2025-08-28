@@ -24,6 +24,7 @@ import AddWorkspaceModal from '@/components/organisms/AddWorkspaceModal/AddWorks
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
 import CreateExperimentModal from '@/components/organisms/CreateExperimentModal/CreateExperimentModal';
 import ExperimentsModal from '@/components/organisms/ExperimentsModal/ExperimentsModal';
+import SSOConnectionModal from '@/components/organisms/SSOConnectionModal/SSOConnectionModal';
 import VariantCard from '@/components/organisms/VariantCard/VariantCard';
 import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
@@ -3340,6 +3341,143 @@ function MyComponent() {
             </div>
           </div>
 
+
+          {/* SSOConnectionModal Component */}
+          <div className={styles.showcase__component}>
+            <h3 className={styles.showcase__componentTitle}>
+              SSOConnectionModal
+            </h3>
+            <p className={styles.showcase__description}>
+              A modal for connecting WorkOS organizations to workspaces. Allows configuration of SSO settings, organization IDs, custom slugs, and email domain restrictions.
+            </p>
+
+            <div className={styles.showcase__examples}>
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Default Modal</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  {(() => {
+                    const [showModal, setShowModal] = useState(false);
+                    const [connectionData, setConnectionData] = useState(null);
+                    
+                    const emailDomainOptions = [
+                      { id: '1', name: '@company.com' },
+                      { id: '2', name: '@example.org' },
+                      { id: '3', name: '@team.io' }
+                    ];
+                    
+                    return (
+                      <>
+                        <Button
+                          onClick={() => setShowModal(true)}
+                          variant="primary"
+                        >
+                          Connect SSO
+                        </Button>
+                        {connectionData && (
+                          <div style={{ marginTop: '12px', padding: '12px', backgroundColor: '#2a2a2a', borderRadius: '4px' }}>
+                            <p style={{ color: '#9b9b9b', fontSize: '14px', margin: 0 }}>
+                              Connected: {connectionData.organizationId}
+                              {connectionData.customSlug && ` (${connectionData.customSlug})`}
+                              {connectionData.emailDomains?.length > 0 && ` - ${connectionData.emailDomains.length} domains`}
+                            </p>
+                          </div>
+                        )}
+                        <SSOConnectionModal
+                          isOpen={showModal}
+                          onClose={() => setShowModal(false)}
+                          onConnect={(data) => {
+                            setConnectionData(data);
+                            setShowModal(false);
+                            console.log('SSO Connection data:', data);
+                          }}
+                          emailDomainOptions={emailDomainOptions}
+                        />
+                      </>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Click the button to open the SSO connection modal</p>
+              </div>
+
+              <div className={styles.showcase__example}>
+                <h4 className={styles.showcase__exampleTitle}>Custom Dashboard Link</h4>
+                <div className={styles.showcase__exampleContent} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '4px' }}>
+                  {(() => {
+                    const [showModal, setShowModal] = useState(false);
+                    
+                    return (
+                      <>
+                        <Button
+                          onClick={() => setShowModal(true)}
+                          variant="secondary"
+                        >
+                          Configure Custom SSO
+                        </Button>
+                        <SSOConnectionModal
+                          isOpen={showModal}
+                          onClose={() => setShowModal(false)}
+                          onConnect={(data) => {
+                            alert(`Connecting org: ${data.organizationId}`);
+                            setShowModal(false);
+                          }}
+                          dashboardLink="https://custom.workos.com/dashboard"
+                          emailDomainOptions={[
+                            { id: '1', name: '@acme.corp' },
+                            { id: '2', name: '@acme.com' }
+                          ]}
+                        />
+                      </>
+                    );
+                  })()}
+                </div>
+                <p className={styles.showcase__hint}>Custom WorkOS dashboard link and email domains</p>
+              </div>
+            </div>
+
+            <div className={styles.showcase__usage}>
+              <h4 className={styles.showcase__usageTitle}>Usage</h4>
+              <pre className={styles.showcase__code}>
+{`import { useState } from 'react';
+import SSOConnectionModal from '@/components/organisms/SSOConnectionModal/SSOConnectionModal';
+
+function MyComponent() {
+  const [isSSOModalOpen, setIsSSOModalOpen] = useState(false);
+  
+  const emailDomainOptions = [
+    { id: '1', name: '@company.com' },
+    { id: '2', name: '@example.org' }
+  ];
+
+  const handleSSOConnect = (connectionData) => {
+    console.log('SSO Connection:', connectionData);
+    // connectionData contains:
+    // - organizationId: string
+    // - customSlug: string (optional)
+    // - emailDomains: array of selected domain objects
+    
+    // Handle the connection...
+    setIsSSOModalOpen(false);
+  };
+
+  return (
+    <>
+      <Button onClick={() => setIsSSOModalOpen(true)}>
+        Connect SSO
+      </Button>
+      
+      <SSOConnectionModal
+        isOpen={isSSOModalOpen}
+        onClose={() => setIsSSOModalOpen(false)}
+        onConnect={handleSSOConnect}
+        emailDomainOptions={emailDomainOptions}
+        dashboardLink="https://dashboard.workos.com" // optional
+      />
+    </>
+  );
+}`}
+              </pre>
+            </div>
+          </div>
 
         </section>
 

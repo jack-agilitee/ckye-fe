@@ -1,0 +1,246 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.sso-connection-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba($black, 0.5);
+  }
+
+  &__container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background-color: $black-bg-dark;
+    border: 1px solid $black-light;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  &__header-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__title {
+    @include heading-2;
+    color: $white-primary;
+    margin: 0;
+  }
+
+  &__subtitle {
+    @include body-medium;
+    color: $white-secondary;
+    margin: 0;
+  }
+
+  &__close {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    padding: 0;
+
+    &:hover {
+      background-color: $black-light-hover;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+    }
+
+    img {
+      filter: brightness(0) saturate(100%) invert(85%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+    }
+  }
+
+  &__divider {
+    height: 1px;
+    background-color: $black-light;
+    width: 100%;
+  }
+
+  &__banner {
+    background-color: $black-bg-light;
+    border: 1px solid $black-light;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__banner-title {
+    @include body-medium;
+    @include font-semibold;
+    color: $white-primary;
+    margin: 0;
+  }
+
+  &__banner-text {
+    @include body-small;
+    color: $white-secondary;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  &__link {
+    color: $primary-color;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.8;
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &__field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__field {
+    width: 100%;
+  }
+
+  &__helper {
+    @include body-small;
+    color: $white-secondary;
+    margin: 0;
+    padding-left: 12px;
+  }
+
+  &__checklist {
+    background-color: $black-bg-light;
+    border: 1px solid $black-light;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__checklist-title {
+    @include body-medium;
+    @include font-semibold;
+    color: $white-primary;
+    margin: 0;
+  }
+
+  &__checklist-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__checklist-item {
+    color: $white-secondary;
+    font-family: $font-family-primary;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: $font-weight-medium;
+    line-height: normal;
+    letter-spacing: 0.2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__check {
+    flex-shrink: 0;
+    color: $white-secondary;
+    font-size: 12px;
+    font-weight: $font-weight-medium;
+  }
+
+  &__arrow {
+    flex-shrink: 0;
+    color: $white-secondary;
+    font-size: 12px;
+    font-weight: $font-weight-medium;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 4px;
+  }
+
+  &__button {
+    min-width: 160px;
+  }
+
+  // Responsive adjustments
+  @media (max-width: 640px) {
+    padding: 10px;
+
+    &__container {
+      max-width: 100%;
+      padding: 20px;
+    }
+
+    &__header {
+      flex-direction: column;
+    }
+
+    &__close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+  }
+}
