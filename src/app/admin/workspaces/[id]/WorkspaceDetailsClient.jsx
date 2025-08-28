@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import SSOConfigCard from '@/components/organisms/SSOConfigCard/SSOConfigCard';
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
@@ -12,8 +13,16 @@ import styles from './WorkspaceDetailsClient.module.scss';
 const WorkspaceDetailsClient = ({ workspace }) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('users');
+  const [searchQuery, setSearchQuery] = useState('');
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [isSSOModalOpen, setIsSSOModalOpen] = useState(false);
+
+  // Filter users based on search query
+  const filteredUsers = workspace.users?.filter(user => {
+    const query = searchQuery.toLowerCase();
+    return user.name?.toLowerCase().includes(query) || 
+           user.email?.toLowerCase().includes(query);
+  }) || [];
 
   const handleAddUser = async (userData) => {
     try {
@@ -87,7 +96,11 @@ const WorkspaceDetailsClient = ({ workspace }) => {
         {activeTab === 'users' && (
           <div className={styles['workspace-details__users']}>
             <div className={styles['workspace-details__users-header']}>
-              <h2 className={styles['workspace-details__section-title']}>Users</h2>
+              <SearchHeader
+                placeholder="Search Users"
+                value={searchQuery}
+                onChange={setSearchQuery}
+              />
               <Button
                 variant="primary"
                 onClick={() => setIsAddUserModalOpen(true)}
@@ -97,7 +110,7 @@ const WorkspaceDetailsClient = ({ workspace }) => {
               </Button>
             </div>
             <UsersTable 
-              users={workspace.users || []} 
+              users={filteredUsers} 
               showWorkspaces={false}
             />
           </div>

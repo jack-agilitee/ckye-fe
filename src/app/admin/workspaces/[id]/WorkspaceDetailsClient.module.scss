@@ -66,13 +66,15 @@
   &__users {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
   }
 
   &__users-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
   }
 
   &__section-title {

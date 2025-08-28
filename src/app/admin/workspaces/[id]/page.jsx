@@ -2,6 +2,8 @@ import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
+import TwoColumnPage from '@/components/pages/TwoColumnPage/TwoColumnPage';
+import Sidebar from '@/components/templates/Sidebar/Sidebar';
 import WorkspaceDetailsClient from './WorkspaceDetailsClient';
 
 async function getWorkspace(id, cookieHeader) {
@@ -41,5 +43,10 @@ export default async function WorkspaceDetailsPage({ params }) {
     redirect('/admin/workspaces');
   }
 
-  return <WorkspaceDetailsClient workspace={workspace} />;
+  return (
+    <TwoColumnPage
+      leftContent={<Sidebar isAdminMode={true} />}
+      rightContent={<WorkspaceDetailsClient workspace={workspace} />}
+    />
+  );
 }
