@@ -8,9 +8,7 @@ const WorkspacesTable = ({ workspaces = [] }) => {
   const router = useRouter();
 
   const handleRowClick = (workspace) => {
-    if (workspace.shortName) {
-      router.push(`/dashboard/${workspace.shortName}`);
-    }
+    router.push(`/admin/workspaces/${workspace.id}`);
   };
 
   return (
