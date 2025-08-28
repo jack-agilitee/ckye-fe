@@ -1,14 +1,16 @@
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import WorkspaceDetailsClient from './WorkspaceDetailsClient';
 
-async function getWorkspace(id) {
+async function getWorkspace(id, cookieHeader) {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
   const response = await fetch(`${baseUrl}/api/workspaces/${id}`, {
     cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
+      'Cookie': cookieHeader,
     }
   });
 
@@ -27,9 +29,13 @@ export default async function WorkspaceDetailsPage({ params }) {
     redirect('/login');
   }
 
+  // Get cookies from the request headers
+  const cookieStore = cookies();
+  const cookieHeader = cookieStore.toString();
+
   let workspace;
   try {
-    workspace = await getWorkspace(params.id);
+    workspace = await getWorkspace(params.id, cookieHeader);
   } catch (error) {
     console.error('Error fetching workspace:', error);
     redirect('/admin/workspaces');
