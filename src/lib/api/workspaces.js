@@ -26,8 +26,36 @@ export async function getWorkspaces(cookieHeader = null) {
   }
 }
 
+export async function getWorkspace(id, cookieHeader = null) {
+  try {
+    // Use absolute URL for server-side requests
+    const url = typeof window === 'undefined' 
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/workspaces/${id}`
+      : `/api/workspaces/${id}`;
+      
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(cookieHeader && { Cookie: cookieHeader }), // Forward cookies if provided
+      },
+      credentials: 'same-origin', // Include cookies for client-side requests
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to fetch workspace');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching workspace:', error);
+    throw error;
+  }
+}
+
 export async function createWorkspace(workspaceData, cookieHeader = null) {
-  console.log('j', workspaceData)
   try {
     // Use absolute URL for server-side requests
     const url = typeof window === 'undefined' 
