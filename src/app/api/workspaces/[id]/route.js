@@ -37,8 +37,7 @@ export async function GET(_, { params }) {
                 id: true,
                 email: true,
                 name: true,
-                seatType: true,
-                status: true
+                userType: true
               }
             },
             role: true
