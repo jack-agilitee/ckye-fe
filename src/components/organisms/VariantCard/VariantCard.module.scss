@@ -51,11 +51,11 @@
 
   &__current-value {
     font-family: $font-family-primary;
-    font-size: 28px;
+    font-size: 14px;
     font-weight: $font-weight-bold;
     line-height: 1;
     letter-spacing: 0.2px;
-    color: $code-blue;
+    color: $white-secondary;
   }
 
   &__total-value {
