@@ -84,7 +84,7 @@
   &__deactivate-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
   }
 
   &__actions {
@@ -99,8 +99,7 @@
   }
 
   &__deactivate {
-    @include body-medium;
-    @include font-medium;
+    @include table-header;
     background-color: transparent;
     border: none;
     color: $action-warning;
