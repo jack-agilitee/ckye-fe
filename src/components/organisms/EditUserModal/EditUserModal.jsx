@@ -17,10 +17,10 @@ const EditUserModal = ({
   const router = useRouter();
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [userType, setUserType] = useState(user?.userType || 'standard');
+  const [userType, setUserType] = useState(user?.userType || 'Member');
   const [loading, setLoading] = useState(false);
 
-  if (!isOpen) return null;
+  if (!isOpen || !user) return null;
 
   const handleSave = async () => {
     try {
@@ -54,8 +54,8 @@ const EditUserModal = ({
   };
 
   const userTypeOptions = [
-    { value: 'standard', label: 'Standard' },
-    { value: 'admin', label: 'Admin' }
+    { value: 'Member', label: 'Member' },
+    { value: 'Admin', label: 'Admin' }
   ];
 
   return (
@@ -70,7 +70,7 @@ const EditUserModal = ({
               aria-label="Close modal"
             >
               <Image
-                src="/close.svg"
+                src="/cross.svg"
                 alt="Close"
                 width={16}
                 height={16}
@@ -101,45 +101,44 @@ const EditUserModal = ({
             
             <div className={styles['edit-user-modal__field']}>
               <Dropdown
-                label="User Type"
+                label="Account Type"
                 value={userType}
                 onChange={(e) => setUserType(e.target.value)}
                 options={userTypeOptions}
-                placeholder="Select User Type"
+                placeholder="Select Account Type"
               />
             </div>
           </div>
           
-          <div className={styles['edit-user-modal__actions']}>
-            <Button
-              variant="danger"
+          <div className={styles['edit-user-modal__deactivate-container']}>
+            <button
               onClick={handleDeactivate}
               className={styles['edit-user-modal__deactivate']}
-              icon={null}
               disabled={loading}
             >
               Deactivate User
+            </button>
+          </div>
+          
+          <div className={styles['edit-user-modal__actions']}>
+            <Button
+              variant="secondary"
+              onClick={onClose}
+              className={styles['edit-user-modal__button']}
+              icon={null}
+              disabled={loading}
+            >
+              Cancel
             </Button>
-            <div className={styles['edit-user-modal__actions-right']}>
-              <Button
-                variant="primary"
-                onClick={onClose}
-                className={styles['edit-user-modal__button']}
-                icon={null}
-                disabled={loading}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={handleSave}
-                className={styles['edit-user-modal__button']}
-                icon={null}
-                disabled={loading}
-              >
-                {loading ? 'Saving...' : 'Save'}
-              </Button>
-            </div>
+            <Button
+              variant="primary"
+              onClick={handleSave}
+              className={styles['edit-user-modal__button']}
+              icon={null}
+              disabled={loading}
+            >
+              {loading ? 'Saving...' : 'Save'}
+            </Button>
           </div>
         </div>
       </div>
