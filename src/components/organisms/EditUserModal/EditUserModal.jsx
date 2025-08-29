@@ -17,14 +17,14 @@ const EditUserModal = ({
   const router = useRouter();
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [userType, setUserType] = useState(user?.userType || 'member');
+  const [userType, setUserType] = useState(user?.userType || 'Member');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
-      setName(user.name || '')
-      setEmail(user.email || '')
-      setUserType(user.userType || 'member')
+      setName(user.name)
+      setEmail(user.email)
+      setUserType(user.userType)
     }
   }, [user])
 
