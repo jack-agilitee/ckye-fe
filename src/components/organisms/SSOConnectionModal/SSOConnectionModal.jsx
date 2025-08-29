@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import TextField from '@/components/atoms/TextField/TextField';
 import WorkspaceSelector from '@/components/molecules/WorkspaceSelector/WorkspaceSelector';
+import SSOBanner from '@/components/molecules/SSOBanner/SSOBanner';
 import Button from '@/components/atoms/Button/Button';
 import styles from './SSOConnectionModal.module.scss';
 
@@ -87,23 +88,11 @@ const SSOConnectionModal = ({
         <div className={styles['sso-connection-modal__divider']} />
 
         {/* Banner */}
-        <div className={styles['sso-connection-modal__banner']}>
-          <h3 className={styles['sso-connection-modal__banner-title']}>
-            Before you Begin
-          </h3>
-          <p className={styles['sso-connection-modal__banner-text']}>
-            You'll need to have already created an organization in the WorkOS Dashboard and configured your SSO connection. 
-            If you haven't done this yet, go to{' '}
-            <a 
-              href={dashboardLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles['sso-connection-modal__link']}
-            >
-              WorkOS Dashboard
-            </a>.
-          </p>
-        </div>
+        <SSOBanner 
+          linkUrl={dashboardLink}
+          description="You'll need to have already created an organization in the WorkOS Dashboard and configured your SSO connection. If you haven't done this yet, "
+          linkText="go to WorkOS Dashboard."
+        />
 
         {/* Form Fields */}
         <div className={styles['sso-connection-modal__form']}>
@@ -153,24 +142,20 @@ const SSOConnectionModal = ({
           <h3 className={styles['sso-connection-modal__checklist-title']}>
             Setup Checklist
           </h3>
-          <ol className={styles['sso-connection-modal__checklist-items']}>
+          <ul className={styles['sso-connection-modal__checklist-items']}>
             <li className={styles['sso-connection-modal__checklist-item']}>
-              <span className={styles['sso-connection-modal__check']}>✓</span>
-              Created organization in WorkOS Dashboard
+              ✓ Created organization in WorkOS Dashboard
             </li>
             <li className={styles['sso-connection-modal__checklist-item']}>
-              <span className={styles['sso-connection-modal__check']}>✓</span>
-              Configured SSO connection (Microsoft, Google, Okta, etc.)
+              ✓ Configured SSO connection (Microsoft, Google, Okta, etc.)
             </li>
             <li className={styles['sso-connection-modal__checklist-item']}>
-              <span className={styles['sso-connection-modal__check']}>✓</span>
-              Tested authentication in WorkOS
+              ✓ Tested authentication in WorkOS
             </li>
             <li className={styles['sso-connection-modal__checklist-item']}>
-              <span className={styles['sso-connection-modal__arrow']}>→</span>
-              Ready to connect to Ckye
+              → Ready to connect to Ckye
             </li>
-          </ol>
+          </ul>
         </div>
 
         {/* Actions */}

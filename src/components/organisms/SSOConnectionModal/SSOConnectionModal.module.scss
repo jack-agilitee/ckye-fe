@@ -158,14 +158,9 @@
     @include body-small;
     color: $white-secondary;
     margin: 0;
-    padding-left: 12px;
   }
 
   &__checklist {
-    background-color: $black-bg-light;
-    border: 1px solid $black-light;
-    border-radius: 8px;
-    padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -188,30 +183,9 @@
   }
 
   &__checklist-item {
+    @include body-small;
     color: $white-secondary;
-    font-family: $font-family-primary;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: $font-weight-medium;
-    line-height: normal;
-    letter-spacing: 0.2px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  &__check {
-    flex-shrink: 0;
-    color: $white-secondary;
-    font-size: 12px;
-    font-weight: $font-weight-medium;
-  }
-
-  &__arrow {
-    flex-shrink: 0;
-    color: $white-secondary;
-    font-size: 12px;
-    font-weight: $font-weight-medium;
+    list-style: none;
   }
 
   &__actions {
