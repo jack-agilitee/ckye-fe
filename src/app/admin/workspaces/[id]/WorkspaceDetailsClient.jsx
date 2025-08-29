@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createUser } from '@/lib/api/users';
+import { createUser, updateUser, deleteUser } from '@/lib/api/users';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import SSOConfigCard from '@/components/organisms/SSOConfigCard/SSOConfigCard';
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
+import EditUserModal from '@/components/organisms/EditUserModal/EditUserModal';
 import SSOConnectionModal from '@/components/organisms/SSOConnectionModal/SSOConnectionModal';
 import styles from './WorkspaceDetailsClient.module.scss';
 
@@ -15,6 +16,8 @@ const WorkspaceDetailsClient = ({ workspace }) => {
   const [activeTab, setActiveTab] = useState('users');
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [isSSOModalOpen, setIsSSOModalOpen] = useState(false);
 
   // Filter users based on search query
@@ -46,6 +49,11 @@ const WorkspaceDetailsClient = ({ workspace }) => {
     } catch (error) {
       console.error('Error connecting SSO:', error);
     }
+  };
+
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+    setIsEditUserModalOpen(true);
   };
 
   const emailDomainOptions = [
@@ -97,6 +105,7 @@ const WorkspaceDetailsClient = ({ workspace }) => {
             <UsersTable 
               users={filteredUsers} 
               showWorkspaces={false}
+              onUserClick={handleUserClick}
             />
           </div>
         )}
@@ -139,6 +148,15 @@ const WorkspaceDetailsClient = ({ workspace }) => {
         onClose={() => setIsSSOModalOpen(false)}
         onConnect={handleSSOConnect}
         emailDomainOptions={emailDomainOptions}
+      />
+
+      <EditUserModal
+        user={selectedUser}
+        isOpen={isEditUserModalOpen}
+        onClose={() => {
+          setIsEditUserModalOpen(false);
+          setSelectedUser(null);
+        }}
       />
     </div>
   );

@@ -82,3 +82,61 @@ export async function getUserByEmail(email, cookieHeader = null) {
     throw error;
   }
 }
+
+export async function updateUser(userData, cookieHeader = null) {
+  try {
+    // Use absolute URL for server-side requests
+    const url = typeof window === 'undefined' 
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/users`
+      : '/api/users';
+      
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(cookieHeader && { Cookie: cookieHeader }), // Forward cookies if provided
+      },
+      credentials: 'same-origin', // Include cookies for client-side requests
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to update user');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+}
+
+export async function deleteUser(userId, cookieHeader = null) {
+  try {
+    // Use absolute URL for server-side requests
+    const url = typeof window === 'undefined' 
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/users`
+      : '/api/users';
+      
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(cookieHeader && { Cookie: cookieHeader }), // Forward cookies if provided
+      },
+      credentials: 'same-origin', // Include cookies for client-side requests
+      body: JSON.stringify({ id: userId }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to delete user');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw error;
+  }
+}
