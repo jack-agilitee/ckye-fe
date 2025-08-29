@@ -25,11 +25,6 @@ const Dropdown = forwardRef(({
   const [selectedValue, setSelectedValue] = useState(value || '');
   const dropdownRef = useRef(null);
   
-  // Update selectedValue when value prop changes
-  useEffect(() => {
-    setSelectedValue(value || '');
-  }, [value]);
-  
   // Generate ID if not provided
   const dropdownId = id || `dropdown-${name || Math.random().toString(36).substring(2, 11)}`;
 

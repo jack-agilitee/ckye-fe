@@ -15,9 +15,9 @@ const EditUserModal = ({
   onClose
 }) => {
   const router = useRouter();
-  const [name, setName] = useState(user?.name || '');
-  const [email, setEmail] = useState(user?.email || '');
-  const [userType, setUserType] = useState(user?.userType || 'Member');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [userType, setUserType] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -62,8 +62,8 @@ const EditUserModal = ({
   };
 
   const userTypeOptions = [
-    { value: 'member', label: 'Member' },
-    { value: 'admin', label: 'Admin' }
+    { value: 'Member', label: 'Member' },
+    { value: 'Admin', label: 'Admin' }
   ];
 
   return (
