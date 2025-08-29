@@ -78,6 +78,7 @@ const AddUserModal = ({ closeModal, workspaces = [], addUsers, workspace = null 
               variant="primary"
               onClick={closeModal}
               className={styles['add-user-modal__button']}
+              icon={null}
             >
               Cancel
             </Button>
@@ -85,6 +86,7 @@ const AddUserModal = ({ closeModal, workspaces = [], addUsers, workspace = null 
               variant="secondary"
               onClick={handleInviteMembers}
               className={styles['add-user-modal__button']}
+              icon={null}
             >
               Invite Members
             </Button>
