@@ -26,6 +26,16 @@
   &__row {
     display: flex;
     padding: 12px 0;
+    position: relative;
+    transition: background-color 0.2s ease;
+
+    &--clickable {
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba($white-primary, 0.05);
+      }
+    }
   }
 
   &__column {
@@ -68,5 +78,22 @@
     color: $white-primary;
     width: 100%;
     display: block; // Ensure block display for truncation
+  }
+
+  &__column-action {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__chevron {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+
+    .users-table__row:hover & {
+      opacity: 1;
+    }
   }
 }

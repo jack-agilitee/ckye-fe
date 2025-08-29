@@ -169,3 +169,104 @@ export async function POST(request) {
     );
   }
 }
+
+// DELETE /api/users
+export async function DELETE(request) {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    
+    if (!body.id) {
+      return NextResponse.json(
+        { error: 'User ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Delete user-workspace relationships first
+    await prisma.userWorkspace.deleteMany({
+      where: { userId: body.id }
+    });
+
+    // Delete the user
+    const deletedUser = await prisma.user.delete({
+      where: { id: body.id }
+    });
+
+    return NextResponse.json({ 
+      message: 'User deleted successfully',
+      data: deletedUser 
+    });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete user' },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH /api/users
+export async function PATCH(request) {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    
+    if (!body.id) {
+      return NextResponse.json(
+        { error: 'User ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Extract only the fields we want to update
+    const updateData = {};
+    if (body.name !== undefined) updateData.name = body.name;
+    if (body.email !== undefined) updateData.email = body.email;
+    if (body.userType !== undefined) updateData.userType = body.userType;
+
+    // Update the user
+    const updatedUser = await prisma.user.update({
+      where: { id: body.id },
+      data: updateData,
+      include: {
+        userWorkspaces: {
+          include: {
+            workspace: true
+          }
+        }
+      }
+    });
+
+    // Format the response
+    const formattedUser = {
+      ...updatedUser,
+      workspaces: updatedUser.userWorkspaces.map(uw => uw.workspace.name)
+    };
+    delete formattedUser.userWorkspaces;
+
+    return NextResponse.json({ data: formattedUser });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    return NextResponse.json(
+      { error: 'Failed to update user' },
+      { status: 500 }
+    );
+  }
+}

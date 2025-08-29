@@ -4,6 +4,7 @@ import { useState } from 'react';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
+import EditUserModal from '@/components/organisms/EditUserModal/EditUserModal';
 import { createUser } from '@/lib/api/users';
 import styles from './UsersPageClient.module.scss';
 
@@ -12,6 +13,8 @@ export default function UsersPageClient({ initialUsers, workspaces }) {
   const [filteredUsers, setFilteredUsers] = useState(initialUsers);
   const [searchValue, setSearchValue] = useState('');
   const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [showEditUserModal, setShowEditUserModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   // Handle search functionality
   const handleSearchChange = (e) => {
@@ -62,6 +65,16 @@ export default function UsersPageClient({ initialUsers, workspaces }) {
     }
   };
 
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+    setShowEditUserModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditUserModal(false);
+    setSelectedUser(null);
+  };
+
   return (
     <div className={styles['users-page']}>
       <SearchHeader
@@ -72,7 +85,10 @@ export default function UsersPageClient({ initialUsers, workspaces }) {
         onSearchChange={handleSearchChange}
         onButtonClick={() => setShowAddUserModal(true)}
       />
-      <UsersTable users={filteredUsers} />
+      <UsersTable 
+        users={filteredUsers} 
+        onUserClick={handleUserClick}
+      />
       
       {showAddUserModal && (
         <AddUserModal
@@ -81,6 +97,12 @@ export default function UsersPageClient({ initialUsers, workspaces }) {
           addUsers={handleAddUser}
         />
       )}
+      
+      <EditUserModal
+        user={selectedUser}
+        isOpen={showEditUserModal}
+        onClose={handleCloseEditModal}
+      />
     </div>
   );
 }
