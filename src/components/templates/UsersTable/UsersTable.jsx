@@ -27,6 +27,9 @@ const UsersTable = ({ users = [], showWorkspaces = true, onUserClick }) => {
             <span className={styles['users-table__header-text']}>Workspaces</span>
           </div>
         )}
+        {onUserClick && (
+          <div className={styles['users-table__column-action']} />
+        )}
       </div>
 
       {/* Table Body */}

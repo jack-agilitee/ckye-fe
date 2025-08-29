@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { updateUser, deleteUser } from '@/lib/api/users';
@@ -17,8 +17,16 @@ const EditUserModal = ({
   const router = useRouter();
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [userType, setUserType] = useState(user?.userType || 'Member');
+  const [userType, setUserType] = useState(user?.userType || 'member');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '')
+      setEmail(user.email || '')
+      setUserType(user.userType || 'member')
+    }
+  }, [user])
 
   if (!isOpen || !user) return null;
 
@@ -54,8 +62,8 @@ const EditUserModal = ({
   };
 
   const userTypeOptions = [
-    { value: 'Member', label: 'Member' },
-    { value: 'Admin', label: 'Admin' }
+    { value: 'member', label: 'Member' },
+    { value: 'admin', label: 'Admin' }
   ];
 
   return (
