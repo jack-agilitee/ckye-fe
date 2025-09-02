@@ -92,8 +92,10 @@ export default function UsersPageClient({ initialUsers, workspaces }) {
   };
 
   const handleFilterClick = () => {
+    console.log('Filter button clicked, current state:', showFilterModal);
     if (filterButtonRef.current) {
       const rect = filterButtonRef.current.getBoundingClientRect();
+      console.log('Button position:', rect);
       setFilterPosition({
         top: rect.bottom + 8,
         left: rect.left

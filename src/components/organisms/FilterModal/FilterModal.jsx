@@ -157,7 +157,7 @@ const FilterModal = ({
       ref={modalRef}
       className={styles['filter-modal']}
       style={{
-        position: 'absolute',
+        position: 'fixed',
         top: `${position.top}px`,
         left: `${position.left}px`
       }}
