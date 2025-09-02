@@ -22,7 +22,7 @@ const WorkspaceDetailsClient = ({ workspace }) => {
 
   // Filter users based on search query
   const filteredUsers = workspace.users?.filter(user => {
-    const query = searchQuery.toLowerCase();
+    const query = searchQuery?.toLowerCase();
     return user.name?.toLowerCase().includes(query) || 
            user.email?.toLowerCase().includes(query);
   }) || [];
