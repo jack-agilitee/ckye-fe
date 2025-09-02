@@ -18,7 +18,7 @@ export default async function WorkspacesPage() {
   // Server-side API calls to fetch workspaces and users
   const [workspacesResponse, usersResponse] = await Promise.all([
     getWorkspaces(cookieHeader),
-    getUsers(cookieHeader)
+    getUsers({}, cookieHeader)
   ]);
   
   const workspaces = workspacesResponse.data;
