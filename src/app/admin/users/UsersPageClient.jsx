@@ -96,9 +96,20 @@ export default function UsersPageClient({ initialUsers, workspaces }) {
     if (filterButtonRef.current) {
       const rect = filterButtonRef.current.getBoundingClientRect();
       console.log('Button position:', rect);
+      
+      // Calculate position with viewport boundary checks
+      const modalWidth = 350; // max-width from CSS
+      const viewportWidth = window.innerWidth;
+      
+      let left = rect.left;
+      // If modal would go off right edge, align it to the right of the button
+      if (left + modalWidth > viewportWidth) {
+        left = rect.right - modalWidth;
+      }
+      
       setFilterPosition({
         top: rect.bottom + 8,
-        left: rect.left
+        left: Math.max(10, left) // Ensure at least 10px from left edge
       });
     }
     setShowFilterModal(!showFilterModal);
@@ -157,15 +168,15 @@ export default function UsersPageClient({ initialUsers, workspaces }) {
 
   return (
     <div className={styles['users-page']}>
-      <div className={styles['users-page__header']}>
-        <SearchHeader
-          title="Users"
-          searchPlaceholder="Search Users"
-          buttonText="Add Users"
-          searchValue={searchValue}
-          onSearchChange={handleSearchChange}
-          onButtonClick={() => setShowAddUserModal(true)}
-        />
+      <SearchHeader
+        title="Users"
+        searchPlaceholder="Search Users"
+        buttonText="Add Users"
+        searchValue={searchValue}
+        onSearchChange={handleSearchChange}
+        onButtonClick={() => setShowAddUserModal(true)}
+      />
+      <div className={styles['users-page__table-container']}>
         <button
           ref={filterButtonRef}
           className={styles['users-page__filter-button']}
@@ -178,23 +189,24 @@ export default function UsersPageClient({ initialUsers, workspaces }) {
             width={16}
             height={16}
           />
+          <span className={styles['users-page__filter-text']}>Filters</span>
         </button>
-      </div>
-      
-      {showFilterModal && (
-        <FilterModal
-          filters={filterConfig}
-          values={filterValues}
-          onChange={handleFilterChange}
-          onClose={handleFilterClose}
-          position={filterPosition}
+        
+        {showFilterModal && (
+          <FilterModal
+            filters={filterConfig}
+            values={filterValues}
+            onChange={handleFilterChange}
+            onClose={handleFilterClose}
+            position={filterPosition}
+          />
+        )}
+        
+        <UsersTable 
+          users={filteredUsers} 
+          onUserClick={handleUserClick}
         />
-      )}
-      
-      <UsersTable 
-        users={filteredUsers} 
-        onUserClick={handleUserClick}
-      />
+      </div>
       
       {showAddUserModal && (
         <AddUserModal

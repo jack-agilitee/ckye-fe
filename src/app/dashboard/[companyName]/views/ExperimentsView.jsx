@@ -120,9 +120,20 @@ export default function ExperimentsView({ companyName, pages }) {
   const handleFilterClick = () => {
     if (filterButtonRef.current) {
       const rect = filterButtonRef.current.getBoundingClientRect();
+      
+      // Calculate position with viewport boundary checks
+      const modalWidth = 350; // max-width from CSS
+      const viewportWidth = window.innerWidth;
+      
+      let left = rect.left;
+      // If modal would go off right edge, align it to the right of the button
+      if (left + modalWidth > viewportWidth) {
+        left = rect.right - modalWidth;
+      }
+      
       setFilterPosition({
         top: rect.bottom + 8,
-        left: rect.left
+        left: Math.max(10, left) // Ensure at least 10px from left edge
       });
     }
     setShowFilterModal(!showFilterModal);

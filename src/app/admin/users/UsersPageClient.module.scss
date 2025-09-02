@@ -6,32 +6,38 @@
   flex-direction: column;
   gap: 24px;
 
-  &__header {
+  &__table-container {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    position: relative;
+    flex-direction: column;
+    gap: 16px;
   }
 
   &__filter-button {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
+    gap: 8px;
+    width: fit-content;
+    padding: 8px 16px;
     background: transparent;
     border: 1px solid $border-color;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
+    @include body-small;
+    color: $white-secondary;
 
     &:hover {
       background: rgba($white-primary, 0.05);
       border-color: $primary-color;
+      color: $white-primary;
     }
 
     &:active {
       transform: scale(0.95);
     }
+  }
+
+  &__filter-text {
+    @include body-small;
   }
 }
