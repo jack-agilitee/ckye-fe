@@ -22,9 +22,11 @@ const WorkspaceDetailsClient = ({ workspace }) => {
 
   // Filter users based on search query
   const filteredUsers = workspace.users?.filter(user => {
-    const query = searchQuery.toLowerCase();
-    return user.name?.toLowerCase().includes(query) || 
-           user.email?.toLowerCase().includes(query);
+    const query = searchQuery?.toLowerCase();
+    const name = user.name || '';
+    const email = user.email || '';
+    return name.toLowerCase().includes(query) || 
+           email.toLowerCase().includes(query);
   }) || [];
 
   const handleAddUser = async (userData) => {
@@ -98,7 +100,7 @@ const WorkspaceDetailsClient = ({ workspace }) => {
               title="Users"
               searchPlaceholder="Search Users"
               searchValue={searchQuery}
-              onSearchChange={setSearchQuery}
+              onSearchChange={(e) => setSearchQuery(e.target.value)}
               buttonText="Add Users"
               onButtonClick={() => setIsAddUserModalOpen(true)}
             />
