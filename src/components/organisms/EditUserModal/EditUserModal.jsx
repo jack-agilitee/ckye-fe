@@ -130,7 +130,7 @@ const EditUserModal = ({
           
           <div className={styles['edit-user-modal__actions']}>
             <Button
-              variant="secondary"
+              variant="primary"
               onClick={onClose}
               className={styles['edit-user-modal__button']}
               icon={null}
@@ -139,7 +139,7 @@ const EditUserModal = ({
               Cancel
             </Button>
             <Button
-              variant="primary"
+              variant="secondary"
               onClick={handleSave}
               className={styles['edit-user-modal__button']}
               icon={null}
