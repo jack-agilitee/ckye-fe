@@ -5,6 +5,8 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
  * @param {string} workspaceName - The workspace name (required)
  * @param {Object} params - Additional query parameters
  * @param {string} params.status - Filter by status (active, inactive, completed)
+ * @param {string} params.variantName - Filter by variant name
+ * @param {string} params.search - Search in experiment names
  * @param {number} params.page - Page number
  * @param {number} params.limit - Items per page
  * @param {string} params.sortBy - Sort field

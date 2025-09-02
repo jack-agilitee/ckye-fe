@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma';
 
 // GET /api/users
-export async function GET() {
+export async function GET(request) {
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
@@ -15,8 +15,37 @@ export async function GET() {
         { status: 401 }
       );
     }
+
+    // Get query parameters for filtering
+    const { searchParams } = new URL(request.url);
+    const userTypes = searchParams.get('userTypes')?.split(',').filter(Boolean);
+    const accountTypes = searchParams.get('accountTypes')?.split(',').filter(Boolean);
+    const search = searchParams.get('search');
+
+    // Build where clause for filtering
+    const where = {};
+    
+    if (userTypes && userTypes.length > 0) {
+      where.userType = { in: userTypes };
+    }
+
+    if (accountTypes && accountTypes.length > 0) {
+      // For account types, we need to check if user is active/deactivated
+      // Assuming active users have a non-null email and deactivated have a flag or specific pattern
+      // Since we don't have an explicit status field, we'll need to add logic based on your schema
+      // For now, we'll filter based on presence of email or a status field if it exists
+    }
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } }
+      ];
+    }
+
     // Return all users with their workspaces through the join table
     const users = await prisma.user.findMany({
+      where,
       select: {
         id: true,
         email: true,

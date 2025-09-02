@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import ExperimentsTable from '@/components/templates/ExperimentsTable/ExperimentsTable';
 import ExperimentsModal from '@/components/organisms/ExperimentsModal/ExperimentsModal';
 import CreateExperimentModal from '@/components/organisms/CreateExperimentModal/CreateExperimentModal';
+import FilterModal from '@/components/organisms/FilterModal/FilterModal';
 import { getExperimentsByWorkspace, createExperiment, deactivateExperiment } from '@/lib/api/experiments';
 import { getVariants } from '@/lib/api/variants';
 import styles from './ExperimentsView.module.scss';
@@ -59,8 +61,21 @@ export default function ExperimentsView({ companyName, pages }) {
   const [selectedExperiment, setSelectedExperiment] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [filterValues, setFilterValues] = useState({});
+  const [filterPosition, setFilterPosition] = useState({ top: 0, left: 0 });
+  const filterButtonRef = useRef(null);
 
-  // Fetch experiments and variants on mount
+  // Define filter configuration
+  const filterConfig = {
+    variantName: {
+      label: 'Variant Summary',
+      type: 'text',
+      placeholder: 'Contains...'
+    }
+  };
+
+  // Fetch experiments and variants with filters
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -69,9 +84,15 @@ export default function ExperimentsView({ companyName, pages }) {
         
         const workspaceName = companyName?.toUpperCase() || 'AE';
         
+        // Build params with filters
+        const params = {
+          search: searchQuery,
+          variantName: filterValues.variantName || ''
+        };
+        
         // Fetch experiments and variants in parallel
         const [experimentsResponse, variantsResponse] = await Promise.all([
-          getExperimentsByWorkspace(workspaceName),
+          getExperimentsByWorkspace(workspaceName, params),
           getVariants({ workspaceName })
         ]);
         
@@ -87,20 +108,32 @@ export default function ExperimentsView({ companyName, pages }) {
     };
 
     fetchData();
-  }, [companyName]);
+  }, [companyName, searchQuery, filterValues]);
 
-  // Filter experiments based on search query
-  const filteredExperiments = experiments.filter(experiment => {
-    const query = searchQuery.toLowerCase();
-    return (
-      experiment.name.toLowerCase().includes(query) ||
-      experiment.comparison.toLowerCase().includes(query) ||
-      experiment.status.toLowerCase().includes(query)
-    );
-  });
+  // Experiments are already filtered by the API, so we just use them directly
+  const filteredExperiments = experiments;
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+  };
+
+  const handleFilterClick = () => {
+    if (filterButtonRef.current) {
+      const rect = filterButtonRef.current.getBoundingClientRect();
+      setFilterPosition({
+        top: rect.bottom + 8,
+        left: rect.left
+      });
+    }
+    setShowFilterModal(!showFilterModal);
+  };
+
+  const handleFilterChange = (newValues) => {
+    setFilterValues(newValues);
+  };
+
+  const handleFilterClose = () => {
+    setShowFilterModal(false);
   };
 
   const handleNewExperiment = () => {
@@ -164,16 +197,41 @@ export default function ExperimentsView({ companyName, pages }) {
   return (
     <>
       <div className={styles['experiments-view']}>
-        <SearchHeader
-          title="Experiments"
-          searchPlaceholder="Search Experiments by Name"
-          onSearch={(query) => console.log('Searching:', query)}
-          searchValue={searchQuery}
-          onSearchChange={handleSearchChange}
-          buttonText="New Experiment"
-          onButtonClick={handleNewExperiment}
-          className={styles['experiments-view__header']}
-        />
+        <div className={styles['experiments-view__header-wrapper']}>
+          <SearchHeader
+            title="Experiments"
+            searchPlaceholder="Search Experiments by Name"
+            onSearch={(query) => console.log('Searching:', query)}
+            searchValue={searchQuery}
+            onSearchChange={handleSearchChange}
+            buttonText="New Experiment"
+            onButtonClick={handleNewExperiment}
+            className={styles['experiments-view__header']}
+          />
+          <button
+            ref={filterButtonRef}
+            className={styles['experiments-view__filter-button']}
+            onClick={handleFilterClick}
+            aria-label="Filter experiments"
+          >
+            <Image
+              src="/filter.svg"
+              alt="Filter"
+              width={16}
+              height={16}
+            />
+          </button>
+        </div>
+        
+        {showFilterModal && (
+          <FilterModal
+            filters={filterConfig}
+            values={filterValues}
+            onChange={handleFilterChange}
+            onClose={handleFilterClose}
+            position={filterPosition}
+          />
+        )}
         
         {loading ? (
           <div className={styles['experiments-view__loading']}>
