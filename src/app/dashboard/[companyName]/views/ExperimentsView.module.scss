@@ -7,38 +7,8 @@
   height: 100%;
   position: relative;
 
-  &__header-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 24px;
-    position: relative;
-  }
-
   &__header {
-    flex: 1;
-  }
-
-  &__filter-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: transparent;
-    border: 1px solid $border-color;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background: rgba($white-primary, 0.05);
-      border-color: $primary-color;
-    }
-
-    &:active {
-      transform: scale(0.95);
-    }
+    padding: 24px;
   }
 
   &__table {

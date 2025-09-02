@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import ExperimentsTable from '@/components/templates/ExperimentsTable/ExperimentsTable';
 import ExperimentsModal from '@/components/organisms/ExperimentsModal/ExperimentsModal';
@@ -208,31 +207,19 @@ export default function ExperimentsView({ companyName, pages }) {
   return (
     <>
       <div className={styles['experiments-view']}>
-        <div className={styles['experiments-view__header-wrapper']}>
-          <SearchHeader
-            title="Experiments"
-            searchPlaceholder="Search Experiments by Name"
-            onSearch={(query) => console.log('Searching:', query)}
-            searchValue={searchQuery}
-            onSearchChange={handleSearchChange}
-            buttonText="New Experiment"
-            onButtonClick={handleNewExperiment}
-            className={styles['experiments-view__header']}
-          />
-          <button
-            ref={filterButtonRef}
-            className={styles['experiments-view__filter-button']}
-            onClick={handleFilterClick}
-            aria-label="Filter experiments"
-          >
-            <Image
-              src="/filter.svg"
-              alt="Filter"
-              width={16}
-              height={16}
-            />
-          </button>
-        </div>
+        <SearchHeader
+          title="Experiments"
+          searchPlaceholder="Search Experiments by Name"
+          onSearch={(query) => console.log('Searching:', query)}
+          searchValue={searchQuery}
+          onSearchChange={handleSearchChange}
+          buttonText="New Experiment"
+          onButtonClick={handleNewExperiment}
+          className={styles['experiments-view__header']}
+          showFilter={true}
+          onFilterClick={handleFilterClick}
+          filterButtonRef={filterButtonRef}
+        />
         
         {showFilterModal && (
           <FilterModal

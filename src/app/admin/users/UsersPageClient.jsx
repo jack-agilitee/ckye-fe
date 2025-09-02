@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
@@ -175,38 +174,25 @@ export default function UsersPageClient({ initialUsers, workspaces }) {
         searchValue={searchValue}
         onSearchChange={handleSearchChange}
         onButtonClick={() => setShowAddUserModal(true)}
+        showFilter={true}
+        onFilterClick={handleFilterClick}
+        filterButtonRef={filterButtonRef}
       />
-      <div className={styles['users-page__table-container']}>
-        <button
-          ref={filterButtonRef}
-          className={styles['users-page__filter-button']}
-          onClick={handleFilterClick}
-          aria-label="Filter users"
-        >
-          <Image
-            src="/filter.svg"
-            alt="Filter"
-            width={16}
-            height={16}
-          />
-          <span className={styles['users-page__filter-text']}>Filters</span>
-        </button>
-        
-        {showFilterModal && (
-          <FilterModal
-            filters={filterConfig}
-            values={filterValues}
-            onChange={handleFilterChange}
-            onClose={handleFilterClose}
-            position={filterPosition}
-          />
-        )}
-        
-        <UsersTable 
-          users={filteredUsers} 
-          onUserClick={handleUserClick}
+      
+      {showFilterModal && (
+        <FilterModal
+          filters={filterConfig}
+          values={filterValues}
+          onChange={handleFilterChange}
+          onClose={handleFilterClose}
+          position={filterPosition}
         />
-      </div>
+      )}
+      
+      <UsersTable 
+        users={filteredUsers} 
+        onUserClick={handleUserClick}
+      />
       
       {showAddUserModal && (
         <AddUserModal
