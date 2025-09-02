@@ -9,6 +9,8 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const workspaceName = searchParams.get('workspaceName');
+    const variantNameFilter = searchParams.get('variantName');
+    const search = searchParams.get('search');
 
     // Require workspaceName for filtering
     if (!workspaceName) {
@@ -22,6 +24,11 @@ export async function GET(request) {
     const where = {
       workspaceName
     };
+
+    // Add search filter for experiment name if provided
+    if (search) {
+      where.name = { contains: search, mode: 'insensitive' };
+    }
 
     // Execute query - get all experiments, no pagination
     const experiments = await prisma.experiment.findMany({
@@ -116,8 +123,16 @@ export async function GET(request) {
       })
     );
 
+    // Filter by variant name if provided (after fetching variant names)
+    let filteredExperiments = experimentsWithNames;
+    if (variantNameFilter) {
+      filteredExperiments = experimentsWithNames.filter(exp => 
+        exp.variantName && exp.variantName.toLowerCase().includes(variantNameFilter.toLowerCase())
+      );
+    }
+
     return NextResponse.json({
-      data: experimentsWithNames
+      data: filteredExperiments
     });
   } catch (error) {
     console.error('Error fetching experiments:', error);

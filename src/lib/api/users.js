@@ -1,9 +1,23 @@
-export async function getUsers(cookieHeader = null) {
+export async function getUsers(filters = {}, cookieHeader = null) {
   try {
+    // Build query params from filters
+    const params = new URLSearchParams();
+    if (filters.userTypes && filters.userTypes.length > 0) {
+      params.append('userTypes', filters.userTypes.join(','));
+    }
+    if (filters.accountTypes && filters.accountTypes.length > 0) {
+      params.append('accountTypes', filters.accountTypes.join(','));
+    }
+    if (filters.search) {
+      params.append('search', filters.search);
+    }
+    
+    const queryString = params.toString();
+    
     // Use absolute URL for server-side requests
     const url = typeof window === 'undefined' 
-      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/users`
-      : '/api/users';
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/users${queryString ? `?${queryString}` : ''}`
+      : `/api/users${queryString ? `?${queryString}` : ''}`;
       
     const response = await fetch(url, {
       method: 'GET',
