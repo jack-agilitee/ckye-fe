@@ -14,11 +14,11 @@ export default function LoginPage() {
       {/* Left Column */}
       <div className={styles.login__left}>
         <img
-          src="/logo-dg.png"
-          alt="Dollar General"
+          src="/logo-ag.svg"
+          alt="Agilitee"
           className={styles.login__logo}
         />
-        <h2 className={styles.login__brandName}>Dollar General</h2>
+        <h2 className={styles.login__brandName}>Agilitee</h2>
       </div>
 
       {/* Right Column */}
@@ -28,7 +28,7 @@ export default function LoginPage() {
           <div className={styles.login__header}>
             <h1 className={styles.login__title}>Welcome Back</h1>
             <p className={styles.login__subtitle}>
-              Log in with your Agilitee Microsoft account
+              Log in with your SAML or OIDC provider
             </p>
           </div>
 

@@ -25,7 +25,7 @@ describe('LoginPage', () => {
     
     // Check main elements
     expect(screen.getByText('Welcome Back')).toBeInTheDocument();
-    expect(screen.getByText('Log in with your Agilitee Microsoft account')).toBeInTheDocument();
+    expect(screen.getByText('Log in with your SAML or OIDC provider')).toBeInTheDocument();
     expect(screen.getByText('Single Sign On')).toBeInTheDocument();
   });
 
