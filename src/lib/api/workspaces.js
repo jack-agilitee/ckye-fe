@@ -58,10 +58,10 @@ export async function getWorkspace(id, cookieHeader = null) {
 export async function createWorkspace(workspaceData, cookieHeader = null) {
   try {
     // Use absolute URL for server-side requests
-    const url = typeof window === 'undefined' 
+    const url = typeof window === 'undefined'
       ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/workspaces`
       : '/api/workspaces';
-      
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -80,6 +80,64 @@ export async function createWorkspace(workspaceData, cookieHeader = null) {
     return await response.json();
   } catch (error) {
     console.error('Error creating workspace:', error);
+    throw error;
+  }
+}
+
+export async function addUserToWorkspace(userId, workspaceId, role = 'member', cookieHeader = null) {
+  try {
+    // Use absolute URL for server-side requests
+    const url = typeof window === 'undefined'
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/user-workspace`
+      : '/api/user-workspace';
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(cookieHeader && { Cookie: cookieHeader }), // Forward cookies if provided
+      },
+      credentials: 'same-origin', // Include cookies for client-side requests
+      body: JSON.stringify({ userId, workspaceId, role }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to add user to workspace');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error adding user to workspace:', error);
+    throw error;
+  }
+}
+
+export async function removeUserFromWorkspace(userId, workspaceId, cookieHeader = null) {
+  try {
+    // Use absolute URL for server-side requests
+    const url = typeof window === 'undefined'
+      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/user-workspace`
+      : '/api/user-workspace';
+
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(cookieHeader && { Cookie: cookieHeader }), // Forward cookies if provided
+      },
+      credentials: 'same-origin', // Include cookies for client-side requests
+      body: JSON.stringify({ userId, workspaceId }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to remove user from workspace');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error removing user from workspace:', error);
     throw error;
   }
 }

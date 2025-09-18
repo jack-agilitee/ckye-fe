@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createUser, updateUser, deleteUser } from '@/lib/api/users';
+import { createUser, getUserByEmail } from '@/lib/api/users';
+import { addUserToWorkspace } from '@/lib/api/workspaces';
 import SearchHeader from '@/components/molecules/SearchHeader/SearchHeader';
 import UsersTable from '@/components/templates/UsersTable/UsersTable';
 import SSOConfigCard from '@/components/organisms/SSOConfigCard/SSOConfigCard';
@@ -29,10 +30,27 @@ const WorkspaceDetailsClient = ({ workspace }) => {
 
   const handleAddUser = async (userData) => {
     try {
-      await createUser({
-        ...userData,
-        workspaceIds: [workspace.id]
-      });
+      // First check if the user already exists
+      let user;
+      try {
+        const existingUser = await getUserByEmail(userData.email);
+        user = existingUser.data;
+      } catch (error) {
+        // User doesn't exist, so create them
+        user = null;
+      }
+
+      if (user) {
+        // User exists, just add them to the workspace
+        await addUserToWorkspace(user.id, workspace.id, userData.userType === 'Admin' ? 'admin' : 'member');
+      } else {
+        // User doesn't exist, create them with the workspace
+        await createUser({
+          ...userData,
+          workspaceIds: [workspace.id]
+        });
+      }
+
       setIsAddUserModalOpen(false);
       router.refresh();
     } catch (error) {
