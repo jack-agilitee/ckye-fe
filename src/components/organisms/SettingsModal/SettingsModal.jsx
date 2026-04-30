@@ -6,9 +6,12 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useUser } from '@/context/UserContext';
 import { usePathname } from 'next/navigation'
+import { createUser, getUserByEmail } from '@/lib/api/users';
+import { addUserToWorkspace } from '@/lib/api/workspaces';
 import User from '@/components/molecules/User/User';
 import Avatar from '@/components/atoms/Avatar/Avatar';
 import Button from '@/components/atoms/Button/Button';
+import AddUserModal from '@/components/organisms/AddUserModal/AddUserModal';
 import styles from './SettingsModal.module.scss';
 
 const SettingsModal = ({ onDismiss }) => {
@@ -20,6 +23,9 @@ const SettingsModal = ({ onDismiss }) => {
   const pathname = usePathname().split('/')?.pop()?.toLowerCase();
 
   const [currentWorkspace, setCurrentWorkspace] = useState(workspaces.find(workspace => workspace.shortName.toLowerCase() === pathname) || workspaces[0]);
+  const [showModal, setShowModal] = useState(false);
+
+  console.log(currentWorkspace)
 
 
   useEffect(() => {
@@ -45,13 +51,16 @@ const SettingsModal = ({ onDismiss }) => {
   }, [onDismiss]);
 
   const handleSettingsClick = () => {
-    console.log('settings');
-    // TODO: Navigate to settings page
+    if (currentWorkspace?.id) {
+      router.push(`/admin/workspaces/${currentWorkspace.id}`);
+      onDismiss?.();
+    }
   };
 
   const handleInviteMembersClick = () => {
-    console.log('invite members');
-    // TODO: Navigate to invite members page
+    if (currentWorkspace?.id) {
+      setShowModal(true);
+    }
   };
 
   const handleWorkspaceClick = (workspace) => {
@@ -69,6 +78,32 @@ const SettingsModal = ({ onDismiss }) => {
 
   const handleLogoutClick = () => {
     signOut();
+  };
+
+  const handleAddUser = async (userData) => {
+    try {
+      let user;
+      try {
+        const existingUser = await getUserByEmail(userData.email);
+        user = existingUser.data;
+      } catch (error) {
+        user = null;
+      }
+
+      if (user) {
+        await addUserToWorkspace(user.id, currentWorkspace.id, userData.userType === 'Admin' ? 'admin' : 'member');
+      } else {
+        await createUser({
+          ...userData,
+          workspaceIds: [currentWorkspace.id]
+        });
+      }
+
+      setShowModal(false);
+      router.refresh();
+    } catch (error) {
+      console.error('Error adding user:', error);
+    }
   };
 
   return (
@@ -157,6 +192,14 @@ const SettingsModal = ({ onDismiss }) => {
           Log Out
         </span>
       </button>
+
+      {showModal && (
+        <AddUserModal
+          closeModal={() => setShowModal(false)}
+          workspace={currentWorkspace}
+          addUsers={handleAddUser}
+        />
+      )}
     </div>
   );
 };
