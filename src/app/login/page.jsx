@@ -18,7 +18,7 @@ export default function LoginPage() {
           alt="Agilitee"
           className={styles.login__logo}
         />
-        <h2 className={styles.login__brandName}>Agilitee</h2>
+        <h2 className={styles.login__brandName}>Ckye</h2>
       </div>
 
       {/* Right Column */}
